@@ -94,11 +94,9 @@ const CommentScreen = (props) => {
               ? 'https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/default-avatar.png'
               : userData?.data?.data?.userimage,
         };
-        console.log('data', data);
         axios
           .post(`${baseUrl}/comments/addComment `, data)
           .then(async (res) => {
-            console.log('res', res);
             Toast.show('User add comment successfully', Toast.LONG);
             setText('');
             comments.push(data);
@@ -165,7 +163,6 @@ const CommentScreen = (props) => {
     setRefreshing(true);
     const fetchUserData = async () => {
       const UserId = await AsyncStorage.getItem('UserId');
-      console.log('postId', postId);
       setUserId(userId);
       await axios
         .get(`${baseUrl}/comments/byRecipeId/${postId}`)

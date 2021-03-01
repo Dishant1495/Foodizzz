@@ -281,8 +281,7 @@ const RecipeScreen = (props) => {
     await axios
       .delete(`${baseUrl}/like/deletelike/${UserId}/${recipeId.recipeId}`)
       .then(async (res) => {
-        console.log('ress', res);
-        //  Toast.show('Delete Like Successfully', Toast.LONG);
+        setCount(0);
         await getLoadMore();
       })
       .catch((e) => {
@@ -290,9 +289,7 @@ const RecipeScreen = (props) => {
       });
   };
   const addLike = async (recipeId) => {
-    console.log('recipe', recipeId);
     setCount((prevCount) => prevCount + 1);
-    console.log('video', count);
     if (count === 0) {
       const UserId = await AsyncStorage.getItem('UserId');
       if (UserId) {
@@ -303,7 +300,7 @@ const RecipeScreen = (props) => {
         await axios
           .post(`${baseUrl}/like/addlike`, data)
           .then(async (res) => {
-            setCount(0);
+           
             await getLoadMore();
           })
           .catch((e) => {

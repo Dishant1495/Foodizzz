@@ -43,7 +43,6 @@ const OnboardingScreen = ({navigation}) => {
     getNetInfo();
     // Subscribe to network state updates
     const unsubscribe = NetInfo.addEventListener((state) => {
-      console.log("state ###" , state)
       setNetInfo(
         `Connection type: ${state.type}
         Is connected?: ${state.isConnected}

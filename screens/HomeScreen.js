@@ -114,7 +114,6 @@ const HomeScreen = (props) => {
       .get(`${baseUrl}/recipes/Feed/${userId}?page=` + 1)
       //Sending the currect page  with get request
       .then(async (responseJson) => {
-        console.log('response json', responseJson);
         //Successful response
         setPage(page);
         //Increasing the page for the next API call
@@ -172,7 +171,6 @@ const HomeScreen = (props) => {
     await axios
       .delete(`${baseUrl}/like/deletelike/${UserId}/${recipeId.recipeId}`)
       .then(async (res) => {
-        console.log('ress', res);
         setCount(0);
         await getLoadMore();
       })
@@ -192,7 +190,6 @@ const HomeScreen = (props) => {
         await axios
           .post(`${baseUrl}/like/addlike`, data)
           .then(async (res) => {
-            console.log('ress', res);
             //   Toast.show('Add Like Successfully', Toast.LONG);
             await getLoadMore();
           })

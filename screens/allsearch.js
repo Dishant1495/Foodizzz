@@ -50,7 +50,6 @@ const SearchScreen = (props) => {
     props.navigation.navigate('RecipeScreen', {item});
   };
   const handleSearch = (text) => {
-    console.log('search text', text);
     axios
       .get(`${baseUrl}/recipes/searchtitle/${text}`)
       .then((res) => {
@@ -78,7 +77,6 @@ const SearchScreen = (props) => {
   };
 
   const renderRecipes = ({item}) => {
-    console.log('rebder ss', item);
     return (
       <TouchableOpacity
         underlayColor="rgba(73,182,77,0.9)"
