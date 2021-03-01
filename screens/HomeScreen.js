@@ -1,9 +1,4 @@
-// React Native Video Library to Play Video in Android and IOS
-// https://aboutreact.com/react-native-video/
-
-// import React in our code
 import React, {useState, useEffect} from 'react';
-//axios
 import axios from 'axios';
 import {Container} from '../styles/FeedStyles';
 import Toast from 'react-native-simple-toast';
@@ -190,7 +185,6 @@ const HomeScreen = (props) => {
         await axios
           .post(`${baseUrl}/like/addlike`, data)
           .then(async (res) => {
-            //   Toast.show('Add Like Successfully', Toast.LONG);
             await getLoadMore();
           })
           .catch((e) => {
