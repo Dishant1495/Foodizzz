@@ -14,6 +14,7 @@
             <option value="$PROJECT_DIR$/app" />
             <option value="$PROJECT_DIR$/../node_modules/@react-native-community/async-storage/android" />
             <option value="$PROJECT_DIR$/../node_modules/@react-native-community/masked-view/android" />
+            <option value="$PROJECT_DIR$/../node_modules/@react-native-community/netinfo/android" />
             <option value="$PROJECT_DIR$/../node_modules/@react-native-community/toolbar-android/android" />
             <option value="$PROJECT_DIR$/../node_modules/react-native-fs/android" />
             <option value="$PROJECT_DIR$/../node_modules/react-native-gesture-handler/android" />

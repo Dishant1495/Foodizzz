@@ -149,13 +149,14 @@ const AddPostScreen = (props) => {
   const config = {headers: {'Content-Type': 'multipart/form-data'}};
   const onSubmit = async () => {
     if (count === 0) {
-      if (
-        labels === null ||
-        description === null ||
-        about === null ||
-        tags.tagsArray.length === 0
-      ) {
-        Toast.show('Mandotary Filled Fillup', Toast.LONG);
+      if (labels === null) {
+        Toast.show('Title is required', Toast.LONG);
+      } else if (about === null) {
+        Toast.show('Ingredients is required', Toast.LONG);
+      } else if (description === null) {
+        Toast.show('Directions is required', Toast.LONG);
+      } else if (tags.tagsArray.length === 0) {
+        Toast.show('Tags is required', Toast.LONG);
       } else if (image.length === 0) {
         Toast.show('Please Upload Image', Toast.LONG), setImage([]);
       } else if (isSelected && video == null) {
