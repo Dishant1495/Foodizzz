@@ -85,7 +85,7 @@ const SearchScreen = (props) => {
           <Image
             style={styles.recipeImage}
             source={{
-              uri: `${baseUrl}` + item?.documents[0]?.image,
+              uri: item?.documents[0]?.image,
             }}
           />
           <View style={{flexDirection: 'column', width: '64%'}}>

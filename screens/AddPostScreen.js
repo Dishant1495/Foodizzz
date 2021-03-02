@@ -209,9 +209,11 @@ const AddPostScreen = (props) => {
             config,
           })
           .then((res) => {
+            console.log('res');
             Toast.show('Recipe Added Successfully', Toast.LONG);
             props.navigation.push('Feed');
             setCount(0);
+            setstate(false);
           })
           .then((responseText) => {
             setstate(false);
@@ -226,7 +228,10 @@ const AddPostScreen = (props) => {
               setSelection(false),
               setdescription(null);
           })
-          .catch((e) => Toast.show('Something went long', Toast.LONG));
+          .catch((e) => {
+            setstate(false);
+            Toast.show('Something went long', Toast.LONG);
+          });
       }
     } else {
       console.log('e');

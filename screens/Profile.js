@@ -18,9 +18,11 @@ import ImagePicker from 'react-native-image-picker';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import FormInputCity from '../components/FormInputCity';
 import NetInfo from '@react-native-community/netinfo';
+import AsyncStorage from '@react-native-community/async-storage';
+
 const config = {headers: {'Content-Type': 'multipart/form-data'}};
 
-const SignupScreen = ({navigation}) => {
+const Profile = (props) => {
   const [email, setEmail] = useState();
   const [password, setPassword] = useState();
   const [confirmPassword, setConfirmPassword] = useState();
@@ -29,9 +31,25 @@ const SignupScreen = ({navigation}) => {
   const [loading, setLoading] = useState(false);
   const [fileImage, setFileImage] = useState(null);
   const [netInfo, setNetInfo] = useState('');
-
   useEffect(() => {
     getNetInfo();
+    const fetchData = async () => {
+      const UserId = await AsyncStorage.getItem('UserId');
+      await axios
+        .get(`${baseUrl}/user/userGetById/${UserId}`)
+        .then((userDetails) => {
+          console.log(userDetails?.data?.data?.userimage);
+          setFileImage(userDetails?.data?.data?.userimage);
+          setFirstName(userDetails?.data?.data?.Firstname);
+          setEmail(userDetails?.data?.data?.Email);
+          setcity(userDetails?.data?.data?.City);
+        })
+        .catch((e) => {
+          console.log('e', e);
+        })
+        .catch((error) => console.log('e', error));
+    };
+    fetchData();
     // Subscribe to network state updates
     const unsubscribe = NetInfo.addEventListener((state) => {
       setNetInfo(
@@ -56,47 +74,44 @@ const SignupScreen = ({navigation}) => {
     });
   };
 
-  const Signup = () => {
-    if (password !== confirmPassword) {
-      Toast.show('Password does not match');
-    } else {
-      const formdata = new FormData();
-      formdata.append('Email', email);
-      formdata.append('Password', password);
-      formdata.append('City', city);
-      formdata.append('Firstname', firstName);
-      fileImage === null
-        ? null
-        : formdata.append('userimage', {
-            uri: fileImage?.uri,
-            type: fileImage?.type,
-            name: fileImage?.fileName,
-          });
-      setLoading(true);
-      console.log(formdata)
-      try {
-        axios
-          .post(`${baseUrl}/user/register`, formdata, {
-            config,
-          })
-          .then(async (response) => {
-            setLoading(false);
-            if (response.data.status == 'success') {
-              Toast.show('Signup Succesfully', Toast.LONG);
-              navigation.navigate('Login');
-            } else {
-              console.log(response.data.error)
-              Toast.show(response.data.error, Toast.LONG);
-            }
-          })
-          .catch((e) => {
-            console.log('unable of failed user')
-            setLoading(false);
-          });
-      } catch (error) {
-        setLoading(false);
-      }
-    }
+  const Submit = () => {
+    // if (password !== confirmPassword) {
+    //   Toast.show('Password does not match');
+    // } else {
+    //   const formdata = new FormData();
+    //   formdata.append('Email', email);
+    //   formdata.append('Password', password);
+    //   formdata.append('City', city);
+    //   formdata.append('Firstname', firstName);
+    //   fileImage === null
+    //     ? null
+    //     : formdata.append('userimage', {
+    //         uri: fileImage?.uri,
+    //         type: fileImage?.type,
+    //         name: fileImage?.fileName,
+    //       });
+    //   setLoading(true);
+    //   try {
+    //     axios
+    //       .post(`${baseUrl}/user/register`, formdata, {
+    //         config,
+    //       })
+    //       .then(async (response) => {
+    //         setLoading(false);
+    //         if (response.data.status == 'success') {
+    //           Toast.show('Signup Succesfully', Toast.LONG);
+    //           navigation.navigate('Login');
+    //         } else {
+    //           Toast.show(response.data.error, Toast.LONG);
+    //         }
+    //       })
+    //       .catch((e) => {
+    //         setLoading(false);
+    //       });
+    //   } catch (error) {
+    //     setLoading(false);
+    //   }
+    // }
   };
 
   const chooseImage = () => {
@@ -140,7 +155,7 @@ const SignupScreen = ({navigation}) => {
                     uri:
                       'https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/default-avatar.png',
                   }
-                : fileImage
+                : {uri: fileImage}
             }
           />
           <TouchableOpacity
@@ -179,24 +194,6 @@ const SignupScreen = ({navigation}) => {
           autoCorrect={false}
         />
 
-        <FormInput
-          labelValue={password}
-          onChangeText={(password) => setPassword(password)}
-          placeholderText="Password"
-          iconType="lock"
-          secureTextEntry={true}
-        />
-
-        <FormInput
-          labelValue={confirmPassword}
-          onChangeText={(confirmPassword) =>
-            setConfirmPassword(confirmPassword)
-          }
-          placeholderText="Confirm Password"
-          iconType="lock"
-          secureTextEntry={true}
-        />
-
         <FormInputCity
           labelValue={city}
           onChangeText={(city) => setcity(city)}
@@ -204,17 +201,11 @@ const SignupScreen = ({navigation}) => {
           iconType="city"
         />
 
-        <FormButton buttonTitle="Sign Up" onPress={() => Signup()} />
+        <FormButton buttonTitle="Submit" onPress={() => Submit()} />
         <Loader loading={loading} />
-
-        <TouchableOpacity
-          style={styles.navButton}
-          onPress={() => navigation.navigate('Login')}>
-          <Text style={styles.navButtonText}>Have an account? Sign In</Text>
-        </TouchableOpacity>
       </View>
     </>
   );
 };
 
-export default SignupScreen;
+export default Profile;

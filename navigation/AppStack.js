@@ -3,6 +3,7 @@ import {View} from 'react-native';
 import {createStackNavigator} from '@react-navigation/stack';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import AntDesign from 'react-native-vector-icons/AntDesign';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import HomeScreen from '../screens/HomeScreen';
 import CategoriesScreen from '../screens/CategoriesScreen';
@@ -11,6 +12,7 @@ import allsearch from '../screens/allsearch';
 import RecipeScreen from '../screens/RecipeScreen/RecipeScreen';
 import SearchScreen from '../screens/SearchScreen';
 import CommentScreen from '../screens/CommentScreen';
+import Profile from '../screens/Profile';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -98,6 +100,28 @@ const CategoryStack = () => (
             <Ionicons name="arrow-back" size={25} color="white" />
           </View>
         ),
+      }}
+    />
+  </Stack.Navigator>
+);
+
+const ProfileStack = () => (
+  <Stack.Navigator>
+    <Stack.Screen
+      name="Profile"
+      component={Profile}
+      options={{
+        headerTitleStyle: {
+          color: 'white',
+          fontFamily: 'Kufam',
+          fontSize: 18,
+          marginLeft: 30,
+        },
+        headerStyle: {
+          backgroundColor: 'orange',
+        },
+        headerLeft: () => null,
+        headerRight: () => <View style={{marginRight: 10}}></View>,
       }}
     />
   </Stack.Navigator>
@@ -287,6 +311,17 @@ const AppStack = () => {
           tabBarLabel: 'Search',
           tabBarIcon: ({color, size}) => (
             <Ionicons name="search" color={color} size={size} />
+          ),
+        }}
+      />
+
+      <Tab.Screen
+        name="Profile"
+        component={ProfileStack}
+        options={{
+          tabBarLabel: 'Profile',
+          tabBarIcon: ({color, size}) => (
+            <AntDesign name="user" color={color} size={size} />
           ),
         }}
       />

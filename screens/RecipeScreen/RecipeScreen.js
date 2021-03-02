@@ -30,6 +30,8 @@ import VideoPlayer from 'react-native-video-player';
 import {windowHeight} from '../../utils/Dimentions';
 import NetInfo from '@react-native-community/netinfo';
 import {baseUrl} from '../../baseUrl';
+import {ShareDialog} from 'react-native-fbsdk';
+
 const deviceWidth = Dimensions.get('window').width;
 const RecipeScreen = (props) => {
   const [selectedIndex, setSelectedIndex] = useState(0);
@@ -92,21 +94,29 @@ const RecipeScreen = (props) => {
     setSelectedIndex(index);
   };
   const item = props?.route?.params?.item;
-  const onShare = async () => {
-    try {
-      const result = await Share.share({
-        message:
-          'React Native | A framework for building native apps using React',
-      });
-      if (result.action === Share.sharedAction) {
-        if (result.activityType) {
-        } else {
-        }
-      } else if (result.action === Share.dismissedAction) {
-      }
-    } catch (error) {
-      alert(error.message);
-    }
+  const onShare = async ({item}) => {
+    console.log('iteem', item.directions);
+    console.log('item.documents[0].image', item.documents[0].image);
+    // const shareOptions = {
+    //   message:  item?.directions,
+    //   urls: [item.documents[0].image],
+    // };
+    // try {
+    //   const ShareResponse = Share.open(shareOptions);
+    //   console.log('Share Response', JSON.stringify(ShareResponse));
+    // } catch (error) {
+    //   console.log('error ', error);
+    // }
+    const shareContent = {
+      contentType: 'link',
+      // contentDescription: `${item.directions}`,
+      contentTitle: `${item.title}`,
+      contentUrl: `${item.documents[0].image}`,
+      imageUrl: `${item.documents[0].image}`,
+    };
+    ShareDialog.canShow(shareContent).then((canShow) => {
+      canShow && ShareDialog.show(shareContent);
+    });
   };
 
   const onCook = () => {
@@ -127,7 +137,7 @@ const RecipeScreen = (props) => {
             height: 250,
           }}>
           <Image
-            source={{uri: `${baseUrl}` + item.image}}
+            source={{uri: item.image}}
             style={{
               ...StyleSheet.absoluteFillObject,
               width: '100%',
@@ -148,7 +158,7 @@ const RecipeScreen = (props) => {
           {item.video === null ? null : (
             <>
               <VideoPlayer
-                video={{uri: `${baseUrl}` + item.video}}
+                video={{uri: item.video}}
                 videoWidth={deviceWidth * 0.75}
                 videoHeight={windowHeight * 0.3}
                 autoplay={false}
@@ -300,7 +310,6 @@ const RecipeScreen = (props) => {
         await axios
           .post(`${baseUrl}/like/addlike`, data)
           .then(async (res) => {
-           
             await getLoadMore();
           })
           .catch((e) => {
@@ -519,7 +528,15 @@ const RecipeScreen = (props) => {
             </Tooltip>
           </Interaction>
           <Interaction>
-            <AntDesign name="sharealt" size={25} onPress={onShare} />
+            <AntDesign
+              name="sharealt"
+              size={25}
+              onPress={() =>
+                onShare({
+                  item: fetchdata?.data,
+                })
+              }
+            />
           </Interaction>
           <Interaction>
             <Entypo name="bowl" size={25} onPress={onCook} />

@@ -137,7 +137,7 @@ const CommentScreen = (props) => {
                   item?.userImage ===
                   'https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/default-avatar.png'
                     ? 'https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/default-avatar.png'
-                    : `${baseUrl}` + item?.userImage,
+                    : item?.userImage,
               }}
             />
           </TouchableOpacity>

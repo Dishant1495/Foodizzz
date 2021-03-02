@@ -91,7 +91,7 @@ const CategoriesScreen = (props) => {
                 <Image
                   style={{width: 160, height: 150, borderRadius: 10}}
                   source={{
-                    uri: `${baseUrl}` + item.documents[0].image,
+                    uri: item.documents[0].image,
                   }}
                 />
                 <Text style={styles.title}>{item.title}</Text>

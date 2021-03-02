@@ -21,7 +21,6 @@ import {Rating} from 'react-native-rating-element';
 import Tooltip from 'rn-tooltip';
 import {
   FlatList,
-  Share,
   View,
   Text,
   StyleSheet,
@@ -33,6 +32,9 @@ import {
   Alert,
   BackHandler,
   TouchableOpacity,
+  Platform,
+  // Share,
+  Linking,
 } from 'react-native';
 import Carousel, {Pagination} from 'react-native-snap-carousel';
 const {width: viewportWidth} = Dimensions.get('window');
@@ -43,6 +45,9 @@ import VideoPlayer from 'react-native-video-player';
 import {windowHeight} from '../utils/Dimentions';
 import HomeHeaderLeft from '../components/HomeHeaderLeft';
 import {baseUrl} from '../baseUrl';
+import {ShareDialog} from 'react-native-fbsdk';
+//import Share from 'react-native-share';
+
 const HomeScreen = (props) => {
   const [fetchdata, setfetchdata] = useState([]);
   const [activeSlide, setActiveIndex] = useState(0);
@@ -55,6 +60,9 @@ const HomeScreen = (props) => {
   const [total, setTotal] = useState();
   const [refreshing, setRefreshing] = useState(false);
   const [count, setCount] = useState(0);
+  const [postContent, setPostContent] = useState(
+    'Hello Guys, This is a testing of facebook share example',
+  );
   useEffect(() => {
     getData();
 
@@ -140,21 +148,29 @@ const HomeScreen = (props) => {
       });
   };
 
-  const onShare = async () => {
-    try {
-      const result = await Share.share({
-        message:
-          'React Native | A framework for building native apps using React',
-      });
-      if (result.action === Share.sharedAction) {
-        if (result.activityType) {
-        } else {
-        }
-      } else if (result.action === Share.dismissedAction) {
-      }
-    } catch (error) {
-      alert(error.message);
-    }
+  const onShare = async ({item}) => {
+    console.log('iteem', item.directions);
+    console.log('item.documents[0].image', item.documents[0].image);
+    // const shareOptions = {
+    //   message:  item?.directions,
+    //   urls: [item.documents[0].image],
+    // };
+    // try {
+    //   const ShareResponse = Share.open(shareOptions);
+    //   console.log('Share Response', JSON.stringify(ShareResponse));
+    // } catch (error) {
+    //   console.log('error ', error);
+    // }
+    const shareContent = {
+      contentType: 'link',
+     // contentDescription: `${item.directions}`,
+      contentTitle: `${item.title}`,
+      contentUrl: `${item.documents[0].image}`,
+      imageUrl: `${item.documents[0].image}`,
+    };
+    ShareDialog.canShow(shareContent).then((canShow) => {
+      canShow && ShareDialog.show(shareContent);
+    });
   };
 
   const onCook = () => {
@@ -214,10 +230,7 @@ const HomeScreen = (props) => {
     if (item.type === 'image') {
       return (
         <View style={styles.imageContainer}>
-          <Image
-            source={{uri: `${baseUrl}` + item.image}}
-            style={styles.image}
-          />
+          <Image source={{uri: item.image}} style={styles.image} />
         </View>
       );
     } else {
@@ -226,7 +239,7 @@ const HomeScreen = (props) => {
           {item.video === null ? null : (
             <>
               <VideoPlayer
-                video={{uri: `${baseUrl}` + item.video}}
+                video={{uri: item.video}}
                 videoWidth={deviceWidth * 0.75}
                 videoHeight={windowHeight * 0.3}
                 autoplay={false}
@@ -391,7 +404,7 @@ const HomeScreen = (props) => {
                       uri:
                         item?.userimage === null
                           ? 'https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/default-avatar.png'
-                          : `${baseUrl}` + item?.userimage,
+                          : item?.userimage,
                     }}
                   />
                   <UserInfoText>
@@ -621,7 +634,15 @@ const HomeScreen = (props) => {
                     </Tooltip>
                   </Interaction>
                   <Interaction>
-                    <AntDesign name="sharealt" size={25} onPress={onShare} />
+                    <AntDesign
+                      name="sharealt"
+                      size={25}
+                      onPress={() =>
+                        onShare({
+                          item: item,
+                        })
+                      }
+                    />
                   </Interaction>
                   <Interaction>
                     <Entypo name="bowl" size={25} onPress={onCook} />
