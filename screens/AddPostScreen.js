@@ -209,7 +209,6 @@ const AddPostScreen = (props) => {
             config,
           })
           .then((res) => {
-            console.log('res');
             Toast.show('Recipe Added Successfully', Toast.LONG);
             props.navigation.push('Feed');
             setCount(0);

@@ -149,21 +149,9 @@ const HomeScreen = (props) => {
   };
 
   const onShare = async ({item}) => {
-    console.log('iteem', item.directions);
-    console.log('item.documents[0].image', item.documents[0].image);
-    // const shareOptions = {
-    //   message:  item?.directions,
-    //   urls: [item.documents[0].image],
-    // };
-    // try {
-    //   const ShareResponse = Share.open(shareOptions);
-    //   console.log('Share Response', JSON.stringify(ShareResponse));
-    // } catch (error) {
-    //   console.log('error ', error);
-    // }
     const shareContent = {
       contentType: 'link',
-     // contentDescription: `${item.directions}`,
+      // contentDescription: `${item.directions}`,
       contentTitle: `${item.title}`,
       contentUrl: `${item.documents[0].image}`,
       imageUrl: `${item.documents[0].image}`,

@@ -38,7 +38,6 @@ const Profile = (props) => {
       await axios
         .get(`${baseUrl}/user/userGetById/${UserId}`)
         .then((userDetails) => {
-          console.log(userDetails?.data?.data?.userimage);
           setFileImage(userDetails?.data?.data?.userimage);
           setFirstName(userDetails?.data?.data?.Firstname);
           setEmail(userDetails?.data?.data?.Email);

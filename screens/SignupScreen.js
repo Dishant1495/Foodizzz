@@ -73,7 +73,6 @@ const SignupScreen = ({navigation}) => {
             name: fileImage?.fileName,
           });
       setLoading(true);
-      console.log(formdata)
       try {
         axios
           .post(`${baseUrl}/user/register`, formdata, {
