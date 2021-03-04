@@ -207,6 +207,8 @@ const HomeScreen = (props) => {
     }
   };
 
+  //render Image
+  
   const renderImage = ({item}) => {
     if (item.type === 'image') {
       return (
