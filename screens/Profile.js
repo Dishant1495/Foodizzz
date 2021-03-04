@@ -84,6 +84,7 @@ const Profile = (props) => {
       setLoading(true);
       const UserId = await AsyncStorage.getItem('UserId');
       setCount((prevCount) => prevCount + 1);
+      console.log("org")
       try {
         axios
           .put(`${baseUrl}/user/updateprofile/${UserId}`, formdata, {

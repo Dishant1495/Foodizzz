@@ -154,10 +154,7 @@ const HomeScreen = (props) => {
     });
   };
 
-  const onCook = () => {
-    alert('Yummy');
-  };
-
+ 
   const deleteLike = async (recipeId) => {
     const UserId = await AsyncStorage.getItem('UserId');
     await axios
@@ -208,7 +205,7 @@ const HomeScreen = (props) => {
   };
 
   //render Image
-  
+
   const renderImage = ({item}) => {
     if (item.type === 'image') {
       return (
@@ -374,9 +371,9 @@ const HomeScreen = (props) => {
     });
   };
 
-  // const onPressRecipe = (item) => {
-  //   props.navigation.navigate('RecipeScreen', {item});
-  // };
+  const onPressRecipe = (item) => {
+    props.navigation.navigate('RecipeScreen', {item});
+  };
 
   return (
     <>
@@ -436,9 +433,6 @@ const HomeScreen = (props) => {
                   </Usertime>
                 </UserInfo>
 
-                {/* <TouchableOpacity
-                  underlayColor="rgba(73,182,77,0.9)"
-                  onPress={() => onPressRecipe(item._id)}> */}
                 <Carousel
                   data={item.documents}
                   renderItem={renderImage}
@@ -478,7 +472,7 @@ const HomeScreen = (props) => {
                   inactiveDotOpacity={0.4}
                   inactiveDotScale={0.6}
                 />
-                {/* </TouchableOpacity> */}
+
                 <Text numberOfLines={4} style={styles.directionsStyle}>
                   {item.directions}
                 </Text>
@@ -652,7 +646,11 @@ const HomeScreen = (props) => {
                     />
                   </Interaction>
                   <Interaction>
-                    <Entypo name="bowl" size={25} onPress={onCook} />
+                    <TouchableOpacity
+                      underlayColor="rgba(73,182,77,0.9)"
+                      onPress={() => onPressRecipe(item._id)}>
+                      <Entypo name="bowl" size={25} />
+                    </TouchableOpacity>
                   </Interaction>
                 </InteractionWrapper>
               </Card>
