@@ -1,12 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  StatusBar,
-  Image,
-  Alert,
-} from 'react-native';
+import {View, TouchableOpacity, StatusBar, Image, Alert} from 'react-native';
 import FormInput from '../components/FormInput';
 import FormButton from '../components/FormButton';
 import styles from '../styles/Signup';
@@ -24,13 +17,13 @@ const config = {headers: {'Content-Type': 'multipart/form-data'}};
 
 const Profile = (props) => {
   const [email, setEmail] = useState();
-  const [password, setPassword] = useState();
-  const [confirmPassword, setConfirmPassword] = useState();
   const [firstName, setFirstName] = useState();
   const [city, setcity] = useState();
   const [loading, setLoading] = useState(false);
   const [fileImage, setFileImage] = useState(null);
+  const [fileImageData, setfileImageData] = useState(null);
   const [netInfo, setNetInfo] = useState('');
+  const [count, setCount] = useState(0);
   useEffect(() => {
     getNetInfo();
     const fetchData = async () => {
@@ -73,44 +66,52 @@ const Profile = (props) => {
     });
   };
 
-  const Submit = () => {
-    // if (password !== confirmPassword) {
-    //   Toast.show('Password does not match');
-    // } else {
-    //   const formdata = new FormData();
-    //   formdata.append('Email', email);
-    //   formdata.append('Password', password);
-    //   formdata.append('City', city);
-    //   formdata.append('Firstname', firstName);
-    //   fileImage === null
-    //     ? null
-    //     : formdata.append('userimage', {
-    //         uri: fileImage?.uri,
-    //         type: fileImage?.type,
-    //         name: fileImage?.fileName,
-    //       });
-    //   setLoading(true);
-    //   try {
-    //     axios
-    //       .post(`${baseUrl}/user/register`, formdata, {
-    //         config,
-    //       })
-    //       .then(async (response) => {
-    //         setLoading(false);
-    //         if (response.data.status == 'success') {
-    //           Toast.show('Signup Succesfully', Toast.LONG);
-    //           navigation.navigate('Login');
-    //         } else {
-    //           Toast.show(response.data.error, Toast.LONG);
-    //         }
-    //       })
-    //       .catch((e) => {
-    //         setLoading(false);
-    //       });
-    //   } catch (error) {
-    //     setLoading(false);
-    //   }
-    // }
+  const Submit = async () => {
+    console.log('fileImageData', fileImageData);
+    if (count === 0) {
+      const formdata = new FormData();
+      formdata.append('Email', email);
+      formdata.append('City', city);
+      formdata.append('Firstname', firstName);
+      fileImage === null
+        ? null
+        : formdata.append('userimage', {
+            uri: fileImage,
+            type: fileImageData?.type,
+            name: fileImageData?.fileName,
+          });
+      console.log('formData', formdata);
+      setLoading(true);
+      const UserId = await AsyncStorage.getItem('UserId');
+      setCount((prevCount) => prevCount + 1);
+      try {
+        axios
+          .put(`${baseUrl}/user/updateprofile/${UserId}`, formdata, {
+            config,
+          })
+          .then(async (response) => {
+            console.log('profile response', response);
+            setLoading(false);
+            setCount(0);
+            if (response.data.status == 'success') {
+              Toast.show('Profile Update Succesfully', Toast.LONG);
+            } else {
+              Toast.show(response.data.error, Toast.LONG);
+            }
+          })
+          .catch((e) => {
+            console.log('e', e);
+            // setCount(0);
+            // Toast.show('Email is already is Exists');
+            setLoading(false);
+          });
+      } catch (error) {
+        console.log('AAAA', aa);
+        setLoading(false);
+      }
+    } else {
+      console.log('eee');
+    }
   };
 
   const chooseImage = () => {
@@ -131,7 +132,8 @@ const Profile = (props) => {
         console.log('User tapped custom button: ', response.customButton);
         alert(response.customButton);
       } else {
-        setFileImage(response);
+        setfileImageData(response);
+        setFileImage(response.uri);
       }
     });
   };
@@ -146,17 +148,23 @@ const Profile = (props) => {
             marginTop: 35,
             marginBottom: 20,
           }}>
-          <Image
-            style={{height: 100, width: 100, borderRadius: 50}}
-            source={
-              fileImage === null
-                ? {
-                    uri:
-                      'https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/default-avatar.png',
-                  }
-                : {uri: fileImage}
-            }
-          />
+          {fileImage === 'null' ? (
+            <Image
+              style={{height: 100, width: 100, borderRadius: 50}}
+              source={{
+                uri:
+                  'https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/default-avatar.png',
+              }}
+            />
+          ) : (
+            <Image
+              style={{height: 100, width: 100, borderRadius: 50}}
+              source={{
+                uri: fileImage,
+              }}
+            />
+          )}
+
           <TouchableOpacity
             style={{
               height: 30,

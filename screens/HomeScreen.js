@@ -32,9 +32,6 @@ import {
   Alert,
   BackHandler,
   TouchableOpacity,
-  Platform,
-  // Share,
-  Linking,
 } from 'react-native';
 import Carousel, {Pagination} from 'react-native-snap-carousel';
 const {width: viewportWidth} = Dimensions.get('window');
@@ -46,7 +43,6 @@ import {windowHeight} from '../utils/Dimentions';
 import HomeHeaderLeft from '../components/HomeHeaderLeft';
 import {baseUrl} from '../baseUrl';
 import {ShareDialog} from 'react-native-fbsdk';
-//import Share from 'react-native-share';
 
 const HomeScreen = (props) => {
   const [fetchdata, setfetchdata] = useState([]);
@@ -60,9 +56,6 @@ const HomeScreen = (props) => {
   const [total, setTotal] = useState();
   const [refreshing, setRefreshing] = useState(false);
   const [count, setCount] = useState(0);
-  const [postContent, setPostContent] = useState(
-    'Hello Guys, This is a testing of facebook share example',
-  );
   useEffect(() => {
     getData();
 
@@ -119,6 +112,7 @@ const HomeScreen = (props) => {
       .then(async (responseJson) => {
         //Successful response
         setPage(page);
+        setCount(0);
         //Increasing the page for the next API call
         setfetchdata(responseJson.data.data);
         setLoading(false);
@@ -133,13 +127,13 @@ const HomeScreen = (props) => {
     const userId = await AsyncStorage.getItem('UserId');
     //Service to get the data from the server to render
     await axios
-      .get(`${baseUrl}/recipes/Feed/${userId}?page=` + page)
+      .get(`${baseUrl}/recipes/Feed/${userId}?page=` + 1)
       //Sending the currect page  with get request
       .then((responseJson) => {
         //Successful response
-        setPage(page + 1);
+        setPage(page);
         //Increasing the page for the next API call
-        setfetchdata([...fetchdata, ...responseJson.data.data]);
+        setfetchdata(responseJson.data.data);
         setRefreshing(false);
       })
       .catch((error) => {
@@ -151,7 +145,6 @@ const HomeScreen = (props) => {
   const onShare = async ({item}) => {
     const shareContent = {
       contentType: 'link',
-      // contentDescription: `${item.directions}`,
       contentTitle: `${item.title}`,
       contentUrl: `${item.documents[0].image}`,
       imageUrl: `${item.documents[0].image}`,
@@ -170,7 +163,6 @@ const HomeScreen = (props) => {
     await axios
       .delete(`${baseUrl}/like/deletelike/${UserId}/${recipeId.recipeId}`)
       .then(async (res) => {
-        setCount(0);
         await getLoadMore();
       })
       .catch((e) => {
@@ -179,6 +171,7 @@ const HomeScreen = (props) => {
   };
   const addLike = async (recipeId) => {
     setCount((prevCount) => prevCount + 1);
+    console.log('count', count);
     if (count === 0) {
       const UserId = await AsyncStorage.getItem('UserId');
       if (UserId) {
@@ -217,13 +210,32 @@ const HomeScreen = (props) => {
   const renderImage = ({item}) => {
     if (item.type === 'image') {
       return (
-        <View style={styles.imageContainer}>
-          <Image source={{uri: item.image}} style={styles.image} />
+        <View
+          style={{
+            flex: 1,
+            justifyContent: 'center',
+            width: viewportWidth,
+            height: 250,
+          }}>
+          <Image
+            source={{uri: item.image}}
+            style={{
+              ...StyleSheet.absoluteFillObject,
+              width: '100%',
+              height: '100%',
+            }}
+          />
         </View>
       );
     } else {
       return (
-        <View style={styles.imageContainer44}>
+        <View
+          style={{
+            flex: 1,
+            justifyContent: 'center',
+            width: viewportWidth,
+            height: 250,
+          }}>
           {item.video === null ? null : (
             <>
               <VideoPlayer
@@ -232,6 +244,11 @@ const HomeScreen = (props) => {
                 videoHeight={windowHeight * 0.3}
                 autoplay={false}
                 resizeMode="cover"
+                customStyles={{
+                  wrapper: {
+                    marginRight: 20,
+                  },
+                }}
                 thumbnail={{
                   uri:
                     'https://cdn.theculturetrip.com/wp-content/uploads/2019/05/ia_0488_indian-cookbooks_jw_header-1024x576.jpg',
@@ -390,7 +407,7 @@ const HomeScreen = (props) => {
                   <UserImg
                     source={{
                       uri:
-                        item?.userimage === null
+                        item?.userimage === 'null'
                           ? 'https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/default-avatar.png'
                           : item?.userimage,
                     }}

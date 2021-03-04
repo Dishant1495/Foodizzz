@@ -126,6 +126,7 @@ const CommentScreen = (props) => {
   };
 
   const renderComment = ({item}) => {
+    console.log('item', item);
     return (
       <ScrollView>
         <View style={styles.container}>
@@ -133,11 +134,7 @@ const CommentScreen = (props) => {
             <Image
               style={styles.image}
               source={{
-                uri:
-                  item?.userImage ===
-                  'https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/default-avatar.png'
-                    ? 'https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/default-avatar.png'
-                    : item?.userImage,
+                uri: item.userImage,
               }}
             />
           </TouchableOpacity>

@@ -129,7 +129,7 @@ const RecipeScreen = (props) => {
             style={{
               ...StyleSheet.absoluteFillObject,
               width: '100%',
-              height: 250,
+              height: '100%',
             }}
           />
         </View>
@@ -279,7 +279,6 @@ const RecipeScreen = (props) => {
     await axios
       .delete(`${baseUrl}/like/deletelike/${UserId}/${recipeId.recipeId}`)
       .then(async (res) => {
-        setCount(0);
         await getLoadMore();
       })
       .catch((e) => {
@@ -334,6 +333,7 @@ const RecipeScreen = (props) => {
           await axios
             .get(`${baseUrl}/user/userGetById/${UserId}`)
             .then((userDetails) => {
+              setCount(0);
               setUserData(userDetails);
             })
             .catch((e) => {

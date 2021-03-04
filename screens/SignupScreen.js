@@ -84,12 +84,12 @@ const SignupScreen = ({navigation}) => {
               Toast.show('Signup Succesfully', Toast.LONG);
               navigation.navigate('Login');
             } else {
-              console.log(response.data.error)
+              console.log(response.data.error);
               Toast.show(response.data.error, Toast.LONG);
             }
           })
           .catch((e) => {
-            console.log('unable of failed user')
+            console.log('unable of failed user');
             setLoading(false);
           });
       } catch (error) {
