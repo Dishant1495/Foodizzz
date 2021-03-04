@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import {View} from 'react-native';
 import {createStackNavigator} from '@react-navigation/stack';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
@@ -13,7 +13,7 @@ import RecipeScreen from '../screens/RecipeScreen/RecipeScreen';
 import SearchScreen from '../screens/SearchScreen';
 import CommentScreen from '../screens/CommentScreen';
 import Profile from '../screens/Profile';
-
+import AsyncStorage from '@react-native-community/async-storage';
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
@@ -274,57 +274,108 @@ const SearchStack = () => (
 );
 
 const AppStack = () => {
+  const [userId, setUserId] = useState();
+  useEffect(() => {
+    const fetchUserData = async () => {
+      const UserId = await AsyncStorage.getItem('UserId');
+      setUserId(UserId);
+    };
+    console.log('userId', userId);
+    fetchUserData();
+  }, []);
+  console.log('userId', userId);
   return (
     <Tab.Navigator
       tabBarOptions={{
         activeTintColor: 'orange',
       }}>
-      <Tab.Screen
-        name="Home"
-        component={FeedStack}
-        options={{
-          tabBarLabel: 'Home',
-          tabBarIcon: ({color, size}) => (
-            <MaterialCommunityIcons
-              name="home-outline"
-              color={color}
-              size={size}
-            />
-          ),
-        }}
-      />
-      <Tab.Screen
-        name="Recipe"
-        component={CategoryStack}
-        options={{
-          tabBarLabel: 'Browse',
-          tabBarIcon: ({color, size}) => (
-            <Ionicons name="pencil-outline" color={color} size={size} />
-          ),
-        }}
-      />
+      {userId === null ? (
+        <>
+          <Tab.Screen
+            name="Home"
+            component={FeedStack}
+            options={{
+              tabBarLabel: 'Home',
+              tabBarIcon: ({color, size}) => (
+                <MaterialCommunityIcons
+                  name="home-outline"
+                  color={color}
+                  size={size}
+                />
+              ),
+            }}
+          />
+          <Tab.Screen
+            name="Recipe"
+            component={CategoryStack}
+            options={{
+              tabBarLabel: 'Browse',
+              tabBarIcon: ({color, size}) => (
+                <Ionicons name="pencil-outline" color={color} size={size} />
+              ),
+            }}
+          />
 
-      <Tab.Screen
-        name="Search"
-        component={SearchStack}
-        options={{
-          tabBarLabel: 'Search',
-          tabBarIcon: ({color, size}) => (
-            <Ionicons name="search" color={color} size={size} />
-          ),
-        }}
-      />
+          <Tab.Screen
+            name="Search"
+            component={SearchStack}
+            options={{
+              tabBarLabel: 'Search',
+              tabBarIcon: ({color, size}) => (
+                <Ionicons name="search" color={color} size={size} />
+              ),
+            }}
+          />
+        </>
+      ) : (
+        <>
+          <Tab.Screen
+            name="Home"
+            component={FeedStack}
+            options={{
+              tabBarLabel: 'Home',
+              tabBarIcon: ({color, size}) => (
+                <MaterialCommunityIcons
+                  name="home-outline"
+                  color={color}
+                  size={size}
+                />
+              ),
+            }}
+          />
+          <Tab.Screen
+            name="Recipe"
+            component={CategoryStack}
+            options={{
+              tabBarLabel: 'Browse',
+              tabBarIcon: ({color, size}) => (
+                <Ionicons name="pencil-outline" color={color} size={size} />
+              ),
+            }}
+          />
 
-      <Tab.Screen
-        name="Profile"
-        component={ProfileStack}
-        options={{
-          tabBarLabel: 'Profile',
-          tabBarIcon: ({color, size}) => (
-            <AntDesign name="user" color={color} size={size} />
-          ),
-        }}
-      />
+          <Tab.Screen
+            name="Search"
+            component={SearchStack}
+            options={{
+              tabBarLabel: 'Search',
+              tabBarIcon: ({color, size}) => (
+                <Ionicons name="search" color={color} size={size} />
+              ),
+            }}
+          />
+          <Tab.Screen
+            name="Profile"
+            component={ProfileStack}
+            options={{
+              tabBarLabel: 'Profile',
+              tabBarIcon: ({color, size}) => (
+                <AntDesign name="user" color={color} size={size} />
+              ),
+            }}
+          />
+        </>
+      )}
     </Tab.Navigator>
   );
 };

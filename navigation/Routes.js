@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {View} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
@@ -11,6 +11,7 @@ import ForgotPasswordScreen from '../screens/ForgotPasswordScreen';
 import CheckAuthScreen from '../screens/CheckAuthScreen';
 import ConfirmPasswordScreen from '../screens/ConfirmPasswordScreen';
 import OtpScreen from '../screens/OtpScreen';
+
 const Stack = createStackNavigator();
 const Auth = () => {
   return (
@@ -120,6 +121,7 @@ const Auth = () => {
 };
 
 const Routes = () => {
+ 
   return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Auth">

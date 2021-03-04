@@ -304,7 +304,6 @@ const AddPostScreen = (props) => {
 
                           <AntDesign
                             style={{
-                              color: 'orange',
                               top: 10,
                               right: 50,
                               color: 'black',
