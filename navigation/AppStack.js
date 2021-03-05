@@ -331,7 +331,7 @@ const AppStack = () => {
         <>
           <Tab.Screen
             name="Home"
-            component={FeedStack}
+            component={SearchStack}
             options={{
               tabBarLabel: 'Home',
               tabBarIcon: ({color, size}) => (
