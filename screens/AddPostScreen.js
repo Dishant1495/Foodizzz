@@ -143,6 +143,8 @@ const AddPostScreen = (props) => {
       }
     });
   };
+
+  //
   const updateTagState = (e) => {
     setTags(e);
   };
@@ -152,9 +154,9 @@ const AddPostScreen = (props) => {
       if (labels === null) {
         Toast.show('Title is required', Toast.LONG);
       } else if (about === null) {
-        Toast.show('Ingredients is required', Toast.LONG);
-      } else if (description === null) {
         Toast.show('Directions is required', Toast.LONG);
+      } else if (description === null) {
+        Toast.show('Ingredients is required', Toast.LONG);
       } else if (tags.tagsArray.length === 0) {
         Toast.show('Tags is required', Toast.LONG);
       } else if (image.length === 0) {
@@ -229,7 +231,7 @@ const AddPostScreen = (props) => {
           })
           .catch((e) => {
             setstate(false);
-            Toast.show('Something went long', Toast.LONG);
+            Toast.show('Unable to add recipe', Toast.LONG);
           });
       }
     } else {
