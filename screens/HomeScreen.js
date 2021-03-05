@@ -131,7 +131,7 @@ const HomeScreen = (props) => {
       //Sending the currect page  with get request
       .then((responseJson) => {
         //Successful response
-        setPage(page);
+        setPage(2);
         //Increasing the page for the next API call
         setfetchdata(responseJson.data.data);
         setRefreshing(false);
