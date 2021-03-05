@@ -280,10 +280,8 @@ const AppStack = () => {
       const UserId = await AsyncStorage.getItem('UserId');
       setUserId(UserId);
     };
-    console.log('userId', userId);
     fetchUserData();
   }, []);
-  console.log('userId', userId);
   return (
     <Tab.Navigator
       tabBarOptions={{

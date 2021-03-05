@@ -168,7 +168,6 @@ const HomeScreen = (props) => {
   };
   const addLike = async (recipeId) => {
     setCount((prevCount) => prevCount + 1);
-    console.log('count', count);
     if (count === 0) {
       const UserId = await AsyncStorage.getItem('UserId');
       if (UserId) {

@@ -56,9 +56,8 @@ const SearchScreen = (props) => {
         axios.get(`${baseUrl}/recipes/searchkeyword/${text}`),
       ])
       .then((responseArr) => {
-        console.log('responseArr', responseArr);
-        var array1 = responseArr[0].data.data;
-        var array2 = responseArr[1].data.data;
+        var array1 = responseArr[0]?.data?.data;
+        var array2 = responseArr[1]?.data?.data;
         const res = array1.filter((x) => !array2.includes(x));
         setData(res);
       });

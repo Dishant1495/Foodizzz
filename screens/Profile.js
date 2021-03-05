@@ -67,7 +67,6 @@ const Profile = (props) => {
   };
 
   const Submit = async () => {
-    console.log('fileImageData', fileImageData);
     if (count === 0) {
       const formdata = new FormData();
       formdata.append('Email', email);
@@ -80,18 +79,16 @@ const Profile = (props) => {
             type: fileImageData?.type,
             name: fileImageData?.fileName,
           });
-      console.log('formData', formdata);
+
       setLoading(true);
       const UserId = await AsyncStorage.getItem('UserId');
       setCount((prevCount) => prevCount + 1);
-      console.log("org")
       try {
         axios
           .put(`${baseUrl}/user/updateprofile/${UserId}`, formdata, {
             config,
           })
           .then(async (response) => {
-            console.log('profile response', response);
             setLoading(false);
             setCount(0);
             if (response.data.status == 'success') {
@@ -107,7 +104,6 @@ const Profile = (props) => {
             setLoading(false);
           });
       } catch (error) {
-        console.log('AAAA', aa);
         setLoading(false);
       }
     } else {
