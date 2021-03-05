@@ -20,8 +20,6 @@ const SearchScreen = (props) => {
   const [data, setData] = useState([]);
   const [value, setvalue] = useState();
   const [netInfo, setNetInfo] = useState('');
-  const [searchtitle, setTitle] = useState([]);
-  const [serachkeyword, setsearchKeyword] = useState([]);
   useEffect(() => {
     getNetInfo();
     // Subscribe to network state updates
@@ -60,37 +58,9 @@ const SearchScreen = (props) => {
       .then((responseArr) => {
         console.log('responseArr', responseArr);
         var array1 = responseArr[0].data.data;
-        console.log(array1);
         var array2 = responseArr[1].data.data;
-        console.log(array2);
-        const interest = [...array1, ...array2];
-        console.log('interest', interest);
-        let filtered = interest.filter((arr) =>
-          arr.some((a) => a._id === a_id),
-        );
-
-        console.log(filtered);
-        setData(interest);
-        // var result = array1
-        //   .filter(function (o1) {
-        //     console.log('o1', o1);
-        //     // filter out (!) items in result2
-        //     return !array2.some(function (o2) {
-        //       console.log('02', o2);
-        //       return o1._id === o2._id; // assumes unique id
-        //     });
-        //   })
-        //   .map(function (o) {
-        //     return o;
-        //     // use reduce to make objects with only the required properties
-        //     // and map to apply this to the filtered array as a whole
-        //     // return props.reduce(function (newo, name) {
-        //     //   newo[name] = o[name];
-        //     //   return newo;
-        //     // }, {});
-        //   });
-        // console.log('result', result);
-        // setData(responseArr[0].data.data);
+        const res = array1.filter((x) => !array2.includes(x));
+        setData(res);
       });
   };
 
