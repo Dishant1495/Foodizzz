@@ -153,12 +153,12 @@ const AddPostScreen = (props) => {
     if (count === 0) {
       if (labels === null) {
         Toast.show('Title is required', Toast.LONG);
-      } else if (about === null) {
-        Toast.show('Directions is required', Toast.LONG);
       } else if (description === null) {
         Toast.show('Ingredients is required', Toast.LONG);
+      } else if (about === null) {
+        Toast.show('Directions is required', Toast.LONG);
       } else if (tags.tagsArray.length === 0) {
-        Toast.show('Tags is required', Toast.LONG);
+        Toast.show('Keywords is required', Toast.LONG);
       } else if (image.length === 0) {
         Toast.show('Please Upload Image', Toast.LONG), setImage([]);
       } else if (isSelected && video == null) {
@@ -231,6 +231,14 @@ const AddPostScreen = (props) => {
           })
           .catch((e) => {
             setstate(false);
+            setlabels(null),
+              setImage([]),
+              setRadioButton(categoriesType),
+              setTags({tag: '', tagsArray: []}),
+              setabout(null),
+              setvideo(null),
+              setSelection(false),
+              setdescription(null);
             Toast.show('Unable to add recipe', Toast.LONG);
           });
       }
