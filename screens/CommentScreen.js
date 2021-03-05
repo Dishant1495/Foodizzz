@@ -97,7 +97,6 @@ const CommentScreen = (props) => {
         axios
           .post(`${baseUrl}/comments/addComment `, data)
           .then(async (res) => {
-            Toast.show('User add comment successfully', Toast.LONG);
             setText('');
             comments.push(data);
             await onRefresh();

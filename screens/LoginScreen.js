@@ -54,27 +54,25 @@ const LoginScreen = ({navigation}) => {
     };
     setLoading(true);
     try {
-      axios
-        .post(`${baseUrl}/user/login`, userData)
-        .then(async (response) => {
-          setLoading(false);
+      axios.post(`${baseUrl}/user/login`, userData).then(async (response) => {
+        console.log('response', response);
+        setLoading(false);
+        if (response.data.status == 'Fail') {
+          Toast.show(response.data.message, Toast.LONG);
+        } else if (response.data.error) {
+          Toast.show(response.data.error, Toast.LONG);
+        } else {
           await AsyncStorage.setItem('user', JSON.stringify(response.data));
           const UserId = response.data.UserId;
           await AsyncStorage.setItem('UserId', UserId);
-          if (response.data.status == 'success') {
-            Toast.show('Login Succesfully', Toast.LONG);
-            navigation.navigate('AppStack');
-            setEmail('');
-            setPassword('');
-          } else {
-            Toast.show(response.data.error, Toast.LONG);
-          }
-        })
-        .catch((e) => {
-          setLoading(false);
-          Toast.show('Unable to Failed User', Toast.LONG);
-        });
+          Toast.show('Login Succesfully', Toast.LONG);
+          navigation.navigate('AppStack');
+          setEmail('');
+          setPassword('');
+        }
+      });
     } catch (error) {
+      console.log('error', error);
       setLoading(false);
     }
   };
