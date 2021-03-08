@@ -15,15 +15,14 @@ import AsyncStorage from '@react-native-community/async-storage';
 
 const config = {headers: {'Content-Type': 'multipart/form-data'}};
 
-const Profile = (props) => {
+const EditProfile = (props) => {
   const [email, setEmail] = useState();
   const [firstName, setFirstName] = useState();
   const [city, setcity] = useState();
   const [loading, setLoading] = useState(false);
   const [fileImage, setFileImage] = useState(null);
-  const [fileImageData, setfileImageData] = useState(null);
   const [netInfo, setNetInfo] = useState('');
-  const [count, setCount] = useState(0);
+
   useEffect(() => {
     getNetInfo();
     const fetchData = async () => {
@@ -67,7 +66,7 @@ const Profile = (props) => {
   };
 
   const Submit = async () => {
-    if (count === 0) {
+    try {
       const formdata = new FormData();
       formdata.append('Email', email);
       formdata.append('City', city);
@@ -75,39 +74,32 @@ const Profile = (props) => {
       fileImage === null
         ? null
         : formdata.append('userimage', {
-            uri: fileImage,
-            type: fileImageData?.type,
-            name: fileImageData?.fileName,
+            uri: fileImage.uri,
+            type: fileImage.type,
+            name: fileImage.fileName,
           });
-
       setLoading(true);
       const UserId = await AsyncStorage.getItem('UserId');
-      setCount((prevCount) => prevCount + 1);
-      try {
-        axios
-          .put(`${baseUrl}/user/updateprofile/${UserId}`, formdata, {
-            config,
-          })
-          .then(async (response) => {
-            setLoading(false);
-            setCount(0);
-            if (response.data.status == 'success') {
-              Toast.show('Profile Update Succesfully', Toast.LONG);
-            } else {
-              Toast.show(response.data.error, Toast.LONG);
-            }
-          })
-          .catch((e) => {
-            console.log('e', e);
-            // setCount(0);
-            // Toast.show('Email is already is Exists');
-            setLoading(false);
-          });
-      } catch (error) {
-        setLoading(false);
-      }
-    } else {
-      console.log('eee');
+      console.log('formdata', formdata);
+      axios
+        .put(`${baseUrl}/user/updateprofile/${UserId}`, formdata, {
+          config,
+        })
+        .then(async (response) => {
+          setLoading(false);
+          if (response.data.status == 'success') {
+            Toast.show('Profile Update Succesfully', Toast.LONG);
+            props.navigation.push('Profile');
+          } else {
+            Toast.show(response.data.error, Toast.LONG);
+          }
+        })
+        .catch((e) => {
+          console.log('e', e);
+          setLoading(false);
+        });
+    } catch (e) {
+      console.log('e', e);
     }
   };
 
@@ -129,8 +121,7 @@ const Profile = (props) => {
         console.log('User tapped custom button: ', response.customButton);
         alert(response.customButton);
       } else {
-        setfileImageData(response);
-        setFileImage(response.uri);
+        setFileImage(response);
       }
     });
   };
@@ -145,7 +136,7 @@ const Profile = (props) => {
             marginTop: 35,
             marginBottom: 20,
           }}>
-          {fileImage === 'null' ? (
+          {fileImage === null ? (
             <Image
               style={{height: 100, width: 100, borderRadius: 50}}
               source={{
@@ -156,9 +147,7 @@ const Profile = (props) => {
           ) : (
             <Image
               style={{height: 100, width: 100, borderRadius: 50}}
-              source={{
-                uri: fileImage,
-              }}
+              source={fileImage}
             />
           )}
 
@@ -212,4 +201,4 @@ const Profile = (props) => {
   );
 };
 
-export default Profile;
+export default EditProfile;

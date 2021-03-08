@@ -12,8 +12,9 @@ import allsearch from '../screens/allsearch';
 import RecipeScreen from '../screens/RecipeScreen/RecipeScreen';
 import SearchScreen from '../screens/SearchScreen';
 import CommentScreen from '../screens/CommentScreen';
-import Profile from '../screens/Profile';
+import EditProfile from '../screens/EditProfile';
 import AsyncStorage from '@react-native-community/async-storage';
+import ProfileScreen from '../screens/ProfileScreen';
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
@@ -109,18 +110,40 @@ const ProfileStack = () => (
   <Stack.Navigator>
     <Stack.Screen
       name="Profile"
-      component={Profile}
+      component={ProfileScreen}
       options={{
         headerTitleStyle: {
           color: 'white',
           fontFamily: 'Kufam',
           fontSize: 18,
-          marginLeft: 30,
+          marginLeft: 15,
         },
         headerStyle: {
           backgroundColor: 'orange',
         },
         headerLeft: () => null,
+        headerRight: () => <View style={{marginRight: 20}}></View>,
+      }}
+    />
+    <Stack.Screen
+      name="Edit Profile"
+      component={EditProfile}
+      options={{
+        headerTitleStyle: {
+          color: 'white',
+          fontFamily: 'Kufam',
+          fontSize: 18,
+          marginLeft: 0,
+        },
+        headerStyle: {
+          backgroundColor: 'orange',
+        },
+        headerBackTitleVisible: false,
+        headerBackImage: () => (
+          <View style={{}}>
+            <Ionicons name="arrow-back" size={25} color="white" />
+          </View>
+        ),
         headerRight: () => <View style={{marginRight: 10}}></View>,
       }}
     />
@@ -329,7 +352,7 @@ const AppStack = () => {
         <>
           <Tab.Screen
             name="Home"
-            component={FeedStack}
+            component={ProfileStack}
             options={{
               tabBarLabel: 'Home',
               tabBarIcon: ({color, size}) => (

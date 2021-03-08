@@ -1,24 +1,4 @@
 import React, {useState, useEffect} from 'react';
-import axios from 'axios';
-import Toast from 'react-native-simple-toast';
-import Ionicons from 'react-native-vector-icons/Ionicons';
-import AntDesign from 'react-native-vector-icons/AntDesign';
-import Entypo from 'react-native-vector-icons/Entypo';
-import {
-  Card,
-  UserInfo,
-  UserImg,
-  UserName,
-  Usertime,
-  UserInfoText,
-  PostText,
-  InteractionWrapper,
-  Interaction,
-  PostTiime,
-  Container
-} from '../styles/FeedStyles';
-import {Rating} from 'react-native-rating-element';
-import Tooltip from 'rn-tooltip';
 import {
   FlatList,
   View,
@@ -33,112 +13,114 @@ import {
   BackHandler,
   TouchableOpacity,
 } from 'react-native';
+import styles from '../styles/Profile';
+import NetInfo from '@react-native-community/netinfo';
+import AsyncStorage from '@react-native-community/async-storage';
+import {baseUrl} from '../baseUrl';
+import axios from 'axios';
+import {
+  Card,
+  UserInfo,
+  UserImg,
+  UserName,
+  Usertime,
+  UserInfoText,
+  PostText,
+  InteractionWrapper,
+  Interaction,
+  PostTiime,
+  Container,
+} from '../styles/FeedStyles';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import AntDesign from 'react-native-vector-icons/AntDesign';
+import Entypo from 'react-native-vector-icons/Entypo';
+import {Rating} from 'react-native-rating-element';
+import Tooltip from 'rn-tooltip';
 import Carousel, {Pagination} from 'react-native-snap-carousel';
 const {width: viewportWidth} = Dimensions.get('window');
 const deviceWidth = Dimensions.get('window').width;
 import TimeAgo from 'react-native-timeago';
-import AsyncStorage from '@react-native-community/async-storage';
 import VideoPlayer from 'react-native-video-player';
 import {windowHeight} from '../utils/Dimentions';
-import HomeHeaderLeft from '../components/HomeHeaderLeft';
-import {baseUrl} from '../baseUrl';
 import {ShareDialog} from 'react-native-fbsdk';
 
-const HomeScreen = (props) => {
-  const [fetchdata, setfetchdata] = useState([]);
-  const [activeSlide, setActiveIndex] = useState(0);
-  const [loading, setLoading] = useState(false);
-  const [page, setPage] = useState(1);
+const ProfileScreen = (props) => {
+  const [netInfo, setNetInfo] = useState('');
+  const [email, setEmail] = useState();
+  const [firstName, setFirstName] = useState();
+  const [city, setcity] = useState();
+  const [fileImage, setFileImage] = useState(null);
+  const [userFeed, setUserFeed] = useState([]);
   const [taste, setaste] = useState(0.0);
   const [presentation, setpresentation] = useState(0.0);
   const [look, setlook] = useState(0.0);
   const [colour, setcolor] = useState(0.0);
   const [total, setTotal] = useState();
-  const [refreshing, setRefreshing] = useState(false);
+  const [activeSlide, setActiveIndex] = useState(0);
   const [count, setCount] = useState(0);
+
   useEffect(() => {
-    getData();
-
-    const backAction = () => {
-      if (props.navigation.isFocused()) {
-        Alert.alert('Exit App', 'Do you want to EXIT?', [
-          {
-            text: 'No',
-            onPress: () => null,
-            style: 'cancel',
-          },
-          {text: 'YES', onPress: () => BackHandler.exitApp()},
-        ]);
-        return true;
-      }
+    const fetchData = async () => {
+      const UserId = await AsyncStorage.getItem('UserId');
+      await axios
+        .get(`${baseUrl}/user/userGetById/${UserId}`)
+        .then((userDetails) => {
+          setFileImage(userDetails?.data?.data?.userimage);
+          console.log("FileImage" , fileImage)
+          setFirstName(userDetails?.data?.data?.Firstname);
+          setEmail(userDetails?.data?.data?.Email);
+          setcity(userDetails?.data?.data?.City);
+        })
+        .catch((e) => {
+          console.log('e', e);
+        })
+        .catch((error) => console.log('e', error));
     };
-
-    const backHandler = BackHandler.addEventListener(
-      'hardwareBackPress',
-      backAction,
-    );
+    fetchData();
+    fetchUserTimeLine();
+    getNetInfo();
+    // Subscribe to network state updates
+    const unsubscribe = NetInfo.addEventListener((state) => {
+      setNetInfo(
+        `Connection type: ${state.type}
+        Is connected?: ${state.isConnected}
+        IP Address: ${state.details.ipAddress}`,
+      );
+    });
 
     return () => {
-      backHandler.remove();
+      // Unsubscribe to network state updates
+      unsubscribe();
     };
   }, []);
-  const getData = async () => {
-    setLoading(true);
-    const userId = await AsyncStorage.getItem('UserId');
-    //Service to get the data from the server to render
-    await axios
-      .get(`${baseUrl}/recipes/Feed/${userId}?page=` + page)
-      //Sending the currect page  with get request
-      .then((responseJson) => {
-        //Successful response
-        setPage(page + 1);
-        //Increasing the page for the next API call
-        setfetchdata([...fetchdata, ...responseJson.data.data]);
-        setLoading(false);
-      })
-      .catch((error) => {
-        console.log('errror', error);
-        setLoading(false);
-      });
+
+  const getNetInfo = () => {
+    // To get the network state once
+    NetInfo.fetch().then((state) => {
+      state.isConnected === true
+        ? null
+        : Alert.alert('Foodizz', 'No Internet Conection');
+    });
   };
 
-  const getLoadMore = async () => {
-    setLoading(true);
-    const userId = await AsyncStorage.getItem('UserId');
-    //Service to get the data from the server to render
-    await axios
-      .get(`${baseUrl}/recipes/Feed/${userId}?page=` + 1)
-      //Sending the currect page  with get request
-      .then(async (responseJson) => {
-        //Successful response
-        setPage(page);
-        setCount(0);
-        //Increasing the page for the next API call
-        setfetchdata(responseJson.data.data);
-        setLoading(false);
-      })
-      .catch((error) => {
-        console.error(error);
-        setLoading(false);
-      });
+  const handleEditProfile = () => {
+    props.navigation.navigate('Edit Profile');
   };
-  const onRefresh = async () => {
-    setRefreshing(true);
-    const userId = await AsyncStorage.getItem('UserId');
-    //Service to get the data from the server to render
+
+  console.log('userFeed', userFeed);
+
+  const fetchUserTimeLine = async () => {
+    const UserId = await AsyncStorage.getItem('UserId');
+    console.log('UserId', UserId);
     await axios
-      .get(`${baseUrl}/recipes/Feed/${userId}?page=` + 1)
-      //Sending the currect page  with get request
-      .then((responseJson) => {
-        //Successful response
-        setPage(2);
-        //Increasing the page for the next API call
-        setfetchdata(responseJson.data.data);
-        setRefreshing(false);
+      .get(`${baseUrl}/recipes/GetByUserId/${UserId}`)
+      .then((userFeed) => {
+        console.log('userFeed', userFeed);
+        setUserFeed(userFeed?.data?.data);
+        setCount(0);
       })
-      .catch((error) => {
-        console.error(error);
-        setRefreshing(false);
+      .catch((e) => {
+        console.log('e', e);
       });
   };
 
@@ -154,13 +136,12 @@ const HomeScreen = (props) => {
     });
   };
 
- 
   const deleteLike = async (recipeId) => {
     const UserId = await AsyncStorage.getItem('UserId');
     await axios
       .delete(`${baseUrl}/like/deletelike/${UserId}/${recipeId.recipeId}`)
       .then(async (res) => {
-        await getLoadMore();
+        await fetchUserTimeLine();
       })
       .catch((e) => {
         console.log('error', e);
@@ -178,7 +159,7 @@ const HomeScreen = (props) => {
         await axios
           .post(`${baseUrl}/like/addlike`, data)
           .then(async (res) => {
-            await getLoadMore();
+            await fetchUserTimeLine();
           })
           .catch((e) => {
             console.log('error', e);
@@ -377,27 +358,40 @@ const HomeScreen = (props) => {
   return (
     <>
       <StatusBar backgroundColor="orange" />
-      <HomeHeaderLeft {...props} />
-      {loading == true ? (
-        <ActivityIndicator size="small" color="#999" style={{marginTop: 15}} />
-      ) : null}
+      <View style={styles.container}>
+        <View style={styles.topcontainer}>
+          <View style={styles.maincontainer}>
+            {fileImage === null ? (
+              <Image
+                style={{height: 100, width: 100, borderRadius: 50}}
+                source={{
+                  uri:
+                    'https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/default-avatar.png',
+                }}
+              />
+            ) : (
+              <Image
+                style={{height: 100, width: 100, borderRadius: 50}}
+                source={{
+                  uri: fileImage,
+                }}
+              />
+            )}
+          </View>
+          <View style={styles.middleContainer}>
+            <Text style={styles.textcontainer}>{firstName}</Text>
+            <Text style={styles.textcontainer11}>{email}</Text>
+            <Text style={styles.textcontainer11}>{city}</Text>
+          </View>
+        </View>
+        <TouchableOpacity
+          style={styles.editprofilecontainer}
+          onPress={handleEditProfile}>
+          <Text>Edit Profile</Text>
+        </TouchableOpacity>
 
-      <Container>
         <FlatList
-          data={fetchdata}
-          onEndReached={getData}
-          onEndReachedThreshold={0.8}
-          refreshControl={
-            <RefreshControl
-              refreshing={refreshing}
-              onRefresh={onRefresh}
-              tintColor="#EBEBEB"
-              title="Loading"
-              titleColor="#EBEBEB"
-              colors={['#2196F3']}
-              progressBackgroundColor="#EBEBEB"
-            />
-          }
+          data={userFeed}
           renderItem={({item}) => {
             return (
               <Card>
@@ -658,117 +652,9 @@ const HomeScreen = (props) => {
           keyExtractor={(item) => item._id}
           showsVerticalScrollIndicator={false}
         />
-      </Container>
+      </View>
     </>
   );
 };
 
-export default HomeScreen;
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-
-  directionsStyle: {
-    fontSize: 14,
-    fontFamily: 'Lato-Regular',
-    paddingLeft: 15,
-    paddingRight: 15,
-    color: '#666',
-    marginTop: 15,
-    fontWeight: 'bold',
-  },
-
-  footer: {
-    padding: 10,
-    justifyContent: 'center',
-    alignItems: 'center',
-    flexDirection: 'row',
-  },
-  loadMoreBtn: {
-    padding: 10,
-    backgroundColor: '#800000',
-    borderRadius: 4,
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  btnText: {
-    color: 'white',
-    fontSize: 15,
-    textAlign: 'center',
-  },
-  toolbar: {},
-  mediaPlayer: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    bottom: 0,
-    right: 0,
-    backgroundColor: 'black',
-    justifyContent: 'center',
-  },
-
-  totalrating: {
-    fontWeight: 'bold',
-    marginLeft: 5,
-    bottom: 5,
-  },
-
-  totalrating44: {
-    fontWeight: 'bold',
-    marginLeft: 7,
-    fontSize: 14,
-    marginTop: 1,
-  },
-
-  image: {
-    ...StyleSheet.absoluteFillObject,
-    width: '100%',
-    height: 250,
-    //flexDirection:'row'
-  },
-  imageContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    width: viewportWidth,
-    height: 250,
-  },
-
-  imageContainer44: {
-    flex: 1,
-    justifyContent: 'center',
-    width: '100%',
-    height: 250,
-  },
-
-  spacecontainer: {
-    justifyContent: 'space-around',
-    alignItems: 'center',
-  },
-
-  rowcontainer: {
-    flexDirection: 'row',
-    alignSelf: 'flex-start',
-  },
-
-  middlecontainer: {
-    color: 'gray',
-    flex: 0.4,
-  },
-
-  paginationContainer: {
-    flex: 1,
-    position: 'absolute',
-    alignSelf: 'center',
-    paddingVertical: 8,
-    marginTop: 300,
-  },
-  paginationDot: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-    marginHorizontal: 0,
-  },
-});
+export default ProfileScreen;
