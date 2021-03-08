@@ -126,6 +126,8 @@ const EditProfile = (props) => {
     });
   };
 
+  console.log(fileImage);
+
   return (
     <>
       <StatusBar backgroundColor="orange" />
@@ -136,20 +138,17 @@ const EditProfile = (props) => {
             marginTop: 35,
             marginBottom: 20,
           }}>
-          {fileImage === null ? (
-            <Image
-              style={{height: 100, width: 100, borderRadius: 50}}
-              source={{
-                uri:
-                  'https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/default-avatar.png',
-              }}
-            />
-          ) : (
-            <Image
-              style={{height: 100, width: 100, borderRadius: 50}}
-              source={fileImage}
-            />
-          )}
+          <Image
+            style={{height: 100, width: 100, borderRadius: 50}}
+            source={
+              fileImage === null
+                ? {
+                    uri:
+                      'https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/default-avatar.png',
+                  }
+                : fileImage
+            }
+          />
 
           <TouchableOpacity
             style={{

@@ -43,6 +43,7 @@ import TimeAgo from 'react-native-timeago';
 import VideoPlayer from 'react-native-video-player';
 import {windowHeight} from '../utils/Dimentions';
 import {ShareDialog} from 'react-native-fbsdk';
+import Toast from 'react-native-simple-toast';
 
 const ProfileScreen = (props) => {
   const [netInfo, setNetInfo] = useState('');
@@ -58,6 +59,7 @@ const ProfileScreen = (props) => {
   const [total, setTotal] = useState();
   const [activeSlide, setActiveIndex] = useState(0);
   const [count, setCount] = useState(0);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -66,7 +68,7 @@ const ProfileScreen = (props) => {
         .get(`${baseUrl}/user/userGetById/${UserId}`)
         .then((userDetails) => {
           setFileImage(userDetails?.data?.data?.userimage);
-          console.log("FileImage" , fileImage)
+          console.log('FileImage', fileImage);
           setFirstName(userDetails?.data?.data?.Firstname);
           setEmail(userDetails?.data?.data?.Email);
           setcity(userDetails?.data?.data?.City);
@@ -112,11 +114,13 @@ const ProfileScreen = (props) => {
   const fetchUserTimeLine = async () => {
     const UserId = await AsyncStorage.getItem('UserId');
     console.log('UserId', UserId);
+    setLoading(true);
     await axios
       .get(`${baseUrl}/recipes/GetByUserId/${UserId}`)
       .then((userFeed) => {
         console.log('userFeed', userFeed);
         setUserFeed(userFeed?.data?.data);
+        setLoading(false);
         setCount(0);
       })
       .catch((e) => {
@@ -134,6 +138,19 @@ const ProfileScreen = (props) => {
     ShareDialog.canShow(shareContent).then((canShow) => {
       canShow && ShareDialog.show(shareContent);
     });
+  };
+
+  const handleDeleteRecipe = async (recipeId) => {
+    const UserId = await AsyncStorage.getItem('UserId');
+    await axios
+      .delete(`${baseUrl}/recipes/DeleteRecipe/${recipeId.recipeId}/${UserId}`)
+      .then(async (res) => {
+        Toast.show('Recipe Delete Successfully', Toast.LONG);
+        await fetchUserTimeLine();
+      })
+      .catch((e) => {
+        console.log('error', e);
+      });
   };
 
   const deleteLike = async (recipeId) => {
@@ -361,22 +378,17 @@ const ProfileScreen = (props) => {
       <View style={styles.container}>
         <View style={styles.topcontainer}>
           <View style={styles.maincontainer}>
-            {fileImage === null ? (
-              <Image
-                style={{height: 100, width: 100, borderRadius: 50}}
-                source={{
-                  uri:
-                    'https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/default-avatar.png',
-                }}
-              />
-            ) : (
-              <Image
-                style={{height: 100, width: 100, borderRadius: 50}}
-                source={{
-                  uri: fileImage,
-                }}
-              />
-            )}
+            <Image
+              style={{height: 100, width: 100, borderRadius: 50}}
+              source={
+                fileImage === null
+                  ? {
+                      uri:
+                        'https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/default-avatar.png',
+                    }
+                  : fileImage
+              }
+            />
           </View>
           <View style={styles.middleContainer}>
             <Text style={styles.textcontainer}>{firstName}</Text>
@@ -390,6 +402,13 @@ const ProfileScreen = (props) => {
           <Text>Edit Profile</Text>
         </TouchableOpacity>
 
+        {loading == true ? (
+          <ActivityIndicator
+            size="small"
+            color="#999"
+            style={{marginTop: 15}}
+          />
+        ) : null}
         <FlatList
           data={userFeed}
           renderItem={({item}) => {
@@ -411,18 +430,28 @@ const ProfileScreen = (props) => {
                     <PostTiime>
                       <TimeAgo time={item.time} />
                     </PostTiime>
-
-                    {item.type[0] === 'Vegan' ? (
-                      <Entypo name="dot-single" color="green" size={25} />
-                    ) : <Entypo name="dot-single" color="red" size={25} /> &&
-                      item.type[0] === 'Vegetarion' ? (
-                      <Entypo name="dot-single" color="green" size={25} />
-                    ) : <Entypo name="dot-single" color="red" size={25} /> &&
-                      item.type[0] === 'eggetarion' ? (
-                      <Entypo name="dot-single" color="green" size={25} />
-                    ) : (
-                      <Entypo name="dot-single" color="red" size={25} />
-                    )}
+                    <View style={{flexDirection: 'row'}}>
+                      {item.type[0] === 'Vegan' ? (
+                        <Entypo name="dot-single" color="green" size={25} />
+                      ) : <Entypo name="dot-single" color="red" size={25} /> &&
+                        item.type[0] === 'Vegetarion' ? (
+                        <Entypo name="dot-single" color="green" size={25} />
+                      ) : <Entypo name="dot-single" color="red" size={25} /> &&
+                        item.type[0] === 'eggetarion' ? (
+                        <Entypo name="dot-single" color="green" size={25} />
+                      ) : (
+                        <Entypo name="dot-single" color="red" size={25} />
+                      )}
+                      <TouchableOpacity
+                        style={{marginTop: 5}}
+                        onPress={() =>
+                          handleDeleteRecipe({
+                            recipeId: item._id,
+                          })
+                        }>
+                        <AntDesign name="delete" size={15} />
+                      </TouchableOpacity>
+                    </View>
                   </Usertime>
                 </UserInfo>
 
