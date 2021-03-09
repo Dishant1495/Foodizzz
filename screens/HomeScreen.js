@@ -57,7 +57,7 @@ const HomeScreen = (props) => {
   const [total, setTotal] = useState();
   const [refreshing, setRefreshing] = useState(false);
   const [count, setCount] = useState(0);
-  const [sort, setsort] = useState('Recent');
+  const [value, setValue] = useState('Recent');
   const [filter, setfilter] = useState('All');
   const [items, setItems] = useState([
     {
@@ -72,8 +72,6 @@ const HomeScreen = (props) => {
     },
   ]);
   let controller;
-  // let filter="All"
-  // let sort="Recent"
   useEffect(() => {
     getData();
     const backAction = () => {
@@ -98,13 +96,12 @@ const HomeScreen = (props) => {
     return () => {
       backHandler.remove();
     };
-  }, []);
+  }, [value, filter]);
   const getData = async () => {
     setLoading(true);
     const userId = await AsyncStorage.getItem('UserId');
-    console.log('getdata', sort);
     //Service to get the data from the server to render
-    if (sort === 'Recent' && filter === 'All') {
+    if (value === 'Recent' && filter === 'All') {
       await axios
         .get(`${baseUrl}/recipes/Feed/${userId}?page=` + page)
         //Sending the currect page  with get request
@@ -119,7 +116,7 @@ const HomeScreen = (props) => {
           console.log('errror', error);
           setLoading(false);
         });
-    } else if (sort === 'Rating' && filter === 'All') {
+    } else if (value === 'Rating' && filter === 'All') {
       await axios
         .get(`${baseUrl}/recipes/recentpost/${userId}?page=` + page)
         //Sending the currect page  with get request
@@ -129,15 +126,12 @@ const HomeScreen = (props) => {
           //Increasing the page for the next API call
           setfetchdata([...fetchdata, ...responseJson.data.data]);
           setLoading(false);
-          console.log(responseJson.data);
         })
         .catch((error) => {
           console.log('errror', error);
           setLoading(false);
         });
-    } else if (sort === 'Recent' && filter === 'Meet') {
-      console.log('rating');
-      console.log('page', page);
+    } else if (value === 'Recent' && filter === 'Meet') {
       if (page > 1) {
         await axios
           .get(`${baseUrl}/recipes/meetwithrecent/${userId}?page=` + 1)
@@ -148,7 +142,6 @@ const HomeScreen = (props) => {
             //Increasing the page for the next API call
             setfetchdata(responseJson.data.data);
             setLoading(false);
-            console.log(responseJson.data);
           })
           .catch((error) => {
             console.log('errror', error);
@@ -164,16 +157,13 @@ const HomeScreen = (props) => {
             //Increasing the page for the next API call
             setfetchdata([...fetchdata, ...responseJson.data.data]);
             setLoading(false);
-            console.log(responseJson.data);
           })
           .catch((error) => {
             console.log('errror', error);
             setLoading(false);
           });
       }
-    } else if (sort === 'Recent' && filter === 'Not Meet') {
-      console.log('rating');
-      console.log('page', page);
+    } else if (value === 'Recent' && filter === 'Not Meet') {
       if (page > 1) {
         await axios
           .get(`${baseUrl}/recipes/nonmeetwithrecent/${userId}?page=` + 1)
@@ -184,7 +174,6 @@ const HomeScreen = (props) => {
             //Increasing the page for the next API call
             setfetchdata(responseJson.data.data);
             setLoading(false);
-            console.log(responseJson.data);
           })
           .catch((error) => {
             console.log('errror', error);
@@ -200,7 +189,6 @@ const HomeScreen = (props) => {
             //Increasing the page for the next API call
             setfetchdata([...fetchdata, ...responseJson.data.data]);
             setLoading(false);
-            console.log(responseJson.data);
           })
           .catch((error) => {
             console.log('errror', error);
@@ -480,12 +468,6 @@ const HomeScreen = (props) => {
   const onPressRecipe = (item) => {
     props.navigation.navigate('RecipeScreen', {item});
   };
-  const ratings = async (item) => {
-    // console.log("asa",item)
-    return await setsort(item);
-    // getData()
-    console.log(sort);
-  };
   return (
     <>
       <StatusBar backgroundColor="orange" />
@@ -496,7 +478,7 @@ const HomeScreen = (props) => {
       <View style={{flexDirection: 'row'}}>
         <DropDownPicker
           items={items}
-          defaultValue={sort}
+          defaultValue={value}
           controller={(instance) => (controller = instance)}
           onChangeList={(items, callback) => {
             new Promise((resolve, reject) => resolve(setItems(items)))
@@ -505,8 +487,11 @@ const HomeScreen = (props) => {
               })
               .catch(() => {});
           }}
-          onChangeItem={(item) => {
-            ratings(item.value);
+          onChangeItem={async (item) => {
+            setValue(item.value);
+            setPage(1);
+            setfetchdata([]);
+            await getData();
           }}
           containerStyle={{height: deviceWidth * 0.1, width: deviceWidth * 0.5}}
         />
@@ -530,6 +515,8 @@ const HomeScreen = (props) => {
           ]}
           defaultValue={filter}
           onChangeItem={async (item) => {
+            setPage(1);
+            setfetchdata([]);
             setfilter(item.value);
           }}
           containerStyle={{
