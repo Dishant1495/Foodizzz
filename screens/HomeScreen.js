@@ -1,5 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import axios from 'axios';
+import {Container} from '../styles/FeedStyles';
 import Toast from 'react-native-simple-toast';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
@@ -15,7 +16,6 @@ import {
   InteractionWrapper,
   Interaction,
   PostTiime,
-  Container
 } from '../styles/FeedStyles';
 import {Rating} from 'react-native-rating-element';
 import Tooltip from 'rn-tooltip';
@@ -43,7 +43,8 @@ import {windowHeight} from '../utils/Dimentions';
 import HomeHeaderLeft from '../components/HomeHeaderLeft';
 import {baseUrl} from '../baseUrl';
 import {ShareDialog} from 'react-native-fbsdk';
-
+import Icon from 'react-native-vector-icons/Feather';
+import DropDownPicker from 'react-native-dropdown-picker';
 const HomeScreen = (props) => {
   const [fetchdata, setfetchdata] = useState([]);
   const [activeSlide, setActiveIndex] = useState(0);
@@ -56,9 +57,25 @@ const HomeScreen = (props) => {
   const [total, setTotal] = useState();
   const [refreshing, setRefreshing] = useState(false);
   const [count, setCount] = useState(0);
+  const [sort, setsort] = useState('Recent');
+  const [filter, setfilter] = useState('All');
+  const [items, setItems] = useState([
+    {
+      label: 'Recent',
+      value: 'Recent',
+      icon: () => <Entypo name="select-arrows" size={18} color="#900" />,
+    },
+    {
+      label: 'Rating',
+      value: 'Rating',
+      icon: () => <Entypo name="select-arrows" size={18} color="#900" />,
+    },
+  ]);
+  let controller;
+  // let filter="All"
+  // let sort="Recent"
   useEffect(() => {
     getData();
-
     const backAction = () => {
       if (props.navigation.isFocused()) {
         Alert.alert('Exit App', 'Do you want to EXIT?', [
@@ -85,21 +102,112 @@ const HomeScreen = (props) => {
   const getData = async () => {
     setLoading(true);
     const userId = await AsyncStorage.getItem('UserId');
+    console.log('getdata', sort);
     //Service to get the data from the server to render
-    await axios
-      .get(`${baseUrl}/recipes/Feed/${userId}?page=` + page)
-      //Sending the currect page  with get request
-      .then((responseJson) => {
-        //Successful response
-        setPage(page + 1);
-        //Increasing the page for the next API call
-        setfetchdata([...fetchdata, ...responseJson.data.data]);
-        setLoading(false);
-      })
-      .catch((error) => {
-        console.log('errror', error);
-        setLoading(false);
-      });
+    if (sort === 'Recent' && filter === 'All') {
+      await axios
+        .get(`${baseUrl}/recipes/Feed/${userId}?page=` + page)
+        //Sending the currect page  with get request
+        .then((responseJson) => {
+          //Successful response
+          setPage(page + 1);
+          //Increasing the page for the next API call
+          setfetchdata([...fetchdata, ...responseJson.data.data]);
+          setLoading(false);
+        })
+        .catch((error) => {
+          console.log('errror', error);
+          setLoading(false);
+        });
+    } else if (sort === 'Rating' && filter === 'All') {
+      await axios
+        .get(`${baseUrl}/recipes/recentpost/${userId}?page=` + page)
+        //Sending the currect page  with get request
+        .then((responseJson) => {
+          //Successful response
+          setPage(page + 1);
+          //Increasing the page for the next API call
+          setfetchdata([...fetchdata, ...responseJson.data.data]);
+          setLoading(false);
+          console.log(responseJson.data);
+        })
+        .catch((error) => {
+          console.log('errror', error);
+          setLoading(false);
+        });
+    } else if (sort === 'Recent' && filter === 'Meet') {
+      console.log('rating');
+      console.log('page', page);
+      if (page > 1) {
+        await axios
+          .get(`${baseUrl}/recipes/meetwithrecent/${userId}?page=` + 1)
+          //Sending the currect page  with get request
+          .then((responseJson) => {
+            //Successful response
+            setPage(2);
+            //Increasing the page for the next API call
+            setfetchdata(responseJson.data.data);
+            setLoading(false);
+            console.log(responseJson.data);
+          })
+          .catch((error) => {
+            console.log('errror', error);
+            setLoading(false);
+          });
+      } else {
+        await axios
+          .get(`${baseUrl}/recipes/meetwithrecent/${userId}?page=` + page)
+          //Sending the currect page  with get request
+          .then((responseJson) => {
+            //Successful response
+            setPage(page + 1);
+            //Increasing the page for the next API call
+            setfetchdata([...fetchdata, ...responseJson.data.data]);
+            setLoading(false);
+            console.log(responseJson.data);
+          })
+          .catch((error) => {
+            console.log('errror', error);
+            setLoading(false);
+          });
+      }
+    } else if (sort === 'Recent' && filter === 'Not Meet') {
+      console.log('rating');
+      console.log('page', page);
+      if (page > 1) {
+        await axios
+          .get(`${baseUrl}/recipes/nonmeetwithrecent/${userId}?page=` + 1)
+          //Sending the currect page  with get request
+          .then((responseJson) => {
+            //Successful response
+            setPage(2);
+            //Increasing the page for the next API call
+            setfetchdata(responseJson.data.data);
+            setLoading(false);
+            console.log(responseJson.data);
+          })
+          .catch((error) => {
+            console.log('errror', error);
+            setLoading(false);
+          });
+      } else {
+        await axios
+          .get(`${baseUrl}/recipes/nonmeetwithrecent/${userId}?page=` + page)
+          //Sending the currect page  with get request
+          .then((responseJson) => {
+            //Successful response
+            setPage(page + 1);
+            //Increasing the page for the next API call
+            setfetchdata([...fetchdata, ...responseJson.data.data]);
+            setLoading(false);
+            console.log(responseJson.data);
+          })
+          .catch((error) => {
+            console.log('errror', error);
+            setLoading(false);
+          });
+      }
+    }
   };
 
   const getLoadMore = async () => {
@@ -154,7 +262,6 @@ const HomeScreen = (props) => {
     });
   };
 
- 
   const deleteLike = async (recipeId) => {
     const UserId = await AsyncStorage.getItem('UserId');
     await axios
@@ -373,7 +480,12 @@ const HomeScreen = (props) => {
   const onPressRecipe = (item) => {
     props.navigation.navigate('RecipeScreen', {item});
   };
-
+  const ratings = async (item) => {
+    // console.log("asa",item)
+    return await setsort(item);
+    // getData()
+    console.log(sort);
+  };
   return (
     <>
       <StatusBar backgroundColor="orange" />
@@ -381,7 +493,51 @@ const HomeScreen = (props) => {
       {loading == true ? (
         <ActivityIndicator size="small" color="#999" style={{marginTop: 15}} />
       ) : null}
-
+      <View style={{flexDirection: 'row'}}>
+        <DropDownPicker
+          items={items}
+          defaultValue={sort}
+          controller={(instance) => (controller = instance)}
+          onChangeList={(items, callback) => {
+            new Promise((resolve, reject) => resolve(setItems(items)))
+              .then(() => {
+                callback();
+              })
+              .catch(() => {});
+          }}
+          onChangeItem={(item) => {
+            ratings(item.value);
+          }}
+          containerStyle={{height: deviceWidth * 0.1, width: deviceWidth * 0.5}}
+        />
+        <DropDownPicker
+          items={[
+            {
+              label: 'All Recipes',
+              value: 'All',
+              icon: () => <Icon name="filter" size={18} color="#900" />,
+            },
+            {
+              label: 'Meet',
+              value: 'Meet',
+              icon: () => <Icon name="filter" size={18} color="#900" />,
+            },
+            {
+              label: 'Not Meet',
+              value: 'Not Meet',
+              icon: () => <Icon name="filter" size={18} color="#900" />,
+            },
+          ]}
+          defaultValue={filter}
+          onChangeItem={async (item) => {
+            setfilter(item.value);
+          }}
+          containerStyle={{
+            height: deviceWidth * 0.1,
+            width: deviceWidth * 0.49,
+          }}
+        />
+      </View>
       <Container>
         <FlatList
           data={fetchdata}
@@ -417,7 +573,6 @@ const HomeScreen = (props) => {
                     <PostTiime>
                       <TimeAgo time={item.time} />
                     </PostTiime>
-
                     {item.type[0] === 'Vegan' ? (
                       <Entypo name="dot-single" color="green" size={25} />
                     ) : <Entypo name="dot-single" color="red" size={25} /> &&

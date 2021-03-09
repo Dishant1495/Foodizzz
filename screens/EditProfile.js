@@ -31,6 +31,7 @@ const EditProfile = (props) => {
         .get(`${baseUrl}/user/userGetById/${UserId}`)
         .then((userDetails) => {
           setFileImage(userDetails?.data?.data?.userimage);
+          console.log('fileImage', fileImage);
           setFirstName(userDetails?.data?.data?.Firstname);
           setEmail(userDetails?.data?.data?.Email);
           setcity(userDetails?.data?.data?.City);
@@ -66,6 +67,7 @@ const EditProfile = (props) => {
   };
 
   const Submit = async () => {
+    console.log('fileImage', fileImage);
     try {
       const formdata = new FormData();
       formdata.append('Email', email);
@@ -125,8 +127,6 @@ const EditProfile = (props) => {
       }
     });
   };
-
-  console.log(fileImage);
 
   return (
     <>

@@ -126,6 +126,28 @@ const ProfileStack = () => (
       }}
     />
     <Stack.Screen
+      name="AddPost"
+      component={AddPostScreen}
+      options={{
+        title: 'Submit Recipe',
+        headerTitleStyle: {
+          color: 'white',
+          fontFamily: 'Kufam',
+          fontSize: 18,
+          right: 25,
+        },
+        headerStyle: {
+          backgroundColor: 'orange',
+        },
+        headerBackTitleVisible: false,
+        headerBackImage: () => (
+          <View style={{}}>
+            <Ionicons name="arrow-back" size={25} color="white" />
+          </View>
+        ),
+      }}
+    />
+    <Stack.Screen
       name="Edit Profile"
       component={EditProfile}
       options={{

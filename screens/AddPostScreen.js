@@ -28,20 +28,27 @@ import {baseUrl} from '../baseUrl';
 import AsyncStorage from '@react-native-community/async-storage';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import NetInfo from '@react-native-community/netinfo';
-
 const AddPostScreen = (props) => {
-  const [description, setdescription] = useState(null);
-  const [labels, setlabels] = useState(null);
-  const [about, setabout] = useState(null);
-  const [image, setImage] = useState([]);
-  const [isSelected, setSelection] = useState(false);
-  const [video, setvideo] = useState(null);
+  const postData = props?.route?.params?.postData;
+  const [description, setdescription] = useState(
+    postData?.ingredients[0] || null,
+  );
+  const [labels, setlabels] = useState(postData?.title || null);
+  const [about, setabout] = useState(postData?.directions || null);
+  const [image, setImage] = useState(
+    props?.route?.params?.postData?.documents || [],
+  );
+
+  const [isSelected, setSelection] = useState(postData?.containrecipe || false);
+  const [video, setvideo] = useState(
+    props?.route?.params?.postData?.documents || null,
+  );
   const [radioButtons, setRadioButton] = useState(categoriesType);
   const [state, setstate] = useState(false);
   const [userId, setUserId] = useState();
   const [tags, setTags] = useState({
     tag: '',
-    tagsArray: [],
+    tagsArray: postData?.keyword || [],
   });
   const [netInfo, setNetInfo] = useState('');
   const [count, setCount] = useState(0);
@@ -150,100 +157,212 @@ const AddPostScreen = (props) => {
   };
   const config = {headers: {'Content-Type': 'multipart/form-data'}};
   const onSubmit = async () => {
-    if (count === 0) {
-      if (labels === null) {
-        Toast.show('Title is required', Toast.LONG);
-      } else if (description === null) {
-        Toast.show('Ingredients is required', Toast.LONG);
-      } else if (about === null) {
-        Toast.show('Directions is required', Toast.LONG);
-      } else if (tags.tagsArray.length === 0) {
-        Toast.show('Keywords is required', Toast.LONG);
-      } else if (image.length === 0) {
-        Toast.show('Please Upload Image', Toast.LONG), setImage([]);
-      } else if (isSelected && video == null) {
-        Toast.show('Please Upload Video', Toast.LONG);
-        setvideo(null);
-      } else if (video && video.size < 30000) {
-        Toast.show('video is too  large', Toast.LONG);
-      } else {
-        setstate(true);
-        setCount((prevCount) => prevCount + 1);
+    if (postData) {
+      if (count === 0) {
+        if (labels === null) {
+          Toast.show('Title is required', Toast.LONG);
+        } else if (description === null) {
+          Toast.show('Ingredients is required', Toast.LONG);
+        } else if (about === null) {
+          Toast.show('Directions is required', Toast.LONG);
+        } else if (tags.tagsArray.length === 0) {
+          Toast.show('Keywords is required', Toast.LONG);
+        } else if (image.length === 0) {
+          Toast.show('Please Upload Image', Toast.LONG), setImage([]);
+        } else if (isSelected && video == null) {
+          Toast.show('Please Upload Video', Toast.LONG);
+          setvideo(null);
+        } else if (video && video.size < 30000) {
+          Toast.show('video is too  large', Toast.LONG);
+        } else {
+          setstate(true);
+          setCount((prevCount) => prevCount + 1);
 
-        var titles = labels;
-        var descriptions = description;
-        var abouts = about;
-        var tag = tags.tagsArray;
-        var categories = '';
-        radioButtons.forEach((elemets) => {
-          if (elemets.checked === true) categories = elemets.value;
-        });
-        const formdata = new FormData();
-        image.map((item, index) => {
-          formdata.append('recipeImage', {
-            uri: item.path,
-            type: item.mime,
-            name: item.path.substr(item.path.lastIndexOf('/') + 1),
+          var titles = labels;
+          var descriptions = description;
+          var abouts = about;
+          var tag = tags.tagsArray;
+          var categories = '';
+          radioButtons.forEach((elemets) => {
+            if (elemets.checked === true) categories = elemets.value;
           });
-        });
-        var select = isSelected;
-        if (select === true) {
-          videos = video.path;
-          formdata.append('video', {
-            uri: video.path,
-            type: video.mime,
-            name: video.path.substr(video.path.lastIndexOf('/') + 1),
+          const formdata = new FormData();
+          console.log('image', image);
+
+          // image.map((item, index) => {
+          //   console.log('item***', item);
+          //   const imageType = 'image/jpeg';
+          //   item.type === 'image' &&
+          //     formdata.append('recipeImage', {
+          //       uri: item.image,
+          //       type: imageType,
+          //       name: item.image.substr(item.image.lastIndexOf('/') + 1),
+          //     });
+          // });
+          var select = isSelected;
+
+          // image.map((item, index) => {
+          //   formdata.append('recipeImage', {
+          //     uri: item.path,
+          //     type: item.mime,
+          //     name: item.path.substr(item.path.lastIndexOf('/') + 1),
+          //   });
+          // });
+          // var select = isSelected;
+          // if (select === true) {
+          //   videos = video.path;
+          //   formdata.append('video', {
+          //     uri: video.path,
+          //     type: video.mime,
+          //     name: video.path.substr(video.path.lastIndexOf('/') + 1),
+          //   });
+          // }
+          tag.map((item) => {
+            formdata.append('keyword', item);
           });
+
+          formdata.append('title', titles);
+          formdata.append('directions', abouts);
+          formdata.append('ingredients[]', descriptions);
+          formdata.append('type', categories);
+          formdata.append('containrecipe', select);
+          formdata.append('UserId', userId);
+
+          console.log('formData', formdata);
+
+          axios
+            .put(`${baseUrl}/recipes/updateRecipe/${postData._id}`, formdata, {
+              config,
+            })
+            .then((res) => {
+              console.log('response', res);
+              Toast.show('Recipe Update Successfully', Toast.LONG);
+              //  props.navigation.push('Feed');
+              setCount(0);
+              setstate(false);
+            })
+            .then((res) => {
+              setstate(false);
+              setlabels(null),
+                setImage([]),
+                setRadioButton(categoriesType),
+                setTags({tag: '', tagsArray: []}),
+                setabout(null),
+                setvideo(null),
+                setSelection(false),
+                setdescription(null);
+            })
+            .catch((e) => {
+              console.log('e', e);
+              setstate(false);
+              Toast.show('Unable to failed update recipe', Toast.LONG);
+            });
         }
-        tag.map((item) => {
-          formdata.append('keyword', item);
-        });
-
-        formdata.append('title', titles);
-        formdata.append('directions', abouts);
-        formdata.append('ingredients[]', descriptions);
-        formdata.append('type', categories);
-        formdata.append('containrecipe', select);
-        formdata.append('UserId', userId);
-
-        axios
-          .post(`${baseUrl}/recipes/AddRecipe`, formdata, {
-            config,
-          })
-          .then((res) => {
-            Toast.show('Recipe Added Successfully', Toast.LONG);
-            props.navigation.push('Feed');
-            setCount(0);
-            setstate(false);
-          })
-          .then((responseText) => {
-            setstate(false);
-          })
-          .then((res) => {
-            setlabels(null),
-              setImage([]),
-              setRadioButton(categoriesType),
-              setTags({tag: '', tagsArray: []}),
-              setabout(null),
-              setvideo(null),
-              setSelection(false),
-              setdescription(null);
-          })
-          .catch((e) => {
-            setstate(false);
-            setlabels(null),
-              setImage([]),
-              setRadioButton(categoriesType),
-              setTags({tag: '', tagsArray: []}),
-              setabout(null),
-              setvideo(null),
-              setSelection(false),
-              setdescription(null);
-            Toast.show('Unable to add recipe', Toast.LONG);
-          });
+      } else {
+        setstate(false);
+        console.log('e');
       }
     } else {
-      console.log('e');
+      if (count === 0) {
+        if (labels === null) {
+          Toast.show('Title is required', Toast.LONG);
+        } else if (description === null) {
+          Toast.show('Ingredients is required', Toast.LONG);
+        } else if (about === null) {
+          Toast.show('Directions is required', Toast.LONG);
+        } else if (tags.tagsArray.length === 0) {
+          Toast.show('Keywords is required', Toast.LONG);
+        } else if (image.length === 0) {
+          Toast.show('Please Upload Image', Toast.LONG), setImage([]);
+        } else if (isSelected && video == null) {
+          Toast.show('Please Upload Video', Toast.LONG);
+          setvideo(null);
+        } else if (video && video.size < 30000) {
+          Toast.show('video is too  large', Toast.LONG);
+        } else {
+          setstate(true);
+          setCount((prevCount) => prevCount + 1);
+
+          var titles = labels;
+          var descriptions = description;
+          var abouts = about;
+          var tag = tags.tagsArray;
+          var categories = '';
+          radioButtons.forEach((elemets) => {
+            if (elemets.checked === true) categories = elemets.value;
+          });
+          const formdata = new FormData();
+          console.log('image insert', image);
+          image.map((item, index) => {
+            formdata.append('recipeImage', {
+              uri: item.path,
+              type: item.mime,
+              name: item.path.substr(item.path.lastIndexOf('/') + 1),
+            });
+          });
+
+          console.log('path of image', image);
+          var select = isSelected;
+          if (select === true) {
+            videos = video.path;
+            formdata.append('video', {
+              uri: video.path,
+              type: video.mime,
+              name: video.path.substr(video.path.lastIndexOf('/') + 1),
+            });
+          }
+          tag.map((item) => {
+            formdata.append('keyword', item);
+          });
+
+          formdata.append('title', titles);
+          formdata.append('directions', abouts);
+          formdata.append('ingredients[]', descriptions);
+          formdata.append('type', categories);
+          formdata.append('containrecipe', select);
+          formdata.append('UserId', userId);
+
+          console.log('Add Post formdata', formdata);
+
+          axios
+            .post(`${baseUrl}/recipes/AddRecipe`, formdata, {
+              config,
+            })
+            .then((res) => {
+              Toast.show('Recipe Added Successfully', Toast.LONG);
+              props.navigation.push('Feed');
+              setCount(0);
+              setstate(false);
+            })
+            .then((responseText) => {
+              setstate(false);
+            })
+            .then((res) => {
+              setlabels(null),
+                setImage([]),
+                setRadioButton(categoriesType),
+                setTags({tag: '', tagsArray: []}),
+                setabout(null),
+                setvideo(null),
+                setSelection(false),
+                setdescription(null);
+            })
+            .catch((e) => {
+              setstate(false);
+              setlabels(null),
+                setImage([]),
+                setRadioButton(categoriesType),
+                setTags({tag: '', tagsArray: []}),
+                setabout(null),
+                setvideo(null),
+                setSelection(false),
+                setdescription(null);
+              Toast.show('Unable to add recipe', Toast.LONG);
+            });
+        }
+      } else {
+        console.log('e');
+      }
     }
   };
 
@@ -302,27 +421,40 @@ const AddPostScreen = (props) => {
                   renderItem={({item}) => {
                     return (
                       <>
-                        <View style={{flexDirection: 'row'}}>
-                          <Image
-                            source={{uri: item.path}}
-                            style={{
-                              width: deviceWidth * 0.8,
-                              height: windowHeight * 0.3,
-                              borderRadius: 9,
-                            }}
-                          />
+                        {item.type === 'image' ? (
+                          <View style={{flexDirection: 'row'}}>
+                            <Image
+                              source={{uri: item.image}}
+                              style={{
+                                width: deviceWidth * 0.8,
+                                height: windowHeight * 0.3,
+                                borderRadius: 9,
+                              }}
+                            />
+                          </View>
+                        ) : (
+                          <View style={{flexDirection: 'row'}}>
+                            <Image
+                              source={{uri: item.path}}
+                              style={{
+                                width: deviceWidth * 0.8,
+                                height: windowHeight * 0.3,
+                                borderRadius: 9,
+                              }}
+                            />
 
-                          <AntDesign
-                            style={{
-                              top: 10,
-                              right: 50,
-                              color: 'black',
-                            }}
-                            size={25}
-                            name="close"
-                            onPress={() => handleRemoveItem(item)}
-                          />
-                        </View>
+                            <AntDesign
+                              style={{
+                                top: 10,
+                                right: 50,
+                                color: 'black',
+                              }}
+                              size={25}
+                              name="close"
+                              onPress={() => handleRemoveItem(item)}
+                            />
+                          </View>
+                        )}
                       </>
                     );
                   }}
