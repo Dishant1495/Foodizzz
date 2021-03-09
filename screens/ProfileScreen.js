@@ -44,6 +44,7 @@ import VideoPlayer from 'react-native-video-player';
 import {windowHeight} from '../utils/Dimentions';
 import {ShareDialog} from 'react-native-fbsdk';
 import Toast from 'react-native-simple-toast';
+import ImageLoad from 'react-native-image-placeholder';
 
 const ProfileScreen = (props) => {
   const [netInfo, setNetInfo] = useState('');
@@ -207,13 +208,15 @@ const ProfileScreen = (props) => {
             width: viewportWidth,
             height: 250,
           }}>
-          <Image
+          <ImageLoad
             source={{uri: item.image}}
             style={{
               ...StyleSheet.absoluteFillObject,
               width: '100%',
               height: '100%',
             }}
+            loadingStyle={{size: 'large', color: 'blue'}}
+            isShowActivity={true}
           />
         </View>
       );

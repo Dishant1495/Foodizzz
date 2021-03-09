@@ -15,6 +15,7 @@ import axios from 'axios';
 import {Rating} from 'react-native-rating-element';
 import NetInfo from '@react-native-community/netinfo';
 import {baseUrl} from '../baseUrl';
+import ImageLoad from 'react-native-image-placeholder';
 
 const SearchScreen = (props) => {
   const [data, setData] = useState([]);
@@ -69,11 +70,13 @@ const SearchScreen = (props) => {
         underlayColor="rgba(73,182,77,0.9)"
         onPress={() => onPressRecipe(item._id)}>
         <View style={{flexDirection: 'row'}}>
-          <Image
+          <ImageLoad
             style={styles.recipeImage}
             source={{
               uri: item?.documents[0]?.image,
             }}
+            loadingStyle={{size: 'large', color: 'blue'}}
+            isShowActivity={true}
           />
           <View style={{flexDirection: 'column', width: '64%'}}>
             <Text style={{fontSize: 14, fontWeight: 'bold'}}>{item.title}</Text>

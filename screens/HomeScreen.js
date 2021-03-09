@@ -5,6 +5,7 @@ import Toast from 'react-native-simple-toast';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Entypo from 'react-native-vector-icons/Entypo';
+import ImageLoad from 'react-native-image-placeholder';
 import {
   Card,
   UserInfo,
@@ -132,69 +133,65 @@ const HomeScreen = (props) => {
           setLoading(false);
         });
     } else if (value === 'Recent' && filter === 'Meet') {
-      if (page > 1) {
-        await axios
-          .get(`${baseUrl}/recipes/meetwithrecent/${userId}?page=` + 1)
-          //Sending the currect page  with get request
-          .then((responseJson) => {
-            //Successful response
-            setPage(2);
-            //Increasing the page for the next API call
-            setfetchdata(responseJson.data.data);
-            setLoading(false);
-          })
-          .catch((error) => {
-            console.log('errror', error);
-            setLoading(false);
-          });
-      } else {
-        await axios
-          .get(`${baseUrl}/recipes/meetwithrecent/${userId}?page=` + page)
-          //Sending the currect page  with get request
-          .then((responseJson) => {
-            //Successful response
-            setPage(page + 1);
-            //Increasing the page for the next API call
-            setfetchdata([...fetchdata, ...responseJson.data.data]);
-            setLoading(false);
-          })
-          .catch((error) => {
-            console.log('errror', error);
-            setLoading(false);
-          });
-      }
+      await axios
+        .get(`${baseUrl}/recipes/meetwithrecent/${userId}?page=` + page)
+        //Sending the currect page  with get request
+        .then((responseJson) => {
+          //Successful response
+          setPage(page + 1);
+          //Increasing the page for the next API call
+          setfetchdata([...fetchdata, ...responseJson.data.data]);
+          setLoading(false);
+        })
+        .catch((error) => {
+          console.log('errror', error);
+          setLoading(false);
+        });
     } else if (value === 'Recent' && filter === 'Not Meet') {
-      if (page > 1) {
-        await axios
-          .get(`${baseUrl}/recipes/nonmeetwithrecent/${userId}?page=` + 1)
-          //Sending the currect page  with get request
-          .then((responseJson) => {
-            //Successful response
-            setPage(2);
-            //Increasing the page for the next API call
-            setfetchdata(responseJson.data.data);
-            setLoading(false);
-          })
-          .catch((error) => {
-            console.log('errror', error);
-            setLoading(false);
-          });
-      } else {
-        await axios
-          .get(`${baseUrl}/recipes/nonmeetwithrecent/${userId}?page=` + page)
-          //Sending the currect page  with get request
-          .then((responseJson) => {
-            //Successful response
-            setPage(page + 1);
-            //Increasing the page for the next API call
-            setfetchdata([...fetchdata, ...responseJson.data.data]);
-            setLoading(false);
-          })
-          .catch((error) => {
-            console.log('errror', error);
-            setLoading(false);
-          });
-      }
+      await axios
+        .get(`${baseUrl}/recipes/nonmeetwithrecent/${userId}?page=` + page)
+        //Sending the currect page  with get request
+        .then((responseJson) => {
+          //Successful response
+          setPage(page + 1);
+          //Increasing the page for the next API call
+          setfetchdata([...fetchdata, ...responseJson.data.data]);
+          setLoading(false);
+        })
+        .catch((error) => {
+          console.log('errror', error);
+          setLoading(false);
+        });
+    } else if (value === 'Rating' && filter === 'Meet') {
+      await axios
+        .get(`${baseUrl}/recipes/meetwithrating/${userId}?page=` + page)
+        //Sending the currect page  with get request
+        .then((responseJson) => {
+          //Successful response
+          setPage(page + 1);
+          //Increasing the page for the next API call
+          setfetchdata([...fetchdata, ...responseJson.data.data]);
+          setLoading(false);
+        })
+        .catch((error) => {
+          console.log('errror', error);
+          setLoading(false);
+        });
+    } else if (value === 'Rating' && filter === 'Not Meet') {
+      await axios
+        .get(`${baseUrl}/recipes/notmeetwithrating/${userId}?page=` + page)
+        //Sending the currect page  with get request
+        .then((responseJson) => {
+          //Successful response
+          setPage(page + 1);
+          //Increasing the page for the next API call
+          setfetchdata([...fetchdata, ...responseJson.data.data]);
+          setLoading(false);
+        })
+        .catch((error) => {
+          console.log('errror', error);
+          setLoading(false);
+        });
     }
   };
 
@@ -310,8 +307,10 @@ const HomeScreen = (props) => {
             width: viewportWidth,
             height: 250,
           }}>
-          <Image
+          <ImageLoad
             source={{uri: item.image}}
+            loadingStyle={{size: 'large', color: 'blue'}}
+            isShowActivity={true}
             style={{
               ...StyleSheet.absoluteFillObject,
               width: '100%',
@@ -488,10 +487,14 @@ const HomeScreen = (props) => {
               .catch(() => {});
           }}
           onChangeItem={async (item) => {
-            setValue(item.value);
-            setPage(1);
-            setfetchdata([]);
-            await getData();
+            if (value === item.value) {
+              return;
+            } else {
+              setValue(item.value);
+              setPage(1);
+              setfetchdata([]);
+              await getData();
+            }
           }}
           containerStyle={{height: deviceWidth * 0.1, width: deviceWidth * 0.5}}
         />
@@ -515,9 +518,13 @@ const HomeScreen = (props) => {
           ]}
           defaultValue={filter}
           onChangeItem={async (item) => {
-            setPage(1);
-            setfetchdata([]);
-            setfilter(item.value);
+            if (filter === item.value) {
+              return;
+            } else {
+              setPage(1);
+              setfetchdata([]);
+              setfilter(item.value);
+            }
           }}
           containerStyle={{
             height: deviceWidth * 0.1,

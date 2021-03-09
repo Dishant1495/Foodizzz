@@ -187,36 +187,32 @@ const AddPostScreen = (props) => {
             if (elemets.checked === true) categories = elemets.value;
           });
           const formdata = new FormData();
-          console.log('image', image);
 
-          // image.map((item, index) => {
-          //   console.log('item***', item);
-          //   const imageType = 'image/jpeg';
-          //   item.type === 'image' &&
-          //     formdata.append('recipeImage', {
-          //       uri: item.image,
-          //       type: imageType,
-          //       name: item.image.substr(item.image.lastIndexOf('/') + 1),
-          //     });
-          // });
           var select = isSelected;
 
-          // image.map((item, index) => {
-          //   formdata.append('recipeImage', {
-          //     uri: item.path,
-          //     type: item.mime,
-          //     name: item.path.substr(item.path.lastIndexOf('/') + 1),
-          //   });
-          // });
-          // var select = isSelected;
-          // if (select === true) {
-          //   videos = video.path;
-          //   formdata.append('video', {
-          //     uri: video.path,
-          //     type: video.mime,
-          //     name: video.path.substr(video.path.lastIndexOf('/') + 1),
-          //   });
-          // }
+          image.map((item, index) => {
+            console.log('****', item);
+            item.type === 'image' &&
+              formdata.append('recipeImage', {
+                uri: item.image,
+                type: 'image/' + item.image.split('.').pop(),
+                name: item.image.replace(/^.*[\\\/]/, ''),
+              });
+            // : formdata.append('recipeImage', {
+            //     uri: item.path,
+            //     type: item.mime,
+            //     name: item.path.substr(item.path.lastIndexOf('/') + 1),
+            //   });
+          });
+
+          var select = isSelected;
+          if (select === true) {
+            formdata.append('video', {
+              uri: video.path,
+              type: video.mime,
+              name: video.path.substr(video.path.lastIndexOf('/') + 1),
+            });
+          }
           tag.map((item) => {
             formdata.append('keyword', item);
           });
@@ -282,7 +278,6 @@ const AddPostScreen = (props) => {
         } else {
           setstate(true);
           setCount((prevCount) => prevCount + 1);
-
           var titles = labels;
           var descriptions = description;
           var abouts = about;
@@ -300,11 +295,9 @@ const AddPostScreen = (props) => {
               name: item.path.substr(item.path.lastIndexOf('/') + 1),
             });
           });
-
           console.log('path of image', image);
           var select = isSelected;
           if (select === true) {
-            videos = video.path;
             formdata.append('video', {
               uri: video.path,
               type: video.mime,
@@ -314,16 +307,13 @@ const AddPostScreen = (props) => {
           tag.map((item) => {
             formdata.append('keyword', item);
           });
-
           formdata.append('title', titles);
           formdata.append('directions', abouts);
           formdata.append('ingredients[]', descriptions);
           formdata.append('type', categories);
           formdata.append('containrecipe', select);
           formdata.append('UserId', userId);
-
           console.log('Add Post formdata', formdata);
-
           axios
             .post(`${baseUrl}/recipes/AddRecipe`, formdata, {
               config,
@@ -500,6 +490,7 @@ const AddPostScreen = (props) => {
           <>
             <View style={styles.cardview}>
               <View style={{marginRight: deviceWidth * 0.0}}>
+                {console.log('video path', video)}
                 {video ? (
                   <>
                     <VideoPlayer

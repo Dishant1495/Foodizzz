@@ -16,6 +16,8 @@ const recipetypes = ['Vegan', 'Vegetarion', 'Non-Veg', 'eggetarion'];
 import {Rating} from 'react-native-rating-element';
 import NetInfo from '@react-native-community/netinfo';
 import {baseUrl} from '../baseUrl';
+import ImageLoad from 'react-native-image-placeholder';
+
 const CategoriesScreen = (props) => {
   const onPressCategory = (item) => {
     const title = item.name;
@@ -88,11 +90,13 @@ const CategoriesScreen = (props) => {
               underlayColor="rgba(73,182,77,0.9)"
               onPress={() => onPressRecipe(item._id)}>
               <View style={styles.categoriesItemContainer}>
-                <Image
+                <ImageLoad
                   style={{width: 160, height: 150, borderRadius: 10}}
                   source={{
                     uri: item?.documents[0]?.image,
                   }}
+                  loadingStyle={{size: 'large', color: 'blue'}}
+                  isShowActivity={true}
                 />
                 <Text style={styles.title}>{item.title}</Text>
                 <View style={{flexDirection: 'row', bottom: 10}}>

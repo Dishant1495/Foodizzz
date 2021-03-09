@@ -31,6 +31,7 @@ import {windowHeight} from '../../utils/Dimentions';
 import NetInfo from '@react-native-community/netinfo';
 import {baseUrl} from '../../baseUrl';
 import {ShareDialog} from 'react-native-fbsdk';
+import ImageLoad from 'react-native-image-placeholder';
 
 const deviceWidth = Dimensions.get('window').width;
 const RecipeScreen = (props) => {
@@ -124,8 +125,10 @@ const RecipeScreen = (props) => {
             width: viewportWidth,
             height: 250,
           }}>
-          <Image
+          <ImageLoad
             source={{uri: item.image}}
+            loadingStyle={{size: 'large', color: 'blue'}}
+            isShowActivity={true}
             style={{
               ...StyleSheet.absoluteFillObject,
               width: '100%',
