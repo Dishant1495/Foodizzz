@@ -115,6 +115,7 @@ const ProfileScreen = (props) => {
     await axios
       .get(`${baseUrl}/recipes/GetByUserId/${UserId}`)
       .then((userFeed) => {
+        console.log('userFeed', userFeed);
         setUserFeed(userFeed?.data?.data);
         setLoading(false);
         setCount(0);
@@ -702,11 +703,11 @@ const ProfileScreen = (props) => {
                         />
                       </Interaction>
                       <Interaction>
-                        <TouchableOpacity
+                        {/* <TouchableOpacity
                           underlayColor="rgba(73,182,77,0.9)"
                           onPress={() => onPressRecipe(item._id)}>
                           <Entypo name="bowl" size={25} />
-                        </TouchableOpacity>
+                        </TouchableOpacity> */}
                       </Interaction>
                     </InteractionWrapper>
                   </Card>

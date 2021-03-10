@@ -76,13 +76,23 @@ const EditProfile = (props) => {
     formdata.append('Firstname', firstName);
     console.log('fileType', fileType);
     console.log('filename', filename);
-    fileImage === null
-      ? null
-      : formdata.append('userimage', {
-          uri: fileImage ? fileImage : null,
-          type: fileType ? fileType : 'image/' + fileImage.split('.').pop(),
-          name: filename ? filename : fileImage.replace(/^.*[\\\/]/, ''),
-        });
+    if (fileType === null && filename === null) {
+      console.log('enter a');
+      formdata.append('userimage', {
+        uri: fileImage,
+        type: 'image/' + fileImage.split('.').pop(),
+        name: Date.now() + '.' + fileImage.split('.').pop(),
+      });
+    } else if (fileImage === null) {
+      console.log('b', b);
+    } else if (fileType && filename && fileImage) {
+      console.log('ccccc');
+      formdata.append('userimage', {
+        uri: fileImage,
+        type: fileType,
+        name: filename,
+      });
+    }
     setLoading(true);
     const UserId = await AsyncStorage.getItem('UserId');
     console.log('formdata', formdata);
@@ -100,8 +110,8 @@ const EditProfile = (props) => {
           Toast.show(response.data.error, Toast.LONG);
         }
       })
-      .catch((e) => {
-        console.log('e', e);
+      .catch((error) => {
+        console.log('e', error);
         setLoading(false);
       });
   };

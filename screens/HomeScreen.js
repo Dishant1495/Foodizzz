@@ -46,6 +46,8 @@ import {baseUrl} from '../baseUrl';
 import {ShareDialog} from 'react-native-fbsdk';
 import Icon from 'react-native-vector-icons/Feather';
 import DropDownPicker from 'react-native-dropdown-picker';
+import Dialog, {DialogContent} from 'react-native-popup-dialog';
+import ImagePicker from 'react-native-image-crop-picker';
 const HomeScreen = (props) => {
   const [fetchdata, setfetchdata] = useState([]);
   const [activeSlide, setActiveIndex] = useState(0);
@@ -60,6 +62,8 @@ const HomeScreen = (props) => {
   const [count, setCount] = useState(0);
   const [value, setValue] = useState('Recent');
   const [filter, setfilter] = useState('All');
+  const [visible, setvisible] = useState(false);
+  const [image, setImage] = useState([]);
   const [items, setItems] = useState([
     {
       label: 'Recent',
@@ -464,8 +468,32 @@ const HomeScreen = (props) => {
     });
   };
 
-  const onPressRecipe = (item) => {
-    props.navigation.navigate('RecipeScreen', {item});
+  const onPressUser = (item) => {
+    props.navigation.navigate('RecipeOwner', {item});
+  };
+
+  const choosePhotoFromLibrary = () => {
+    ImagePicker.openPicker({
+      width: 1200,
+      height: 780,
+      includeBase64: true,
+      multiple: true,
+    }).then((image) => {
+      console.log('image', image);
+      const multipleImage = [];
+      image.map((item, index) => {
+        if (
+          item.mime === 'image/jpeg' ||
+          item.mime === 'image/jpg' ||
+          item.mime === 'image/png'
+        ) {
+          multipleImage.push(item);
+          setImage(multipleImage);
+        } else {
+          setImage([]);
+        }
+      });
+    });
   };
   return (
     <>
@@ -549,18 +577,19 @@ const HomeScreen = (props) => {
             />
           }
           renderItem={({item}) => {
-            console.log("****" , item)
             return (
               <Card>
                 <UserInfo>
-                  <UserImg
-                    source={{
-                      uri:
-                        item?.userimage === 'null'
-                          ? 'https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/default-avatar.png'
-                          : item?.userimage,
-                    }}
-                  />
+                  <TouchableOpacity onPress={() => onPressUser(item.UserId)}>
+                    <UserImg
+                      source={{
+                        uri:
+                          item?.userimage === 'null'
+                            ? 'https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/default-avatar.png'
+                            : item?.userimage,
+                      }}
+                    />
+                  </TouchableOpacity>
                   <UserInfoText>
                     <UserName>{item?.Firstname}</UserName>
                   </UserInfoText>
@@ -794,10 +823,69 @@ const HomeScreen = (props) => {
                       }
                     />
                   </Interaction>
+                  <Dialog
+                    visible={visible}
+                    width={0.9}
+                    rounded
+                    actionsBordered
+                    overlayBackgroundColor={'#333'}
+                    onTouchOutside={() => {
+                      setvisible(false);
+                      setImage([]);
+                    }}>
+                    <DialogContent style={{backgroundColor: '#fff'}}>
+                      <>
+                        <View style={{flexDirection: 'row'}}>
+                          <FlatList
+                            horizontal
+                            pagingEnabled={true}
+                            data={image}
+                            renderItem={({item}) => {
+                              return (
+                                <>
+                                  <View style={{flexDirection: 'row'}}>
+                                    <Image
+                                      source={{uri: item.path}}
+                                      style={{
+                                        width: deviceWidth * 0.8,
+                                        height: windowHeight * 0.4,
+                                        borderRadius: 9,
+                                        marginTop: 50,
+                                      }}
+                                    />
+                                  </View>
+                                </>
+                              );
+                            }}
+                          />
+                        </View>
+                        <TouchableOpacity
+                          style={{
+                            paddingHorizontal: 10,
+                            padding: 10,
+                            width: '60%',
+                            marginTop: 25,
+                          }}
+                          onPress={choosePhotoFromLibrary}>
+                          <Text
+                            style={{
+                              borderWidth: 1,
+                              borderRadius: 10,
+                              borderColor: '#ccc',
+                              color: 'gray',
+                              padding: 8,
+                            }}>
+                            Attach From Gallery
+                          </Text>
+                        </TouchableOpacity>
+                      </>
+                    </DialogContent>
+                  </Dialog>
+
                   <Interaction>
                     <TouchableOpacity
                       underlayColor="rgba(73,182,77,0.9)"
-                      onPress={() => onPressRecipe(item._id)}>
+                      onPress={() => setvisible(!visible)}>
                       <Entypo name="bowl" size={25} />
                     </TouchableOpacity>
                   </Interaction>

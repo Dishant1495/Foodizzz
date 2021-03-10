@@ -43,6 +43,17 @@ const styles = StyleSheet.create({
     marginLeft: 15,
   },
 
+  editfollowcontainer: {
+    marginTop: windowHeight / 27,
+    paddingHorizontal: 20,
+    borderRadius: 10,
+    borderColor: '#666',
+    borderWidth: 1,
+    padding: 10,
+    width: '29%',
+    marginLeft: 15,
+  },
+
   directionsStyle: {
     fontSize: 14,
     fontFamily: 'Lato-Regular',

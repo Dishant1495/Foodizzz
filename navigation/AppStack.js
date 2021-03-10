@@ -15,6 +15,7 @@ import CommentScreen from '../screens/CommentScreen';
 import EditProfile from '../screens/EditProfile';
 import AsyncStorage from '@react-native-community/async-storage';
 import ProfileScreen from '../screens/ProfileScreen';
+import RecipeOwner from '../screens/Recipeowner';
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
@@ -208,6 +209,28 @@ const FeedStack = ({navigation}) => (
       component={CommentScreen}
       options={{
         title: 'Comments',
+        headerTitleStyle: {
+          color: 'white',
+          fontFamily: 'Kufam',
+          fontSize: 18,
+          right: 25,
+        },
+        headerStyle: {
+          backgroundColor: 'orange',
+        },
+        headerBackTitleVisible: false,
+        headerBackImage: () => (
+          <View style={{}}>
+            <Ionicons name="arrow-back" size={25} color="white" />
+          </View>
+        ),
+      }}
+    />
+    <Stack.Screen
+      name="RecipeOwner"
+      component={RecipeOwner}
+      options={{
+        title: 'Recipe Owner',
         headerTitleStyle: {
           color: 'white',
           fontFamily: 'Kufam',
