@@ -21,6 +21,8 @@ const EditProfile = (props) => {
   const [city, setcity] = useState();
   const [loading, setLoading] = useState(false);
   const [fileImage, setFileImage] = useState(null);
+  const [fileType, setfileType] = useState(null);
+  const [filename, setfilename] = useState(null);
   const [netInfo, setNetInfo] = useState('');
 
   useEffect(() => {
@@ -31,7 +33,6 @@ const EditProfile = (props) => {
         .get(`${baseUrl}/user/userGetById/${UserId}`)
         .then((userDetails) => {
           setFileImage(userDetails?.data?.data?.userimage);
-          console.log('fileImage', fileImage);
           setFirstName(userDetails?.data?.data?.Firstname);
           setEmail(userDetails?.data?.data?.Email);
           setcity(userDetails?.data?.data?.City);
@@ -67,42 +68,42 @@ const EditProfile = (props) => {
   };
 
   const Submit = async () => {
+    console.log('sssss');
     console.log('fileImage', fileImage);
-    try {
-      const formdata = new FormData();
-      formdata.append('Email', email);
-      formdata.append('City', city);
-      formdata.append('Firstname', firstName);
-      fileImage === null
-        ? null
-        : formdata.append('userimage', {
-            uri: fileImage.uri,
-            type: fileImage.type,
-            name: fileImage.fileName,
-          });
-      setLoading(true);
-      const UserId = await AsyncStorage.getItem('UserId');
-      console.log('formdata', formdata);
-      axios
-        .put(`${baseUrl}/user/updateprofile/${UserId}`, formdata, {
-          config,
-        })
-        .then(async (response) => {
-          setLoading(false);
-          if (response.data.status == 'success') {
-            Toast.show('Profile Update Succesfully', Toast.LONG);
-            props.navigation.push('Profile');
-          } else {
-            Toast.show(response.data.error, Toast.LONG);
-          }
-        })
-        .catch((e) => {
-          console.log('e', e);
-          setLoading(false);
+    const formdata = new FormData();
+    formdata.append('Email', email);
+    formdata.append('City', city);
+    formdata.append('Firstname', firstName);
+    console.log('fileType', fileType);
+    console.log('filename', filename);
+    fileImage === null
+      ? null
+      : formdata.append('userimage', {
+          uri: fileImage ? fileImage : null,
+          type: fileType ? fileType : 'image/' + fileImage.split('.').pop(),
+          name: filename ? filename : fileImage.replace(/^.*[\\\/]/, ''),
         });
-    } catch (e) {
-      console.log('e', e);
-    }
+    setLoading(true);
+    const UserId = await AsyncStorage.getItem('UserId');
+    console.log('formdata', formdata);
+    axios
+      .put(`${baseUrl}/user/updateprofile/${UserId}`, formdata, {
+        config,
+      })
+      .then((response) => {
+        console.log(response);
+        setLoading(false);
+        if (response.data.status == 'success') {
+          Toast.show('Profile Update Succesfully', Toast.LONG);
+          props.navigation.push('Profile');
+        } else {
+          Toast.show(response.data.error, Toast.LONG);
+        }
+      })
+      .catch((e) => {
+        console.log('e', e);
+        setLoading(false);
+      });
   };
 
   const chooseImage = () => {
@@ -123,11 +124,12 @@ const EditProfile = (props) => {
         console.log('User tapped custom button: ', response.customButton);
         alert(response.customButton);
       } else {
-        setFileImage(response);
+        setFileImage(response.uri);
+        setfileType(response.type);
+        setfilename(response.fileName);
       }
     });
   };
-
   return (
     <>
       <StatusBar backgroundColor="orange" />
@@ -146,7 +148,7 @@ const EditProfile = (props) => {
                     uri:
                       'https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/default-avatar.png',
                   }
-                : fileImage
+                : {uri: fileImage}
             }
           />
 

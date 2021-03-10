@@ -549,6 +549,7 @@ const HomeScreen = (props) => {
             />
           }
           renderItem={({item}) => {
+            console.log("****" , item)
             return (
               <Card>
                 <UserInfo>
