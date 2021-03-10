@@ -192,17 +192,19 @@ const AddPostScreen = (props) => {
 
           image.map((item, index) => {
             console.log('****', item);
-            item.type === 'image' &&
+            if (item.path) {
+              formdata.append('recipeImage', {
+                uri: item.path,
+                type: item.mime,
+                name: item.path.substr(item.path.lastIndexOf('/') + 1),
+              });
+            } else {
               formdata.append('recipeImage', {
                 uri: item.image,
-                type: 'image/' + item.image.split('.').pop(),
-                name: item.image.replace(/^.*[\\\/]/, ''),
+                type: 'image/' + 'jpeg',
+                name: item.image.substr(item.image.lastIndexOf('/') + 1),
               });
-            // : formdata.append('recipeImage', {
-            //     uri: item.path,
-            //     type: item.mime,
-            //     name: item.path.substr(item.path.lastIndexOf('/') + 1),
-            //   });
+            }
           });
 
           var select = isSelected;

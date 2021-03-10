@@ -12,6 +12,7 @@ import {
   Alert,
   BackHandler,
   TouchableOpacity,
+  ScrollView,
 } from 'react-native';
 import styles from '../styles/Profile';
 import NetInfo from '@react-native-community/netinfo';
@@ -136,16 +137,30 @@ const ProfileScreen = (props) => {
   };
 
   const handleDeleteRecipe = async (recipeId) => {
-    const UserId = await AsyncStorage.getItem('UserId');
-    await axios
-      .delete(`${baseUrl}/recipes/DeleteRecipe/${recipeId.recipeId}/${UserId}`)
-      .then(async (res) => {
-        Toast.show('Recipe Delete Successfully', Toast.LONG);
-        await fetchUserTimeLine();
-      })
-      .catch((e) => {
-        console.log('error', e);
-      });
+    Alert.alert('Foodizz', 'Do you want to delete this timeline', [
+      {
+        text: 'No',
+        onPress: () => null,
+        style: 'cancel',
+      },
+      {
+        text: 'YES',
+        onPress: async () => {
+          const UserId = await AsyncStorage.getItem('UserId');
+          await axios
+            .delete(
+              `${baseUrl}/recipes/DeleteRecipe/${recipeId.recipeId}/${UserId}`,
+            )
+            .then(async (res) => {
+              Toast.show('Recipe Delete Successfully', Toast.LONG);
+              await fetchUserTimeLine();
+            })
+            .catch((e) => {
+              console.log('error', e);
+            });
+        },
+      },
+    ]);
   };
 
   const deleteLike = async (recipeId) => {
@@ -368,82 +383,82 @@ const ProfileScreen = (props) => {
   const onPressRecipe = (item) => {
     props.navigation.navigate('RecipeScreen', {item});
   };
- 
 
   return (
     <>
       <StatusBar backgroundColor="orange" />
-      <View style={styles.container}>
-        <View style={styles.topcontainer}>
-          <View style={styles.maincontainer}>
-            <Image
-              style={{height: 100, width: 100, borderRadius: 50}}
-              source={
-                fileImage === null
-                  ? {
-                      uri:
-                        'https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/default-avatar.png',
-                    }
-                  : {uri: fileImage}
-              }
-            />
-          </View>
-          <View style={styles.middleContainer}>
-            <Text style={styles.textcontainer}>{firstName}</Text>
-            <Text style={styles.textcontainer11}>{email}</Text>
-            <Text style={styles.textcontainer11}>{city}</Text>
-          </View>
-        </View>
-        <TouchableOpacity
-          style={styles.editprofilecontainer}
-          onPress={handleEditProfile}>
-          <Text>Edit Profile</Text>
-        </TouchableOpacity>
-
-        {loading == true ? (
-          <ActivityIndicator
-            size="small"
-            color="#999"
-            style={{marginTop: 15}}
-          />
-        ) : null}
-        <Container>
-          <FlatList
-            data={userFeed}
-            renderItem={({item}) => {
-              return (
-                <Card>
-                  <UserInfo>
-                    <UserImg
-                      source={{
+      <ScrollView>
+        <View style={styles.container}>
+          <View style={styles.topcontainer}>
+            <View style={styles.maincontainer}>
+              <Image
+                style={{height: 100, width: 100, borderRadius: 50}}
+                source={
+                  fileImage === null
+                    ? {
                         uri:
-                          item?.userimage === 'null'
-                            ? 'https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/default-avatar.png'
-                            : item?.userimage,
-                      }}
-                    />
-                    <UserInfoText>
-                      <UserName>{item?.Firstname}</UserName>
-                    </UserInfoText>
-                    <Usertime>
-                      <PostTiime>
-                        <TimeAgo time={item.time} />
-                      </PostTiime>
-                      <View style={{flexDirection: 'row'}}>
-                        {item.type[0] === 'Vegan' ? (
-                          <Entypo name="dot-single" color="green" size={25} />
-                        ) : (
+                          'https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/default-avatar.png',
+                      }
+                    : {uri: fileImage}
+                }
+              />
+            </View>
+            <View style={styles.middleContainer}>
+              <Text style={styles.textcontainer}>{firstName}</Text>
+              <Text style={styles.textcontainer11}>{email}</Text>
+              <Text style={styles.textcontainer11}>{city}</Text>
+            </View>
+          </View>
+          <TouchableOpacity
+            style={styles.editprofilecontainer}
+            onPress={handleEditProfile}>
+            <Text>Edit Profile</Text>
+          </TouchableOpacity>
+
+          {loading == true ? (
+            <ActivityIndicator
+              size="small"
+              color="#999"
+              style={{marginTop: 15}}
+            />
+          ) : null}
+          <Container>
+            <FlatList
+              data={userFeed}
+              renderItem={({item}) => {
+                return (
+                  <Card>
+                    <UserInfo>
+                      <UserImg
+                        source={{
+                          uri:
+                            item?.userimage === 'null'
+                              ? 'https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/default-avatar.png'
+                              : item?.userimage,
+                        }}
+                      />
+                      <UserInfoText>
+                        <UserName>{item?.Firstname}</UserName>
+                      </UserInfoText>
+                      <Usertime>
+                        <PostTiime>
+                          <TimeAgo time={item.time} />
+                        </PostTiime>
+                        <View style={{flexDirection: 'row'}}>
+                          {item.type[0] === 'Vegan' ? (
+                            <Entypo name="dot-single" color="green" size={25} />
+                          ) : (
+                              <Entypo name="dot-single" color="red" size={25} />
+                            ) && item.type[0] === 'Vegetarion' ? (
+                            <Entypo name="dot-single" color="green" size={25} />
+                          ) : (
+                              <Entypo name="dot-single" color="red" size={25} />
+                            ) && item.type[0] === 'eggetarion' ? (
+                            <Entypo name="dot-single" color="green" size={25} />
+                          ) : (
                             <Entypo name="dot-single" color="red" size={25} />
-                          ) && item.type[0] === 'Vegetarion' ? (
-                          <Entypo name="dot-single" color="green" size={25} />
-                        ) : (
-                            <Entypo name="dot-single" color="red" size={25} />
-                          ) && item.type[0] === 'eggetarion' ? (
-                          <Entypo name="dot-single" color="green" size={25} />
-                        ) : (
-                          <Entypo name="dot-single" color="red" size={25} />
-                        )}
-                        <TouchableOpacity
+                          )}
+                          {/* <TouchableOpacity
                           style={{marginTop: 5}}
                           onPress={() => {
                             props.navigation.navigate('AddPost', {
@@ -452,252 +467,257 @@ const ProfileScreen = (props) => {
                             });
                           }}>
                           <Entypo name="edit" size={15} />
-                        </TouchableOpacity>
+                        </TouchableOpacity> */}
+                          <TouchableOpacity
+                            style={{marginTop: 5}}
+                            onPress={() =>
+                              handleDeleteRecipe({
+                                recipeId: item._id,
+                              })
+                            }>
+                            <AntDesign name="delete" size={15} />
+                          </TouchableOpacity>
+                        </View>
+                      </Usertime>
+                    </UserInfo>
+
+                    <Carousel
+                      data={item.documents}
+                      renderItem={renderImage}
+                      sliderWidth={viewportWidth}
+                      itemWidth={viewportWidth}
+                      inactiveSlideScale={1}
+                      inactiveSlideOpacity={1}
+                      firstItem={0}
+                      loop={false}
+                      autoplay={false}
+                      autoplayDelay={500}
+                      autoplayInterval={3000}
+                      onSnapToItem={(index) =>
+                        setActiveIndex({
+                          activeSlide: index,
+                        })
+                      }
+                    />
+                    <Pagination
+                      dotsLength={item.documents.length}
+                      activeDotIndex={activeSlide}
+                      containerStyle={{
+                        flex: 1,
+                        position: 'absolute',
+                        alignSelf: 'center',
+                        paddingVertical: 8,
+                        marginTop: 300,
+                      }}
+                      dotColor="rgba(255, 255, 255, 0.92)"
+                      dotStyle={{
+                        width: 8,
+                        height: 8,
+                        borderRadius: 4,
+                        marginHorizontal: 0,
+                      }}
+                      inactiveDotColor="white"
+                      inactiveDotOpacity={0.4}
+                      inactiveDotScale={0.6}
+                    />
+
+                    <Text numberOfLines={4} style={styles.directionsStyle}>
+                      {item.directions}
+                    </Text>
+
+                    <PostText>{item.title}</PostText>
+                    <InteractionWrapper>
+                      <Interaction active="1">
                         <TouchableOpacity
-                          style={{marginTop: 5, marginLeft: 10}}
                           onPress={() =>
-                            handleDeleteRecipe({
-                              recipeId: item._id,
+                            item.islike === 'true'
+                              ? deleteLike({
+                                  recipeId: item._id,
+                                })
+                              : addLike({
+                                  recipeId: item._id,
+                                })
+                          }>
+                          <Ionicons
+                            name={'heart-outline'}
+                            size={25}
+                            color={item.islike === 'true' ? 'red' : 'black'}
+                          />
+                        </TouchableOpacity>
+                        <Text
+                          style={{
+                            fontSize: 14,
+                            paddingLeft: 10,
+                            marginTop: 5,
+                          }}>
+                          {item.likes}
+                        </Text>
+                      </Interaction>
+                      <Interaction>
+                        <TouchableOpacity
+                          onPress={() =>
+                            props.navigation.navigate('CommentScreen', {
+                              postId: item._id,
                             })
                           }>
-                          <AntDesign name="delete" size={15} />
+                          <Ionicons name="md-chatbubble-outline" size={25} />
                         </TouchableOpacity>
-                      </View>
-                    </Usertime>
-                  </UserInfo>
-
-                  <Carousel
-                    data={item.documents}
-                    renderItem={renderImage}
-                    sliderWidth={viewportWidth}
-                    itemWidth={viewportWidth}
-                    inactiveSlideScale={1}
-                    inactiveSlideOpacity={1}
-                    firstItem={0}
-                    loop={false}
-                    autoplay={false}
-                    autoplayDelay={500}
-                    autoplayInterval={3000}
-                    onSnapToItem={(index) =>
-                      setActiveIndex({
-                        activeSlide: index,
-                      })
-                    }
-                  />
-                  <Pagination
-                    dotsLength={item.documents.length}
-                    activeDotIndex={activeSlide}
-                    containerStyle={{
-                      flex: 1,
-                      position: 'absolute',
-                      alignSelf: 'center',
-                      paddingVertical: 8,
-                      marginTop: 300,
-                    }}
-                    dotColor="rgba(255, 255, 255, 0.92)"
-                    dotStyle={{
-                      width: 8,
-                      height: 8,
-                      borderRadius: 4,
-                      marginHorizontal: 0,
-                    }}
-                    inactiveDotColor="white"
-                    inactiveDotOpacity={0.4}
-                    inactiveDotScale={0.6}
-                  />
-
-                  <Text numberOfLines={4} style={styles.directionsStyle}>
-                    {item.directions}
-                  </Text>
-
-                  <PostText>{item.title}</PostText>
-                  <InteractionWrapper>
-                    <Interaction active="1">
-                      <TouchableOpacity
-                        onPress={() =>
-                          item.islike === 'true'
-                            ? deleteLike({
-                                recipeId: item._id,
-                              })
-                            : addLike({
-                                recipeId: item._id,
-                              })
-                        }>
-                        <Ionicons
-                          name={'heart-outline'}
-                          size={25}
-                          color={item.islike === 'true' ? 'red' : 'black'}
-                        />
-                      </TouchableOpacity>
-                      <Text
-                        style={{
-                          fontSize: 14,
-                          paddingLeft: 10,
-                          marginTop: 5,
-                        }}>
-                        {item.likes}
-                      </Text>
-                    </Interaction>
-                    <Interaction>
-                      <TouchableOpacity
-                        onPress={() =>
-                          props.navigation.navigate('CommentScreen', {
-                            postId: item._id,
-                          })
-                        }>
-                        <Ionicons name="md-chatbubble-outline" size={25} />
-                      </TouchableOpacity>
-                    </Interaction>
-                    <Interaction>
-                      <Tooltip
-                        width={300}
-                        height={150}
-                        containerStyle={{marginLeft: 20}}
-                        onOpen={() =>
-                          handleOpen({
-                            recipeId: item._id,
-                          })
-                        }
-                        popover={
-                          <>
-                            <View style={{flexDirection: 'row', bottom: 10}}>
-                              <Rating
-                                rated={total}
-                                totalCount={5}
-                                ratingColor="#f1c644"
-                                ratingBackgroundColor="#d4d4d4"
-                                size={18}
-                                readonly // by default is false
-                                icon="ios-star"
-                                direction="row" // anyOf["row" (default), "row-reverse", "column", "column-reverse"]
-                              />
-                              <Text style={styles.totalrating44}>
-                                {total?.toFixed(1) === null
-                                  ? 0.0
-                                  : total?.toFixed(1)}{' '}
-                                out of 5
-                              </Text>
-                            </View>
-                            <View style={styles.spacecontainer}>
-                              <View style={styles.rowcontainer}>
-                                <Text style={styles.middlecontainer}>
-                                  Taste
-                                </Text>
-                                <View style={{flex: 0.4}}>
-                                  <Rating
-                                    rated={taste}
-                                    totalCount={5}
-                                    ratingColor="#f1c644"
-                                    ratingBackgroundColor="#d4d4d4"
-                                    size={15}
-                                    onIconTap={(val) => handleTaste(val)}
-                                    icon="ios-star"
-                                    direction="row" // anyOf["row" (default), "row-reverse", "column", "column-reverse"]
-                                  />
-                                </View>
-                                <Text style={styles.totalrating}>
-                                  {taste === null ? 0.0 : taste.toFixed(2)}
-                                </Text>
-                              </View>
-                              <View style={styles.rowcontainer}>
-                                <Text style={styles.middlecontainer}>
-                                  Presentation
-                                </Text>
-                                <View style={{flex: 0.4}}>
-                                  <Rating
-                                    rated={presentation}
-                                    totalCount={5}
-                                    ratingColor="#f1c644"
-                                    ratingBackgroundColor="#d4d4d4"
-                                    size={15}
-                                    onIconTap={(val) => handlePresentation(val)}
-                                    icon="ios-star"
-                                    direction="row" // anyOf["row" (default), "row-reverse", "column", "column-reverse"]
-                                  />
-                                </View>
-                                <Text style={styles.totalrating}>
-                                  {presentation === null
+                      </Interaction>
+                      <Interaction>
+                        <Tooltip
+                          width={300}
+                          height={150}
+                          containerStyle={{marginLeft: 20}}
+                          onOpen={() =>
+                            handleOpen({
+                              recipeId: item._id,
+                            })
+                          }
+                          popover={
+                            <>
+                              <View style={{flexDirection: 'row', bottom: 10}}>
+                                <Rating
+                                  rated={total}
+                                  totalCount={5}
+                                  ratingColor="#f1c644"
+                                  ratingBackgroundColor="#d4d4d4"
+                                  size={18}
+                                  readonly // by default is false
+                                  icon="ios-star"
+                                  direction="row" // anyOf["row" (default), "row-reverse", "column", "column-reverse"]
+                                />
+                                <Text style={styles.totalrating44}>
+                                  {total?.toFixed(1) === null
                                     ? 0.0
-                                    : presentation.toFixed(2)}
+                                    : total?.toFixed(1)}{' '}
+                                  out of 5
                                 </Text>
                               </View>
-                              <View style={styles.rowcontainer}>
-                                <Text style={styles.middlecontainer}>Look</Text>
-                                <View style={{flex: 0.4}}>
-                                  <Rating
-                                    rated={look}
-                                    totalCount={5}
-                                    ratingColor="#f1c644"
-                                    ratingBackgroundColor="#d4d4d4"
-                                    size={15}
-                                    onIconTap={(val) => handleLook(val)}
-                                    icon="ios-star"
-                                    direction="row" // anyOf["row" (default), "row-reverse", "column", "column-reverse"]
-                                  />
+                              <View style={styles.spacecontainer}>
+                                <View style={styles.rowcontainer}>
+                                  <Text style={styles.middlecontainer}>
+                                    Taste
+                                  </Text>
+                                  <View style={{flex: 0.4}}>
+                                    <Rating
+                                      rated={taste}
+                                      totalCount={5}
+                                      ratingColor="#f1c644"
+                                      ratingBackgroundColor="#d4d4d4"
+                                      size={15}
+                                      onIconTap={(val) => handleTaste(val)}
+                                      icon="ios-star"
+                                      direction="row" // anyOf["row" (default), "row-reverse", "column", "column-reverse"]
+                                    />
+                                  </View>
+                                  <Text style={styles.totalrating}>
+                                    {taste === null ? 0.0 : taste.toFixed(2)}
+                                  </Text>
                                 </View>
-                                <Text style={styles.totalrating}>
-                                  {look === null ? 0.0 : look.toFixed(2)}
-                                </Text>
-                              </View>
-                              <View style={styles.rowcontainer}>
-                                <Text style={styles.middlecontainer}>
-                                  Color
-                                </Text>
-                                <View style={{flex: 0.4}}>
-                                  <Rating
-                                    rated={colour}
-                                    totalCount={5}
-                                    ratingColor="#f1c644"
-                                    ratingBackgroundColor="#d4d4d4"
-                                    size={15}
-                                    onIconTap={(val) =>
-                                      handleColor({
-                                        colour: val,
-                                        recipeId: item._id,
-                                      })
-                                    }
-                                    icon="ios-star"
-                                    direction="row" // anyOf["row" (default), "row-reverse", "column", "column-reverse"]
-                                  />
+                                <View style={styles.rowcontainer}>
+                                  <Text style={styles.middlecontainer}>
+                                    Presentation
+                                  </Text>
+                                  <View style={{flex: 0.4}}>
+                                    <Rating
+                                      rated={presentation}
+                                      totalCount={5}
+                                      ratingColor="#f1c644"
+                                      ratingBackgroundColor="#d4d4d4"
+                                      size={15}
+                                      onIconTap={(val) =>
+                                        handlePresentation(val)
+                                      }
+                                      icon="ios-star"
+                                      direction="row" // anyOf["row" (default), "row-reverse", "column", "column-reverse"]
+                                    />
+                                  </View>
+                                  <Text style={styles.totalrating}>
+                                    {presentation === null
+                                      ? 0.0
+                                      : presentation.toFixed(2)}
+                                  </Text>
                                 </View>
-                                <Text style={styles.totalrating}>
-                                  {colour === null ? 0.0 : colour.toFixed(2)}
-                                </Text>
+                                <View style={styles.rowcontainer}>
+                                  <Text style={styles.middlecontainer}>
+                                    Look
+                                  </Text>
+                                  <View style={{flex: 0.4}}>
+                                    <Rating
+                                      rated={look}
+                                      totalCount={5}
+                                      ratingColor="#f1c644"
+                                      ratingBackgroundColor="#d4d4d4"
+                                      size={15}
+                                      onIconTap={(val) => handleLook(val)}
+                                      icon="ios-star"
+                                      direction="row" // anyOf["row" (default), "row-reverse", "column", "column-reverse"]
+                                    />
+                                  </View>
+                                  <Text style={styles.totalrating}>
+                                    {look === null ? 0.0 : look.toFixed(2)}
+                                  </Text>
+                                </View>
+                                <View style={styles.rowcontainer}>
+                                  <Text style={styles.middlecontainer}>
+                                    Color
+                                  </Text>
+                                  <View style={{flex: 0.4}}>
+                                    <Rating
+                                      rated={colour}
+                                      totalCount={5}
+                                      ratingColor="#f1c644"
+                                      ratingBackgroundColor="#d4d4d4"
+                                      size={15}
+                                      onIconTap={(val) =>
+                                        handleColor({
+                                          colour: val,
+                                          recipeId: item._id,
+                                        })
+                                      }
+                                      icon="ios-star"
+                                      direction="row" // anyOf["row" (default), "row-reverse", "column", "column-reverse"]
+                                    />
+                                  </View>
+                                  <Text style={styles.totalrating}>
+                                    {colour === null ? 0.0 : colour.toFixed(2)}
+                                  </Text>
+                                </View>
                               </View>
-                            </View>
-                          </>
-                        }
-                        backgroundColor="white">
-                        <Ionicons name="md-star-outline" size={25} />
-                      </Tooltip>
-                    </Interaction>
-                    <Interaction>
-                      <AntDesign
-                        name="sharealt"
-                        size={25}
-                        onPress={() =>
-                          onShare({
-                            item: item,
-                          })
-                        }
-                      />
-                    </Interaction>
-                    <Interaction>
-                      <TouchableOpacity
-                        underlayColor="rgba(73,182,77,0.9)"
-                        onPress={() => onPressRecipe(item._id)}>
-                        <Entypo name="bowl" size={25} />
-                      </TouchableOpacity>
-                    </Interaction>
-                  </InteractionWrapper>
-                </Card>
-              );
-            }}
-            keyExtractor={(item) => item._id}
-            showsVerticalScrollIndicator={false}
-          />
-        </Container>
-      </View>
+                            </>
+                          }
+                          backgroundColor="white">
+                          <Ionicons name="md-star-outline" size={25} />
+                        </Tooltip>
+                      </Interaction>
+                      <Interaction>
+                        <AntDesign
+                          name="sharealt"
+                          size={25}
+                          onPress={() =>
+                            onShare({
+                              item: item,
+                            })
+                          }
+                        />
+                      </Interaction>
+                      <Interaction>
+                        <TouchableOpacity
+                          underlayColor="rgba(73,182,77,0.9)"
+                          onPress={() => onPressRecipe(item._id)}>
+                          <Entypo name="bowl" size={25} />
+                        </TouchableOpacity>
+                      </Interaction>
+                    </InteractionWrapper>
+                  </Card>
+                );
+              }}
+              keyExtractor={(item) => item._id}
+              showsVerticalScrollIndicator={false}
+            />
+          </Container>
+        </View>
+      </ScrollView>
     </>
   );
 };
