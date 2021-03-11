@@ -55,7 +55,6 @@ const LoginScreen = ({navigation}) => {
     setLoading(true);
     try {
       axios.post(`${baseUrl}/user/login`, userData).then(async (response) => {
-        console.log('response', response);
         setLoading(false);
         if (response.data.status == 'Fail') {
           Toast.show(response.data.message, Toast.LONG);

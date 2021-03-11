@@ -8,9 +8,7 @@ import {
   Dimensions,
   Image,
   ActivityIndicator,
-  RefreshControl,
   Alert,
-  BackHandler,
   TouchableOpacity,
   ScrollView,
 } from 'react-native';
@@ -379,10 +377,6 @@ const ProfileScreen = (props) => {
       setlook(res.data.data[0].look);
       setTotal(res.data.data[0].avarage_rating);
     });
-  };
-
-  const onPressRecipe = (item) => {
-    props.navigation.navigate('RecipeScreen', {item});
   };
 
   return (

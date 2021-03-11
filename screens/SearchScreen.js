@@ -5,7 +5,6 @@ import {
   FlatList,
   TextInput,
   TouchableOpacity,
-  Image,
   StatusBar,
   ActivityIndicator,
   Alert,

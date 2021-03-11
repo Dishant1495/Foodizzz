@@ -118,7 +118,6 @@ const HomeScreen = (props) => {
           setLoading(false);
         })
         .catch((error) => {
-          console.log('errror', error);
           setLoading(false);
         });
     } else if (value === 'Rating' && filter === 'All') {
@@ -133,7 +132,6 @@ const HomeScreen = (props) => {
           setLoading(false);
         })
         .catch((error) => {
-          console.log('errror', error);
           setLoading(false);
         });
     } else if (value === 'Recent' && filter === 'Meet') {
@@ -148,7 +146,6 @@ const HomeScreen = (props) => {
           setLoading(false);
         })
         .catch((error) => {
-          console.log('errror', error);
           setLoading(false);
         });
     } else if (value === 'Recent' && filter === 'Not Meet') {
@@ -163,7 +160,6 @@ const HomeScreen = (props) => {
           setLoading(false);
         })
         .catch((error) => {
-          console.log('errror', error);
           setLoading(false);
         });
     } else if (value === 'Rating' && filter === 'Meet') {
@@ -178,7 +174,6 @@ const HomeScreen = (props) => {
           setLoading(false);
         })
         .catch((error) => {
-          console.log('errror', error);
           setLoading(false);
         });
     } else if (value === 'Rating' && filter === 'Not Meet') {
@@ -193,7 +188,6 @@ const HomeScreen = (props) => {
           setLoading(false);
         })
         .catch((error) => {
-          console.log('errror', error);
           setLoading(false);
         });
     }
@@ -215,7 +209,6 @@ const HomeScreen = (props) => {
         setLoading(false);
       })
       .catch((error) => {
-        console.error(error);
         setLoading(false);
       });
   };
@@ -234,7 +227,6 @@ const HomeScreen = (props) => {
         setRefreshing(false);
       })
       .catch((error) => {
-        console.error(error);
         setRefreshing(false);
       });
   };
@@ -479,7 +471,6 @@ const HomeScreen = (props) => {
       includeBase64: true,
       multiple: true,
     }).then((image) => {
-      console.log('image', image);
       const multipleImage = [];
       image.map((item, index) => {
         if (

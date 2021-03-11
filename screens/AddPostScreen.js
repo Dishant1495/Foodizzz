@@ -191,7 +191,6 @@ const AddPostScreen = (props) => {
           var select = isSelected;
 
           image.map((item, index) => {
-            console.log('****', item);
             if (item.path) {
               formdata.append('recipeImage', {
                 uri: item.path,
@@ -226,16 +225,13 @@ const AddPostScreen = (props) => {
           formdata.append('containrecipe', select);
           formdata.append('UserId', userId);
 
-          console.log('formData', formdata);
 
           axios
             .put(`${baseUrl}/recipes/updateRecipe/${postData._id}`, formdata, {
               config,
             })
             .then((res) => {
-              console.log('response', res);
               Toast.show('Recipe Update Successfully', Toast.LONG);
-              //  props.navigation.push('Feed');
               setCount(0);
               setstate(false);
             })
@@ -251,14 +247,12 @@ const AddPostScreen = (props) => {
                 setdescription(null);
             })
             .catch((e) => {
-              console.log('e', e);
               setstate(false);
               Toast.show('Unable to failed update recipe', Toast.LONG);
             });
         }
       } else {
         setstate(false);
-        console.log('e');
       }
     } else {
       if (count === 0) {
@@ -289,7 +283,6 @@ const AddPostScreen = (props) => {
             if (elemets.checked === true) categories = elemets.value;
           });
           const formdata = new FormData();
-          console.log('image insert', image);
           image.map((item, index) => {
             formdata.append('recipeImage', {
               uri: item.path,
@@ -297,7 +290,6 @@ const AddPostScreen = (props) => {
               name: item.path.substr(item.path.lastIndexOf('/') + 1),
             });
           });
-          console.log('path of image', image);
           var select = isSelected;
           if (select === true) {
             formdata.append('video', {
@@ -315,7 +307,6 @@ const AddPostScreen = (props) => {
           formdata.append('type', categories);
           formdata.append('containrecipe', select);
           formdata.append('UserId', userId);
-          console.log('Add Post formdata', formdata);
           axios
             .post(`${baseUrl}/recipes/AddRecipe`, formdata, {
               config,
@@ -492,7 +483,6 @@ const AddPostScreen = (props) => {
           <>
             <View style={styles.cardview}>
               <View style={{marginRight: deviceWidth * 0.0}}>
-                {console.log('video path', video)}
                 {video ? (
                   <>
                     <VideoPlayer

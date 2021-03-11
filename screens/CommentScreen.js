@@ -125,7 +125,6 @@ const CommentScreen = (props) => {
   };
 
   const renderComment = ({item}) => {
-    console.log('item', item);
     return (
       <ScrollView>
         <View style={styles.container}>

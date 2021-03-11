@@ -68,25 +68,18 @@ const EditProfile = (props) => {
   };
 
   const Submit = async () => {
-    console.log('sssss');
-    console.log('fileImage', fileImage);
     const formdata = new FormData();
     formdata.append('Email', email);
     formdata.append('City', city);
     formdata.append('Firstname', firstName);
-    console.log('fileType', fileType);
-    console.log('filename', filename);
     if (fileType === null && filename === null) {
-      console.log('enter a');
       formdata.append('userimage', {
         uri: fileImage,
         type: 'image/' + fileImage.split('.').pop(),
         name: Date.now() + '.' + fileImage.split('.').pop(),
       });
     } else if (fileImage === null) {
-      console.log('b', b);
     } else if (fileType && filename && fileImage) {
-      console.log('ccccc');
       formdata.append('userimage', {
         uri: fileImage,
         type: fileType,
@@ -95,13 +88,11 @@ const EditProfile = (props) => {
     }
     setLoading(true);
     const UserId = await AsyncStorage.getItem('UserId');
-    console.log('formdata', formdata);
     axios
       .put(`${baseUrl}/user/updateprofile/${UserId}`, formdata, {
         config,
       })
       .then((response) => {
-        console.log(response);
         setLoading(false);
         if (response.data.status == 'success') {
           Toast.show('Profile Update Succesfully', Toast.LONG);
@@ -111,7 +102,6 @@ const EditProfile = (props) => {
         }
       })
       .catch((error) => {
-        console.log('e', error);
         setLoading(false);
       });
   };
