@@ -17,6 +17,7 @@ import {Rating} from 'react-native-rating-element';
 import NetInfo from '@react-native-community/netinfo';
 import {baseUrl} from '../baseUrl';
 import ImageLoad from 'react-native-image-placeholder';
+import Spinner from 'react-native-loading-spinner-overlay';
 
 const CategoriesScreen = (props) => {
   const onPressCategory = (item) => {
@@ -124,7 +125,11 @@ const CategoriesScreen = (props) => {
   return (
     <View>
       {loading == true ? (
-        <ActivityIndicator size="small" color="#999" style={{marginTop: 15}} />
+        <Spinner
+          visible={loading}
+          textContent={'Loading...'}
+          textStyle={styles.textcontainer22}
+        />
       ) : null}
       <StatusBar backgroundColor="orange" />
       <FlatList data={recipetypes} renderItem={renderCategory} />

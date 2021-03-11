@@ -1,5 +1,5 @@
 import {StyleSheet} from 'react-native';
-import { windowWidth } from '../utils/Dimentions';
+import {windowWidth} from '../utils/Dimentions';
 
 const styles = StyleSheet.create({
   categoriesItemContainer: {
@@ -9,7 +9,11 @@ const styles = StyleSheet.create({
     // alignItems: 'center',
     height: 215,
     borderColor: '#cccccc',
-    width:windowWidth*0.4,
+    width: windowWidth * 0.4,
+  },
+
+  textcontainer22: {
+    color: '#999',
   },
   title: {
     flex: 1,
@@ -17,7 +21,6 @@ const styles = StyleSheet.create({
     textAlign: 'left',
     color: '#333333',
     marginTop: 4,
-  
   },
   rowcontainer: {
     flexDirection: 'row',
@@ -32,7 +35,6 @@ const styles = StyleSheet.create({
     flex: 0.6,
   },
 
-  
   categoriesPhoto: {
     width: '100%',
     height: 155,
@@ -49,30 +51,30 @@ const styles = StyleSheet.create({
     elevation: 3,
   },
   categoriesName: {
-    flex:0.8,
+    flex: 0.8,
     fontSize: 20,
     fontWeight: 'bold',
     color: '#333333',
     marginTop: 8,
-    alignItems:'flex-start',
-    marginLeft:windowWidth*0.05,
+    alignItems: 'flex-start',
+    marginLeft: windowWidth * 0.05,
   },
-  allbutton:{
+  allbutton: {
     fontSize: 14,
     color: '#666',
     marginTop: 13,
-    alignItems:'flex-end',
-    marginLeft:windowWidth*0.4,
+    alignItems: 'flex-end',
+    marginLeft: windowWidth * 0.4,
     // textDecorationColor:'blue'
-    textDecorationLine:'underline',
+    textDecorationLine: 'underline',
   },
-  viewbutton:{
+  viewbutton: {
     color: '#333333',
-    borderBottomWidth:1,
-    borderColor:'blue'
+    borderBottomWidth: 1,
+    borderColor: 'blue',
   },
-  direction:{
-    flexDirection:"row",
+  direction: {
+    flexDirection: 'row',
   },
   categoriesInfo: {
     marginTop: 3,

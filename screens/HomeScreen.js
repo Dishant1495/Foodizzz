@@ -48,6 +48,8 @@ import Icon from 'react-native-vector-icons/Feather';
 import DropDownPicker from 'react-native-dropdown-picker';
 import Dialog, {DialogContent} from 'react-native-popup-dialog';
 import ImagePicker from 'react-native-image-crop-picker';
+import Spinner from 'react-native-loading-spinner-overlay';
+
 const HomeScreen = (props) => {
   const [fetchdata, setfetchdata] = useState([]);
   const [activeSlide, setActiveIndex] = useState(0);
@@ -491,7 +493,11 @@ const HomeScreen = (props) => {
       <StatusBar backgroundColor="orange" />
       <HomeHeaderLeft {...props} />
       {loading == true ? (
-        <ActivityIndicator size="small" color="#999" style={{marginTop: 15}} />
+        <Spinner
+          visible={loading}
+          textContent={'Loading...'}
+          textStyle={styles.textcontainer22}
+        />
       ) : null}
       <View style={{flexDirection: 'row'}}>
         <DropDownPicker
@@ -897,6 +903,10 @@ export default HomeScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+
+  textcontainer22: {
+    color: '#999',
   },
 
   directionsStyle: {
