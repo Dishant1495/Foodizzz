@@ -74,6 +74,7 @@ const EditProfile = (props) => {
     formdata.append('Firstname', firstName);
     if (fileType === null && filename === null) {
       console.log('aa');
+      // formdata.append('userimage', '');
     } else {
       console.log('b');
       fileImage === null

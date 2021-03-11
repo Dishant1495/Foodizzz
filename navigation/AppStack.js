@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {View} from 'react-native';
+import {TouchableOpacity, View} from 'react-native';
 import {createStackNavigator} from '@react-navigation/stack';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -107,7 +107,7 @@ const CategoryStack = () => (
   </Stack.Navigator>
 );
 
-const ProfileStack = () => (
+const ProfileStack = ({navigation}) => (
   <Stack.Navigator>
     <Stack.Screen
       name="Profile"
@@ -163,9 +163,11 @@ const ProfileStack = () => (
         },
         headerBackTitleVisible: false,
         headerBackImage: () => (
-          <View style={{}}>
+          <TouchableOpacity
+            style={{}}
+            onPress={() => navigation.push('Profile')}>
             <Ionicons name="arrow-back" size={25} color="white" />
-          </View>
+          </TouchableOpacity>
         ),
         headerRight: () => <View style={{marginRight: 10}}></View>,
       }}

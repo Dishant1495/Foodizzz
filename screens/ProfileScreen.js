@@ -45,7 +45,6 @@ import Toast from 'react-native-simple-toast';
 import ImageLoad from 'react-native-image-placeholder';
 import Spinner from 'react-native-loading-spinner-overlay';
 
-
 const ProfileScreen = (props) => {
   const [netInfo, setNetInfo] = useState('');
   const [email, setEmail] = useState();
@@ -65,6 +64,8 @@ const ProfileScreen = (props) => {
   useEffect(() => {
     const fetchData = async () => {
       const UserId = await AsyncStorage.getItem('UserId');
+      const image = await AsyncStorage.getItem('image');
+      console.log(image);
       await axios
         .get(`${baseUrl}/user/userGetById/${UserId}`)
         .then((userDetails) => {
@@ -105,7 +106,7 @@ const ProfileScreen = (props) => {
   };
 
   const handleEditProfile = () => {
-    props.navigation.navigate('Edit Profile');
+    props.navigation.push('Edit Profile');
   };
 
   const fetchUserTimeLine = async () => {
@@ -114,7 +115,6 @@ const ProfileScreen = (props) => {
     await axios
       .get(`${baseUrl}/recipes/GetByUserId/${UserId}`)
       .then((userFeed) => {
-        console.log('userFeed', userFeed);
         setUserFeed(userFeed?.data?.data);
         setLoading(false);
         setCount(0);

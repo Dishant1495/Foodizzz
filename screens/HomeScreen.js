@@ -580,7 +580,7 @@ const HomeScreen = (props) => {
                     <UserImg
                       source={{
                         uri:
-                          item?.userimage === 'null'
+                          item?.userimage === null
                             ? 'https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/default-avatar.png'
                             : item?.userimage,
                       }}

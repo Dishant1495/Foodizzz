@@ -18,6 +18,7 @@ import ImagePicker from 'react-native-image-picker';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import FormInputCity from '../components/FormInputCity';
 import NetInfo from '@react-native-community/netinfo';
+
 const config = {headers: {'Content-Type': 'multipart/form-data'}};
 
 const SignupScreen = ({navigation}) => {
@@ -32,7 +33,7 @@ const SignupScreen = ({navigation}) => {
 
   useEffect(() => {
     getNetInfo();
-    // Subscribe to network state updates
+  // Subscribe to network state updates
     const unsubscribe = NetInfo.addEventListener((state) => {
       setNetInfo(
         `Connection type: ${state.type}
