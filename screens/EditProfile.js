@@ -72,13 +72,18 @@ const EditProfile = (props) => {
     formdata.append('Email', email);
     formdata.append('City', city);
     formdata.append('Firstname', firstName);
-    fileImage === null
-      ? formdata.append('userimage', '')
-      : formdata.append('userimage', {
-          uri: fileImage,
-          type: fileType,
-          name: filename,
-        });
+    if (fileType === null && filename === null) {
+      console.log('aa');
+    } else {
+      console.log('b');
+      fileImage === null
+        ? null
+        : formdata.append('userimage', {
+            uri: fileImage,
+            type: fileType,
+            name: filename,
+          });
+    }
     setLoading(true);
     console.log('formdata', formdata);
     const UserId = await AsyncStorage.getItem('UserId');
