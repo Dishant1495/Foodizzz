@@ -6,7 +6,6 @@ import {
   TextInput,
   TouchableOpacity,
   StatusBar,
-  ActivityIndicator,
   Alert,
 } from 'react-native';
 import axios from 'axios';
@@ -16,6 +15,8 @@ import {baseUrl} from '../baseUrl';
 import {Rating} from 'react-native-rating-element';
 import NetInfo from '@react-native-community/netinfo';
 import ImageLoad from 'react-native-image-placeholder';
+import Spinner from 'react-native-loading-spinner-overlay';
+
 const SearchScreen = (props) => {
   const [data, setData] = useState([]);
   const [temp, setTemp] = useState([]);
@@ -122,10 +123,10 @@ const SearchScreen = (props) => {
       <StatusBar backgroundColor="orange" />
       <View style={{flex: 1}}>
         {loading == true ? (
-          <ActivityIndicator
-            size="small"
-            color="#999"
-            style={{marginTop: 15}}
+          <Spinner
+            visible={loading}
+            textContent={'Loading...'}
+            textStyle={styles.textcontainer22}
           />
         ) : null}
         <FlatList

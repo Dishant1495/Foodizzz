@@ -5,7 +5,6 @@ import {
   Text,
   StatusBar,
   Image,
-  ActivityIndicator,
   Alert,
   TouchableOpacity,
 } from 'react-native';
@@ -15,6 +14,7 @@ import AsyncStorage from '@react-native-community/async-storage';
 import {baseUrl} from '../baseUrl';
 import axios from 'axios';
 import {Container} from '../styles/FeedStyles';
+import Spinner from 'react-native-loading-spinner-overlay';
 
 const Recipeowner = (props) => {
   const [netInfo, setNetInfo] = useState('');
@@ -172,10 +172,10 @@ const Recipeowner = (props) => {
           </TouchableOpacity>
         ) : null}
         {loading == true ? (
-          <ActivityIndicator
-            size="small"
-            color="#999"
-            style={{marginTop: 15}}
+          <Spinner
+            visible={loading}
+            textContent={'Loading...'}
+            textStyle={styles.textcontainer22}
           />
         ) : null}
         <Container>

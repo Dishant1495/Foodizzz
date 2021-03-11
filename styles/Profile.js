@@ -26,6 +26,10 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
 
+  textcontainer22: {
+    color: '#999',
+  },
+
   middleContainer: {
     flexDirection: 'column',
     marginTop: windowHeight / 16,

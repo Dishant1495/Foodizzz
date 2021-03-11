@@ -18,6 +18,10 @@ const styles = StyleSheet.create({
     width: windowWidth * 0.35,
     height: windowHeight * 0.2,
   },
+
+  textcontainer22: {
+    color: '#999',
+  },
 });
 
 export default styles;

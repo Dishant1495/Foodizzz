@@ -3,10 +3,8 @@ import {
   FlatList,
   Text,
   View,
-  Image,
   TouchableOpacity,
   StatusBar,
-  ActivityIndicator,
   Alert,
 } from 'react-native';
 import styles from '../styles/Categories';

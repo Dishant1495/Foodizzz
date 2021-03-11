@@ -7,7 +7,6 @@ import {
   StatusBar,
   Dimensions,
   Image,
-  ActivityIndicator,
   Alert,
   TouchableOpacity,
   ScrollView,
@@ -44,6 +43,8 @@ import {windowHeight} from '../utils/Dimentions';
 import {ShareDialog} from 'react-native-fbsdk';
 import Toast from 'react-native-simple-toast';
 import ImageLoad from 'react-native-image-placeholder';
+import Spinner from 'react-native-loading-spinner-overlay';
+
 
 const ProfileScreen = (props) => {
   const [netInfo, setNetInfo] = useState('');
@@ -411,10 +412,10 @@ const ProfileScreen = (props) => {
           </TouchableOpacity>
 
           {loading == true ? (
-            <ActivityIndicator
-              size="small"
-              color="#999"
-              style={{marginTop: 15}}
+            <Spinner
+              visible={loading}
+              textContent={'Loading...'}
+              textStyle={styles.textcontainer22}
             />
           ) : null}
           <Container>

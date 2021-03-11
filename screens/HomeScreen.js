@@ -28,7 +28,6 @@ import {
   StatusBar,
   Dimensions,
   Image,
-  ActivityIndicator,
   RefreshControl,
   Alert,
   BackHandler,

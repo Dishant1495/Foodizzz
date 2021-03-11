@@ -225,7 +225,6 @@ const AddPostScreen = (props) => {
           formdata.append('containrecipe', select);
           formdata.append('UserId', userId);
 
-
           axios
             .put(`${baseUrl}/recipes/updateRecipe/${postData._id}`, formdata, {
               config,
@@ -467,7 +466,7 @@ const AddPostScreen = (props) => {
             style={styles.radiocontainer}
           />
         </View>
-        {state && <ActivityIndicator size="large" color="#0000ff" />}
+        {state && <ActivityIndicator size="small" color="#0000ff" />}
         <View style={styles.cardview}>
           <View style={styles.checkboxcontainer}>
             <CheckBox
