@@ -15,6 +15,7 @@ import {baseUrl} from '../baseUrl';
 import axios from 'axios';
 import {Container} from '../styles/FeedStyles';
 import Spinner from 'react-native-loading-spinner-overlay';
+import ImageLoad from 'react-native-image-placeholder';
 
 const Recipeowner = (props) => {
   const [netInfo, setNetInfo] = useState('');
@@ -84,36 +85,53 @@ const Recipeowner = (props) => {
   };
 
   const handleEditProfile = async () => {
-    if (follow === 0) {
-      const item = props?.route?.params?.item;
-      const UserId = await AsyncStorage.getItem('UserId');
-      setLoading(true);
-      const data = {
-        FollowerUserId: item,
-        FollowingUserId: UserId,
-      };
-      await axios
-        .post(`${baseUrl}/follow/insertfollower`, data)
-        .then((response) => {
-          setfollow(response?.data?.data);
-          setLoading(false);
-        })
-        .catch((e) => {
-          console.log('e', e);
-        });
+    const UserId = await AsyncStorage.getItem('UserId');
+    if (!UserId) {
+      Alert.alert(
+        'Login',
+        'Plese Login First',
+        [
+          {
+            text: 'Cancel',
+            onPress: () => props.navigation.navigate('Feed'),
+            style: 'cancel',
+          },
+          {text: 'Login', onPress: () => props.navigation.navigate('Login')},
+        ],
+        {cancelable: false},
+      );
     } else {
-      const item = props?.route?.params?.item;
-      const UserId = await AsyncStorage.getItem('UserId');
-      setLoading(true);
-      await axios
-        .delete(`${baseUrl}/follow/deletefollow/${item}/${UserId}`)
-        .then((response) => {
-          setfollow(0);
-          setLoading(false);
-        })
-        .catch((e) => {
-          console.log('e', e);
-        });
+      if (follow === 0) {
+        const item = props?.route?.params?.item;
+        const UserId = await AsyncStorage.getItem('UserId');
+        setLoading(true);
+        const data = {
+          FollowerUserId: item,
+          FollowingUserId: UserId,
+        };
+        await axios
+          .post(`${baseUrl}/follow/insertfollower`, data)
+          .then((response) => {
+            setfollow(response?.data?.data);
+            setLoading(false);
+          })
+          .catch((e) => {
+            console.log('e', e);
+          });
+      } else {
+        const item = props?.route?.params?.item;
+        const UserId = await AsyncStorage.getItem('UserId');
+        setLoading(true);
+        await axios
+          .delete(`${baseUrl}/follow/deletefollow/${item}/${UserId}`)
+          .then((response) => {
+            setfollow(0);
+            setLoading(false);
+          })
+          .catch((e) => {
+            console.log('e', e);
+          });
+      }
     }
   };
 
@@ -187,17 +205,19 @@ const Recipeowner = (props) => {
                   onPress={() => onPressRecipe(item._id)}
                   style={{
                     marginVertical: 5,
-                    marginBottom: 10,
+                    marginBottom: -1,
                     flexDirection: 'column',
                     margin: 2,
                   }}>
-                  <Image
+                  <ImageLoad
                     source={{uri: item.documents[0].image}}
                     style={{
                       width: 112,
                       height: 112,
                       justifyContent: 'space-between',
                     }}
+                    loadingStyle={{size: 'large', color: 'blue'}}
+                    isShowActivity={true}
                   />
                 </TouchableOpacity>
               );

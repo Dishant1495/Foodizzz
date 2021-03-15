@@ -4,6 +4,7 @@ import {createStackNavigator} from '@react-navigation/stack';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
+import Entypo from 'react-native-vector-icons/Entypo';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import HomeScreen from '../screens/HomeScreen';
 import CategoriesScreen from '../screens/CategoriesScreen';
@@ -379,7 +380,7 @@ const AppStack = () => {
             options={{
               tabBarLabel: 'Browse',
               tabBarIcon: ({color, size}) => (
-                <Ionicons name="pencil-outline" color={color} size={size} />
+                <AntDesign name="folderopen" color={color} size={size} />
               ),
             }}
           />
@@ -417,7 +418,7 @@ const AppStack = () => {
             options={{
               tabBarLabel: 'Browse',
               tabBarIcon: ({color, size}) => (
-                <Ionicons name="pencil-outline" color={color} size={size} />
+                <AntDesign name="folderopen" color={color} size={size} />
               ),
             }}
           />

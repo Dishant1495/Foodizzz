@@ -6,6 +6,7 @@ import {
   Image,
   StatusBar,
   Alert,
+  BackHandler,
 } from 'react-native';
 import FormInput from '../components/FormInput';
 import FormButton from '../components/FormButton';
@@ -31,10 +32,29 @@ const LoginScreen = ({navigation}) => {
         IP Address: ${state.details.ipAddress}`,
       );
     });
+    const backAction = () => {
+      if (navigation.isFocused()) {
+        Alert.alert('Exit App', 'Do you want to EXIT?', [
+          {
+            text: 'No',
+            onPress: () => null,
+            style: 'cancel',
+          },
+          {text: 'YES', onPress: () => BackHandler.exitApp()},
+        ]);
+        return true;
+      }
+    };
+
+    const backHandler = BackHandler.addEventListener(
+      'hardwareBackPress',
+      backAction,
+    );
 
     return () => {
       // Unsubscribe to network state updates
       unsubscribe();
+      backHandler.remove();
     };
   }, []);
 

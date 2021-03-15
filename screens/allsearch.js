@@ -60,6 +60,7 @@ const SearchScreen = (props) => {
         var array1 = responseArr[0]?.data?.data;
         var array2 = responseArr[1]?.data?.data;
         const res = array1.filter((x) => !array2.includes(x));
+        console.log("res" , res)
         setData(res);
       });
   };

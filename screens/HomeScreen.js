@@ -135,7 +135,7 @@ const HomeScreen = (props) => {
         .catch((error) => {
           setLoading(false);
         });
-    } else if (value === 'Recent' && filter === 'Meet') {
+    } else if (value === 'Recent' && filter === 'Meat') {
       await axios
         .get(`${baseUrl}/recipes/meetwithrecent/${userId}?page=` + page)
         //Sending the currect page  with get request
@@ -149,7 +149,7 @@ const HomeScreen = (props) => {
         .catch((error) => {
           setLoading(false);
         });
-    } else if (value === 'Recent' && filter === 'Not Meet') {
+    } else if (value === 'Recent' && filter === 'Non Meat') {
       await axios
         .get(`${baseUrl}/recipes/nonmeetwithrecent/${userId}?page=` + page)
         //Sending the currect page  with get request
@@ -163,7 +163,7 @@ const HomeScreen = (props) => {
         .catch((error) => {
           setLoading(false);
         });
-    } else if (value === 'Rating' && filter === 'Meet') {
+    } else if (value === 'Rating' && filter === 'Meat') {
       await axios
         .get(`${baseUrl}/recipes/meetwithrating/${userId}?page=` + page)
         //Sending the currect page  with get request
@@ -177,9 +177,41 @@ const HomeScreen = (props) => {
         .catch((error) => {
           setLoading(false);
         });
-    } else if (value === 'Rating' && filter === 'Not Meet') {
+    } else if (value === 'Rating' && filter === 'Non Meat') {
       await axios
         .get(`${baseUrl}/recipes/notmeetwithrating/${userId}?page=` + page)
+        //Sending the currect page  with get request
+        .then((responseJson) => {
+          //Successful response
+          setPage(page + 1);
+          //Increasing the page for the next API call
+          setfetchdata([...fetchdata, ...responseJson.data.data]);
+          setLoading(false);
+        })
+        .catch((error) => {
+          setLoading(false);
+        });
+    } else if (filter === 'Following') {
+      await axios
+        .get(`${baseUrl}/follow/follower/${userId}?page=` + page)
+        //Sending the currect page  with get request
+        .then((responseJson) => {
+          //Successful response
+          setPage(page + 1);
+          //Increasing the page for the next API call
+          setfetchdata([...fetchdata, ...responseJson.data.data]);
+
+          setLoading(false);
+        })
+        .catch((error) => {
+          setLoading(false);
+        });
+    } else {
+      setLoading(true);
+      setfilter('All');
+      setValue('Recent');
+      await axios
+        .get(`${baseUrl}/recipes/Feed/${userId}?page=` + page)
         //Sending the currect page  with get request
         .then((responseJson) => {
           //Successful response
@@ -498,6 +530,7 @@ const HomeScreen = (props) => {
           textStyle={styles.textcontainer22}
         />
       ) : null}
+
       <View style={{flexDirection: 'row'}}>
         <DropDownPicker
           items={items}
@@ -530,13 +563,18 @@ const HomeScreen = (props) => {
               icon: () => <Icon name="filter" size={18} color="#900" />,
             },
             {
-              label: 'Meet',
-              value: 'Meet',
+              label: 'Meat',
+              value: 'Meat',
               icon: () => <Icon name="filter" size={18} color="#900" />,
             },
             {
-              label: 'Not Meet',
-              value: 'Not Meet',
+              label: 'Non Meat',
+              value: 'Non Meat',
+              icon: () => <Icon name="filter" size={18} color="#900" />,
+            },
+            {
+              label: 'Following',
+              value: 'Following',
               icon: () => <Icon name="filter" size={18} color="#900" />,
             },
           ]}
@@ -557,6 +595,13 @@ const HomeScreen = (props) => {
         />
       </View>
       <Container>
+        {loading == false && fetchdata.length === 0 ? (
+          <View>
+            <View>
+              <Text>No Data Available </Text>
+            </View>
+          </View>
+        ) : null}
         <FlatList
           data={fetchdata}
           onEndReached={getData}

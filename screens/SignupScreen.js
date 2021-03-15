@@ -18,7 +18,6 @@ import ImagePicker from 'react-native-image-picker';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import FormInputCity from '../components/FormInputCity';
 import NetInfo from '@react-native-community/netinfo';
-
 const config = {headers: {'Content-Type': 'multipart/form-data'}};
 
 const SignupScreen = ({navigation}) => {
@@ -33,7 +32,7 @@ const SignupScreen = ({navigation}) => {
 
   useEffect(() => {
     getNetInfo();
-  // Subscribe to network state updates
+    // Subscribe to network state updates
     const unsubscribe = NetInfo.addEventListener((state) => {
       setNetInfo(
         `Connection type: ${state.type}
@@ -62,10 +61,11 @@ const SignupScreen = ({navigation}) => {
       Toast.show('Password does not match');
     } else {
       const formdata = new FormData();
+      formdata.append('Firstname', firstName);
       formdata.append('Email', email);
       formdata.append('Password', password);
       formdata.append('City', city);
-      formdata.append('Firstname', firstName);
+
       fileImage === null
         ? null
         : formdata.append('userimage', {
@@ -80,6 +80,7 @@ const SignupScreen = ({navigation}) => {
             config,
           })
           .then(async (response) => {
+            console.log('response', response);
             setLoading(false);
             if (response.data.status == 'success') {
               Toast.show('Signup Succesfully', Toast.LONG);
@@ -89,7 +90,8 @@ const SignupScreen = ({navigation}) => {
             }
           })
           .catch((e) => {
-            Toast.show('Unable to Failed User', Toast.LONG);
+            console.log('e', e);
+            Toast.show('Email is already Exists', Toast.LONG);
             setLoading(false);
           });
       } catch (error) {
@@ -161,19 +163,20 @@ const SignupScreen = ({navigation}) => {
         </View>
 
         <FormInput
-          labelValue={firstName}
-          onChangeText={(firstName) => setFirstName(firstName)}
-          placeholderText="Name"
-          iconType="user"
-          autoCapitalize="none"
-          autoCorrect={false}
-        />
-        <FormInput
           labelValue={email}
           onChangeText={(email) => setEmail(email)}
           placeholderText="Email"
           iconType="mail"
           keyboardType="email-address"
+          autoCapitalize="none"
+          autoCorrect={false}
+        />
+
+        <FormInput
+          labelValue={firstName}
+          onChangeText={(firstName) => setFirstName(firstName)}
+          placeholderText="Name"
+          iconType="user"
           autoCapitalize="none"
           autoCorrect={false}
         />

@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React from 'react';
 import {View} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
@@ -121,7 +121,6 @@ const Auth = () => {
 };
 
 const Routes = () => {
- 
   return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Auth">
