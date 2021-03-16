@@ -4,19 +4,23 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/Foodzzz.iml" filepath="$PROJECT_DIR$/.idea/modules/Foodzzz.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/Foodzzz.app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/Foodzzz.app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/460137129/Foodzzz.react-native-community_async-storage.iml" filepath="$PROJECT_DIR$/.idea/modules/460137129/Foodzzz.react-native-community_async-storage.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/902109158/Foodzzz.react-native-community_masked-view.iml" filepath="$PROJECT_DIR$/.idea/modules/902109158/Foodzzz.react-native-community_masked-view.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/67974527/Foodzzz.react-native-community_netinfo.iml" filepath="$PROJECT_DIR$/.idea/modules/67974527/Foodzzz.react-native-community_netinfo.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/-1385184804/Foodzzz.react-native-community_toolbar-android.iml" filepath="$PROJECT_DIR$/.idea/modules/-1385184804/Foodzzz.react-native-community_toolbar-android.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/1499555266/Foodzzz.react-native-fs.iml" filepath="$PROJECT_DIR$/.idea/modules/1499555266/Foodzzz.react-native-fs.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/-2081086543/Foodzzz.react-native-gesture-handler.iml" filepath="$PROJECT_DIR$/.idea/modules/-2081086543/Foodzzz.react-native-gesture-handler.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/-848983004/Foodzzz.react-native-image-crop-picker.iml" filepath="$PROJECT_DIR$/.idea/modules/-848983004/Foodzzz.react-native-image-crop-picker.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/-1529979659/Foodzzz.react-native-image-picker.iml" filepath="$PROJECT_DIR$/.idea/modules/-1529979659/Foodzzz.react-native-image-picker.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/-1660801077/Foodzzz.react-native-reanimated.iml" filepath="$PROJECT_DIR$/.idea/modules/-1660801077/Foodzzz.react-native-reanimated.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/-2113006630/Foodzzz.react-native-safe-area-context.iml" filepath="$PROJECT_DIR$/.idea/modules/-2113006630/Foodzzz.react-native-safe-area-context.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/1467849842/Foodzzz.react-native-screens.iml" filepath="$PROJECT_DIR$/.idea/modules/1467849842/Foodzzz.react-native-screens.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/95287749/Foodzzz.react-native-vector-icons.iml" filepath="$PROJECT_DIR$/.idea/modules/95287749/Foodzzz.react-native-vector-icons.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/443045414/Foodzzz.react-native-video.iml" filepath="$PROJECT_DIR$/.idea/modules/443045414/Foodzzz.react-native-video.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/-2045864834/Foodzzz.react-native-community_async-storage.iml" filepath="$PROJECT_DIR$/.idea/modules/-2045864834/Foodzzz.react-native-community_async-storage.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/1139509082/Foodzzz.react-native-community_geolocation.iml" filepath="$PROJECT_DIR$/.idea/modules/1139509082/Foodzzz.react-native-community_geolocation.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/206764795/Foodzzz.react-native-community_masked-view.iml" filepath="$PROJECT_DIR$/.idea/modules/206764795/Foodzzz.react-native-community_masked-view.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/1509537311/Foodzzz.react-native-community_netinfo.iml" filepath="$PROJECT_DIR$/.idea/modules/1509537311/Foodzzz.react-native-community_netinfo.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/-176418191/Foodzzz.react-native-community_toolbar-android.iml" filepath="$PROJECT_DIR$/.idea/modules/-176418191/Foodzzz.react-native-community_toolbar-android.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/724209908/Foodzzz.react-native-fbsdk.iml" filepath="$PROJECT_DIR$/.idea/modules/724209908/Foodzzz.react-native-fbsdk.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/544590426/Foodzzz.react-native-fetch-blob.iml" filepath="$PROJECT_DIR$/.idea/modules/544590426/Foodzzz.react-native-fetch-blob.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/790488407/Foodzzz.react-native-fs.iml" filepath="$PROJECT_DIR$/.idea/modules/790488407/Foodzzz.react-native-fs.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/1557487164/Foodzzz.react-native-gesture-handler.iml" filepath="$PROJECT_DIR$/.idea/modules/1557487164/Foodzzz.react-native-gesture-handler.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/-283029521/Foodzzz.react-native-image-crop-picker.iml" filepath="$PROJECT_DIR$/.idea/modules/-283029521/Foodzzz.react-native-image-crop-picker.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/-1655429558/Foodzzz.react-native-image-picker.iml" filepath="$PROJECT_DIR$/.idea/modules/-1655429558/Foodzzz.react-native-image-picker.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/899959392/Foodzzz.react-native-reanimated.iml" filepath="$PROJECT_DIR$/.idea/modules/899959392/Foodzzz.react-native-reanimated.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/-1547053147/Foodzzz.react-native-safe-area-context.iml" filepath="$PROJECT_DIR$/.idea/modules/-1547053147/Foodzzz.react-native-safe-area-context.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/1828360701/Foodzzz.react-native-screens.iml" filepath="$PROJECT_DIR$/.idea/modules/1828360701/Foodzzz.react-native-screens.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/-531576363/Foodzzz.react-native-share.iml" filepath="$PROJECT_DIR$/.idea/modules/-531576363/Foodzzz.react-native-share.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/-30162150/Foodzzz.react-native-vector-icons.iml" filepath="$PROJECT_DIR$/.idea/modules/-30162150/Foodzzz.react-native-vector-icons.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/-718589327/Foodzzz.react-native-video.iml" filepath="$PROJECT_DIR$/.idea/modules/-718589327/Foodzzz.react-native-video.iml" />
     </modules>
   </component>
 </project>
