@@ -552,6 +552,11 @@ const HomeScreen = (props) => {
               await getData();
             }
           }}
+          itemStyle={{
+            justifyContent: 'flex-start',
+            marginHorizontal: 10,
+          }}
+          dropDownStyle={{backgroundColor: '#fafafa'}}
           containerStyle={{height: deviceWidth * 0.1, width: deviceWidth * 0.5}}
         />
         <DropDownPicker
