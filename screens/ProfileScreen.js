@@ -449,7 +449,7 @@ const ProfileScreen = (props) => {
                             <Entypo name="dot-single" color="green" size={25} />
                           ) : (
                               <Entypo name="dot-single" color="red" size={25} />
-                            ) && item.type[0] === 'eggetarion' ? (
+                            ) && item.type[0] === 'Eggetarian' ? (
                             <Entypo name="dot-single" color="green" size={25} />
                           ) : (
                             <Entypo name="dot-single" color="red" size={25} />

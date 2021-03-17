@@ -73,10 +73,8 @@ const EditProfile = (props) => {
     formdata.append('City', city);
     formdata.append('Firstname', firstName);
     if (fileType === null && filename === null) {
-      console.log('aa');
       // formdata.append('userimage', '');
     } else {
-      console.log('b');
       fileImage === null
         ? null
         : formdata.append('userimage', {
@@ -86,14 +84,13 @@ const EditProfile = (props) => {
           });
     }
     setLoading(true);
-    console.log('formdata', formdata);
+
     const UserId = await AsyncStorage.getItem('UserId');
     axios
       .put(`${baseUrl}/user/updateprofile/${UserId}`, formdata, {
         config,
       })
       .then((response) => {
-        console.log('response', response);
         setLoading(false);
         if (response.data.status == 'success') {
           Toast.show('Profile Update Succesfully', Toast.LONG);

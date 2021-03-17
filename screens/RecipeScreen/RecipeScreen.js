@@ -137,7 +137,7 @@ const RecipeScreen = (props) => {
           />
         </View>
       );
-    } else {
+    } else if (item.video) {
       return (
         <View
           style={{
@@ -146,23 +146,22 @@ const RecipeScreen = (props) => {
             width: viewportWidth,
             height: 250,
           }}>
-          {item.video === null ? null : (
-            <>
-              <VideoPlayer
-                video={{uri: item.video}}
-                videoWidth={deviceWidth * 0.75}
-                videoHeight={windowHeight * 0.3}
-                autoplay={false}
-                resizeMode="cover"
-                thumbnail={{
-                  uri:
-                    'https://cdn.theculturetrip.com/wp-content/uploads/2019/05/ia_0488_indian-cookbooks_jw_header-1024x576.jpg',
-                }}
-              />
-            </>
-          )}
+          <>
+            <VideoPlayer
+              video={{uri: item.video}}
+              videoWidth={deviceWidth * 0.75}
+              videoHeight={windowHeight * 0.3}
+              autoplay={false}
+              resizeMode="cover"
+              thumbnail={{
+                uri:
+                  'https://cdn.theculturetrip.com/wp-content/uploads/2019/05/ia_0488_indian-cookbooks_jw_header-1024x576.jpg',
+              }}
+            />
+          </>
         </View>
       );
+    } else {
     }
   };
 
@@ -572,7 +571,13 @@ const RecipeScreen = (props) => {
       <ScrollView style={styles.container}>
         <View style={styles.carouselContainer}>
           <View style={styles.carousel}>
-            <Carousel
+            <FlatList
+              data={fetchdata?.data?.documents}
+              style={{flexDirection: 'row'}}
+              horizontal={true}
+              renderItem={renderImage}
+            />
+            {/* <Carousel
               data={fetchdata?.data?.documents}
               renderItem={renderImage}
               sliderWidth={viewportWidth}
@@ -599,7 +604,7 @@ const RecipeScreen = (props) => {
               inactiveDotColor="white"
               inactiveDotOpacity={0.4}
               inactiveDotScale={0.6}
-            />
+            /> */}
           </View>
         </View>
         <View style={styles.infoRecipeContainer}>

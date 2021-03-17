@@ -3,7 +3,7 @@ import {View, Text} from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
-import {windowWidth} from '../utils/Dimentions';
+import {windowHeight, windowWidth} from '../utils/Dimentions';
 const HomeHeaderLeft = (props) => {
   const [users, setUsers] = useState([]);
 
@@ -22,7 +22,11 @@ const HomeHeaderLeft = (props) => {
         flex: 0.12,
         flexDirection: 'row',
       }}>
-      <View style={{marginTop: 10, marginLeft: 20}}>
+      <View
+        style={{
+          marginHorizontal: windowWidth * 0.025,
+          marginVertical: windowHeight * 0.025,
+        }}>
         <MaterialCommunityIcons
           name="logout"
           size={24}
@@ -43,12 +47,12 @@ const HomeHeaderLeft = (props) => {
           color: 'white',
           fontFamily: 'Kufam',
           fontSize: 18,
-          marginLeft: 20,
-          marginTop: 10,
+          alignItems: 'flex-start',
+          marginVertical: windowHeight * 0.023,
         }}>
         Feed
       </Text>
-      <View style={{marginLeft: windowWidth / 1.75, marginTop: 15}}>
+      <View style={{marginLeft: windowWidth / 1.5, marginTop: 15}}>
         <FontAwesome5
           name="plus"
           size={20}

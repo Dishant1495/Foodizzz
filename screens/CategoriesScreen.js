@@ -10,7 +10,7 @@ import {
 import styles from '../styles/Categories';
 import {getRecipes} from '../data/MockDataAPI';
 import axios from 'axios';
-const recipetypes = ['Vegan', 'Vegetarion', 'Non-Veg', 'eggetarion'];
+const recipetypes = ['Vegan', 'Vegetarion', 'Non-Veg', 'Eggetarian'];
 import {Rating} from 'react-native-rating-element';
 import NetInfo from '@react-native-community/netinfo';
 import {baseUrl} from '../baseUrl';

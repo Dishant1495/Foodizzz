@@ -27,8 +27,8 @@ export const categoriesType = [
     size: 5,
   },
   {
-    label: 'eggetarion',
-    value: 'eggetarion',
+    label: 'Eggetarian',
+    value: 'Eggetarian',
     checked: false,
     disabled: false,
     flexDirection: 'row',

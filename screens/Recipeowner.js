@@ -13,7 +13,6 @@ import NetInfo from '@react-native-community/netinfo';
 import AsyncStorage from '@react-native-community/async-storage';
 import {baseUrl} from '../baseUrl';
 import axios from 'axios';
-import {Container} from '../styles/FeedStyles';
 import Spinner from 'react-native-loading-spinner-overlay';
 import ImageLoad from 'react-native-image-placeholder';
 
@@ -196,35 +195,34 @@ const Recipeowner = (props) => {
             textStyle={styles.textcontainer22}
           />
         ) : null}
-        <Container>
-          <FlatList
-            data={userFeed}
-            renderItem={({item}) => {
-              return (
-                <TouchableOpacity
-                  onPress={() => onPressRecipe(item._id)}
+        <FlatList
+          data={userFeed}
+          renderItem={({item}) => {
+            return (
+              <TouchableOpacity
+                onPress={() => onPressRecipe(item._id)}
+                style={{
+                  marginVertical: 5,
+                  marginBottom: -3.5,
+                  flexDirection: 'column',
+                  margin: 0,
+                  padding: 4
+                }}>
+                <ImageLoad
+                  source={{uri: item.documents[0].image}}
                   style={{
-                    marginVertical: 5,
-                    marginBottom: -1,
-                    flexDirection: 'column',
-                    margin: 2,
-                  }}>
-                  <ImageLoad
-                    source={{uri: item.documents[0].image}}
-                    style={{
-                      width: 112,
-                      height: 112,
-                      justifyContent: 'space-between',
-                    }}
-                    loadingStyle={{size: 'large', color: 'blue'}}
-                    isShowActivity={true}
-                  />
-                </TouchableOpacity>
-              );
-            }}
-            numColumns={3}
-          />
-        </Container>
+                    width: 112,
+                    height: 112,
+                    justifyContent: 'space-between',
+                  }}
+                  loadingStyle={{size: 'large', color: 'blue'}}
+                  isShowActivity={true}
+                />
+              </TouchableOpacity>
+            );
+          }}
+          numColumns={3}
+        />
       </View>
     </>
   );

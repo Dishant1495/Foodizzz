@@ -125,7 +125,6 @@ const CommentScreen = (props) => {
   };
 
   const renderComment = ({item}) => {
-    console.log('userimage', item.userImage);
     return (
       <ScrollView>
         <View style={styles.container}>

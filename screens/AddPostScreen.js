@@ -204,7 +204,6 @@ const AddPostScreen = (props) => {
         formdata.append('type[]', categories);
         formdata.append('containrecipe', select);
         formdata.append('UserId', userId);
-        console.log('formdata', formdata);
         const config = {headers: {'Content-Type': 'multipart/form-data'}};
 
         axios

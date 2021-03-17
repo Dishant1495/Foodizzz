@@ -51,7 +51,6 @@ const SearchScreen = (props) => {
     props.navigation.navigate('RecipeScreen', {item});
   };
   const handleSearch = (text) => {
-    console.log('text', text);
     axios
       .all([
         axios.get(`${baseUrl}/recipes/searchtitle/${text}`),
@@ -62,11 +61,9 @@ const SearchScreen = (props) => {
         var array2 = responseArr[1]?.data?.data;
         if (array1.length >= array2.length) {
           const res = array1.filter((x) => !array2.includes(x));
-          console.log('res', res);
           setData(res);
         } else {
           const res = array2.filter((x) => !array1.includes(x));
-          console.log('res', res);
           setData(res);
         }
       });

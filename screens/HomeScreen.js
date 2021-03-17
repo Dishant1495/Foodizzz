@@ -359,13 +359,13 @@ const HomeScreen = (props) => {
           <>
             <VideoPlayer
               video={{uri: item.video}}
-              videoWidth={deviceWidth * 0.75}
-              videoHeight={windowHeight * 0.3}
+              videoWidth={deviceWidth * 0.8}
+              videoHeight={windowHeight * 0.4}
               autoplay={false}
               resizeMode="cover"
               customStyles={{
                 wrapper: {
-                  marginRight: 20,
+                  marginLeft: 20,
                 },
               }}
               thumbnail={{
@@ -653,7 +653,7 @@ const HomeScreen = (props) => {
                       item.type[0] === 'Vegetarion' ? (
                       <Entypo name="dot-single" color="green" size={25} />
                     ) : <Entypo name="dot-single" color="red" size={25} /> &&
-                      item.type[0] === 'eggetarion' ? (
+                      item.type[0] === 'Eggetarian' ? (
                       <Entypo name="dot-single" color="green" size={25} />
                     ) : (
                       <Entypo name="dot-single" color="red" size={25} />
@@ -661,7 +661,14 @@ const HomeScreen = (props) => {
                   </Usertime>
                 </UserInfo>
 
-                <Carousel
+                <FlatList
+                  data={item.documents}
+                  style={{flexDirection: 'row'}}
+                  horizontal={true}
+                  renderItem={renderImage}
+                />
+
+                {/* <Carousel
                   data={item.documents}
                   renderItem={renderImage}
                   sliderWidth={viewportWidth}
@@ -700,7 +707,7 @@ const HomeScreen = (props) => {
                   inactiveDotOpacity={0.4}
                   inactive
                   DotScale={0.6}
-                />
+                /> */}
 
                 <Text numberOfLines={4} style={styles.directionsStyle}>
                   {item.directions}
