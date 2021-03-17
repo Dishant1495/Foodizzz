@@ -325,7 +325,6 @@ const HomeScreen = (props) => {
   };
 
   //render Image
-
   const renderImage = ({item}) => {
     if (item.type === 'image') {
       return (
@@ -348,7 +347,7 @@ const HomeScreen = (props) => {
           />
         </View>
       );
-    } else {
+    } else if (item.video) {
       return (
         <View
           style={{
@@ -357,28 +356,28 @@ const HomeScreen = (props) => {
             width: viewportWidth,
             height: 250,
           }}>
-          {item.video === null ? null : (
-            <>
-              <VideoPlayer
-                video={{uri: item.video}}
-                videoWidth={deviceWidth * 0.75}
-                videoHeight={windowHeight * 0.3}
-                autoplay={false}
-                resizeMode="cover"
-                customStyles={{
-                  wrapper: {
-                    marginRight: 20,
-                  },
-                }}
-                thumbnail={{
-                  uri:
-                    'https://cdn.theculturetrip.com/wp-content/uploads/2019/05/ia_0488_indian-cookbooks_jw_header-1024x576.jpg',
-                }}
-              />
-            </>
-          )}
+          <>
+            <VideoPlayer
+              video={{uri: item.video}}
+              videoWidth={deviceWidth * 0.75}
+              videoHeight={windowHeight * 0.3}
+              autoplay={false}
+              resizeMode="cover"
+              customStyles={{
+                wrapper: {
+                  marginRight: 20,
+                },
+              }}
+              thumbnail={{
+                uri:
+                  'https://cdn.theculturetrip.com/wp-content/uploads/2019/05/ia_0488_indian-cookbooks_jw_header-1024x576.jpg',
+              }}
+            />
+          </>
         </View>
       );
+    } else {
+      console.log('AA');
     }
   };
 
@@ -592,6 +591,11 @@ const HomeScreen = (props) => {
             height: deviceWidth * 0.1,
             width: deviceWidth * 0.49,
           }}
+          itemStyle={{
+            justifyContent: 'flex-start',
+            marginHorizontal: 10,
+          }}
+          dropDownStyle={{backgroundColor: '#fafafa'}}
         />
       </View>
       <Container>
@@ -689,7 +693,8 @@ const HomeScreen = (props) => {
                   }}
                   inactiveDotColor="white"
                   inactiveDotOpacity={0.4}
-                  inactiveDotScale={0.6}
+                  inactive
+                  DotScale={0.6}
                 />
 
                 <Text numberOfLines={4} style={styles.directionsStyle}>
