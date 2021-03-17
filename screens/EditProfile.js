@@ -68,41 +68,49 @@ const EditProfile = (props) => {
   };
 
   const Submit = async () => {
-    const formdata = new FormData();
-    formdata.append('Email', email);
-    formdata.append('City', city);
-    formdata.append('Firstname', firstName);
-    if (fileType === null && filename === null) {
-      // formdata.append('userimage', '');
+    let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+    if (reg.test(email) === false) {
+      Toast.show('Email is not correct', Toast.LONG);
+      setEmail(email);
+      return false;
     } else {
-      fileImage === null
-        ? null
-        : formdata.append('userimage', {
-            uri: fileImage,
-            type: fileType,
-            name: filename,
-          });
-    }
-    setLoading(true);
+      setEmail(email);
+      const formdata = new FormData();
+      formdata.append('Email', email);
+      formdata.append('City', city);
+      formdata.append('Firstname', firstName);
+      if (fileType === null && filename === null) {
+        // formdata.append('userimage', '');
+      } else {
+        fileImage === null
+          ? null
+          : formdata.append('userimage', {
+              uri: fileImage,
+              type: fileType,
+              name: filename,
+            });
+      }
+      setLoading(true);
 
-    const UserId = await AsyncStorage.getItem('UserId');
-    axios
-      .put(`${baseUrl}/user/updateprofile/${UserId}`, formdata, {
-        config,
-      })
-      .then((response) => {
-        setLoading(false);
-        if (response.data.status == 'success') {
-          Toast.show('Profile Update Succesfully', Toast.LONG);
-          props.navigation.push('Profile');
-        } else {
-          Toast.show(response.data.error, Toast.LONG);
-        }
-      })
-      .catch((error) => {
-        console.log('err', error);
-        setLoading(false);
-      });
+      const UserId = await AsyncStorage.getItem('UserId');
+      axios
+        .put(`${baseUrl}/user/updateprofile/${UserId}`, formdata, {
+          config,
+        })
+        .then((response) => {
+          setLoading(false);
+          if (response.data.status == 'success') {
+            Toast.show('Profile Update Succesfully', Toast.LONG);
+            props.navigation.push('Profile');
+          } else {
+            Toast.show(response.data.error, Toast.LONG);
+          }
+        })
+        .catch((error) => {
+          console.log('err', error);
+          setLoading(false);
+        });
+    }
   };
 
   const chooseImage = () => {
