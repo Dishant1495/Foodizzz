@@ -3,19 +3,17 @@ import {
   View,
   Text,
   FlatList,
-  TextInput,
   TouchableOpacity,
-  Image,
   StatusBar,
   Alert,
 } from 'react-native';
-import Ionicons from 'react-native-vector-icons/Ionicons';
 import styles from '../styles/Search';
 import axios from 'axios';
 import {Rating} from 'react-native-rating-element';
 import NetInfo from '@react-native-community/netinfo';
 import {baseUrl} from '../baseUrl';
 import ImageLoad from 'react-native-image-placeholder';
+import Searchbar from '../components/Searchbar/Searchbar';
 
 const SearchScreen = (props) => {
   const [data, setData] = useState([]);
@@ -50,7 +48,7 @@ const SearchScreen = (props) => {
   const onPressRecipe = (item) => {
     props.navigation.navigate('RecipeScreen', {item});
   };
-  const handleSearch = (text) => {
+  const searchFilterFunction = (text) => {
     axios
       .all([
         axios.get(`${baseUrl}/recipes/searchtitle/${text}`),
@@ -110,28 +108,12 @@ const SearchScreen = (props) => {
     <>
       <StatusBar backgroundColor="orange" />
       <View style={{flex: 1}}>
+        <Searchbar
+          value={value}
+          onChangeText={(value) => searchFilterFunction(value)}
+        />
         <FlatList
-          vertical
-          ListHeaderComponent={
-            <View style={styles.headercontainer}>
-              <Ionicons
-                name="search"
-                color={'#333'}
-                size={18}
-                style={{marginVertical: 15, marginHorizontal: 10}}
-              />
-              <TextInput
-                autoCapitalize="none"
-                autoCorrect={false}
-                clearButtonMode="always"
-                value={value}
-                onChangeText={(queryText) => handleSearch(queryText)}
-                placeholder="Search"
-                style={{width: '100%'}}
-                placeholderTextColor="#333"
-              />
-            </View>
-          }
+          removeClippedSubviews={false}
           showsVerticalScrollIndicator={false}
           numColumns={1}
           data={data}

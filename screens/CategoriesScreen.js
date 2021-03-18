@@ -18,11 +18,6 @@ import ImageLoad from 'react-native-image-placeholder';
 import Spinner from 'react-native-loading-spinner-overlay';
 
 const CategoriesScreen = (props) => {
-  const onPressCategory = (item) => {
-    const title = item.name;
-    const category = item;
-    props.navigation.navigate('Search', {category, title});
-  };
   const [fetchdata, setfetchdata] = useState([]);
   const [loading, setLoading] = useState(false);
   const [netInfo, setNetInfo] = useState('');
@@ -66,6 +61,12 @@ const CategoriesScreen = (props) => {
 
   const onPressRecipe = (item) => {
     props.navigation.navigate('RecipeScreen', {item});
+  };
+
+  const onPressCategory = (item) => {
+    const title = item.name;
+    const category = item;
+    props.navigation.push('Search', {category, title});
   };
   const renderCategory = ({item}) => {
     const recipesArray = getRecipes(item, fetchdata.data);

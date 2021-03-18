@@ -3,19 +3,18 @@ import {
   View,
   Text,
   FlatList,
-  TextInput,
   TouchableOpacity,
   StatusBar,
-  Alert,
+  Alert
 } from 'react-native';
 import axios from 'axios';
-import Ionicons from 'react-native-vector-icons/Ionicons';
 import styles from '../styles/Search';
 import {baseUrl} from '../baseUrl';
 import {Rating} from 'react-native-rating-element';
 import NetInfo from '@react-native-community/netinfo';
 import ImageLoad from 'react-native-image-placeholder';
 import Spinner from 'react-native-loading-spinner-overlay';
+import Searchbar from '../components/Searchbar/Searchbar';
 
 const SearchScreen = (props) => {
   const [data, setData] = useState([]);
@@ -68,8 +67,7 @@ const SearchScreen = (props) => {
   const onPressRecipe = (item) => {
     props.navigation.navigate('RecipeScreen', {item});
   };
-
-  const handleSearch = (text) => {
+  const searchFilterFunction = (text) => {
     const newData = temp.filter(function (item) {
       const itemData = `${item.title.toUpperCase()}`;
       const textData = text.toUpperCase();
@@ -78,12 +76,11 @@ const SearchScreen = (props) => {
     setvalue(text);
     setData(newData);
   };
+
   const renderRecipes = ({item}) => {
     return (
-      <TouchableOpacity
-        underlayColor="rgba(73,182,77,0.9)"
-        onPress={() => onPressRecipe(item._id)}>
-        <View style={{flexDirection: 'row'}}>
+      <TouchableOpacity onPress={() => onPressRecipe(item._id)}>
+        <View style={{flexDirection: 'row', marginTop: 15}}>
           <ImageLoad
             style={styles.recipeImage}
             source={{
@@ -129,28 +126,11 @@ const SearchScreen = (props) => {
             textStyle={styles.textcontainer22}
           />
         ) : null}
+        <Searchbar
+          value={value}
+          onChangeText={(value) => searchFilterFunction(value)}
+        />
         <FlatList
-          vertical
-          ListHeaderComponent={
-            <View style={styles.headercontainer}>
-              <Ionicons
-                name="search"
-                color={'#333'}
-                size={18}
-                style={{marginVertical: 15, marginHorizontal: 10}}
-              />
-              <TextInput
-                autoCapitalize="none"
-                autoCorrect={false}
-                clearButtonMode="always"
-                value={value}
-                onChangeText={(queryText) => handleSearch(queryText)}
-                placeholder="Search"
-                style={{width: '100%'}}
-                placeholderTextColor="#333"
-              />
-            </View>
-          }
           showsVerticalScrollIndicator={false}
           numColumns={1}
           data={data}

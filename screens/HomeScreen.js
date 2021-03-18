@@ -65,6 +65,7 @@ const HomeScreen = (props) => {
   const [filter, setfilter] = useState('All');
   const [visible, setvisible] = useState(false);
   const [image, setImage] = useState([]);
+  const [cookdata, setcookData] = useState([]);
   const [items, setItems] = useState([
     {
       label: 'Recent',
@@ -377,7 +378,6 @@ const HomeScreen = (props) => {
         </View>
       );
     } else {
-      console.log('AA');
     }
   };
 
@@ -496,7 +496,28 @@ const HomeScreen = (props) => {
     props.navigation.navigate('RecipeOwner', {item});
   };
 
-  const choosePhotoFromLibrary = () => {
+  const onNavigate = async (item) => {
+    console.log('item', item);
+    const userId = await AsyncStorage.getItem('UserId');
+    const recipeId = item.recipeId;
+    if (userId === item.userId) {
+      Toast.show("you can't cook own recipe", Toast.LONG);
+    } else {
+      setvisible(!visible);
+      await axios
+        .get(`${baseUrl}/cook/getByRecipeId/${recipeId}`)
+        .then((res) => {
+          console.log('res', res);
+          setcookData(res.data.data);
+        })
+        .catch((e) => {
+          console.log('e', e);
+        });
+    }
+  };
+
+  const choosePhotoFromLibrary = (newValue) => {
+    const recipeId = newValue;
     ImagePicker.openPicker({
       width: 1200,
       height: 780,
@@ -504,7 +525,7 @@ const HomeScreen = (props) => {
       multiple: true,
     }).then((image) => {
       const multipleImage = [];
-      image.map((item, index) => {
+      image.map(async (item, index) => {
         if (
           item.mime === 'image/jpeg' ||
           item.mime === 'image/jpg' ||
@@ -512,12 +533,40 @@ const HomeScreen = (props) => {
         ) {
           multipleImage.push(item);
           setImage(multipleImage);
+          const userId = await AsyncStorage.getItem('UserId');
+          const formdata = new FormData();
+          image.map((item, index) => {
+            formdata.append('recipeImage', {
+              uri: item.path,
+              type: item.mime,
+              name: item.path.substr(item.path.lastIndexOf('/') + 1),
+            });
+          });
+          console.log('recipeId', recipeId);
+          formdata.append('UserId', userId);
+          formdata.append('recipeId', recipeId);
+          const config = {headers: {'Content-Type': 'multipart/form-data'}};
+          console.log('formdata', formdata);
+          axios
+            .post(`${baseUrl}/cook/addCook`, formdata, {
+              config,
+            })
+            .then((res) => {
+              console.log('ress', res);
+              Toast.show('Cook Added Successfully', Toast.LONG);
+              setvisible(visible);
+            })
+            .catch((e) => {
+              console.log('error', e);
+            });
         } else {
           setImage([]);
         }
       });
     });
   };
+
+  console.log('cookdata', cookdata);
   return (
     <>
       <StatusBar backgroundColor="orange" />
@@ -667,47 +716,6 @@ const HomeScreen = (props) => {
                   horizontal={true}
                   renderItem={renderImage}
                 />
-
-                {/* <Carousel
-                  data={item.documents}
-                  renderItem={renderImage}
-                  sliderWidth={viewportWidth}
-                  itemWidth={viewportWidth}
-                  inactiveSlideScale={1}
-                  inactiveSlideOpacity={1}
-                  firstItem={0}
-                  loop={false}
-                  autoplay={false}
-                  autoplayDelay={500}
-                  autoplayInterval={3000}
-                  onSnapToItem={(index) =>
-                    setActiveIndex({
-                      activeSlide: index,
-                    })
-                  }
-                />
-                <Pagination
-                  dotsLength={item.documents.length}
-                  activeDotIndex={activeSlide}
-                  containerStyle={{
-                    flex: 1,
-                    position: 'absolute',
-                    alignSelf: 'center',
-                    paddingVertical: 8,
-                    marginTop: 300,
-                  }}
-                  dotColor="rgba(255, 255, 255, 0.92)"
-                  dotStyle={{
-                    width: 8,
-                    height: 8,
-                    borderRadius: 4,
-                    marginHorizontal: 0,
-                  }}
-                  inactiveDotColor="white"
-                  inactiveDotOpacity={0.4}
-                  inactive
-                  DotScale={0.6}
-                /> */}
 
                 <Text numberOfLines={4} style={styles.directionsStyle}>
                   {item.directions}
@@ -897,20 +905,29 @@ const HomeScreen = (props) => {
                           <FlatList
                             horizontal
                             pagingEnabled={true}
-                            data={image}
+                            data={cookdata}
                             renderItem={({item}) => {
                               return (
                                 <>
                                   <View style={{flexDirection: 'row'}}>
-                                    <Image
-                                      source={{uri: item.path}}
-                                      style={{
-                                        width: deviceWidth * 0.8,
-                                        height: windowHeight * 0.4,
-                                        borderRadius: 9,
-                                        marginTop: 50,
-                                      }}
-                                    />
+                                    {item.documents.map((val, index) => {
+                                      return (
+                                        <ImageLoad
+                                          source={{uri: val.image}}
+                                          loadingStyle={{
+                                            size: 'large',
+                                            color: 'blue',
+                                          }}
+                                          isShowActivity={true}
+                                          style={{
+                                            width: deviceWidth * 0.8,
+                                            height: windowHeight * 0.4,
+                                            borderRadius: 9,
+                                            marginTop: 50,
+                                          }}
+                                        />
+                                      );
+                                    })}
                                   </View>
                                 </>
                               );
@@ -924,7 +941,7 @@ const HomeScreen = (props) => {
                             width: '60%',
                             marginTop: 25,
                           }}
-                          onPress={choosePhotoFromLibrary}>
+                          onPress={() => choosePhotoFromLibrary(item._id)}>
                           <Text
                             style={{
                               borderWidth: 1,
@@ -943,9 +960,22 @@ const HomeScreen = (props) => {
                   <Interaction>
                     <TouchableOpacity
                       underlayColor="rgba(73,182,77,0.9)"
-                      onPress={() => setvisible(!visible)}>
+                      onPress={() =>
+                        onNavigate({
+                          userId: item.UserId,
+                          recipeId: item._id,
+                        })
+                      }>
                       <Entypo name="bowl" size={25} />
                     </TouchableOpacity>
+                    <Text
+                      style={{
+                        fontSize: 14,
+                        paddingLeft: 10,
+                        marginTop: 5,
+                      }}>
+                      {item.cookcount}
+                    </Text>
                   </Interaction>
                 </InteractionWrapper>
               </Card>
