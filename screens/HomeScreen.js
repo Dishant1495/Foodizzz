@@ -27,13 +27,11 @@ import {
   StyleSheet,
   StatusBar,
   Dimensions,
-  Image,
   RefreshControl,
   Alert,
   BackHandler,
   TouchableOpacity,
 } from 'react-native';
-import Carousel, {Pagination} from 'react-native-snap-carousel';
 const {width: viewportWidth} = Dimensions.get('window');
 const deviceWidth = Dimensions.get('window').width;
 import TimeAgo from 'react-native-timeago';

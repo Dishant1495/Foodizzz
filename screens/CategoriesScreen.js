@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   StatusBar,
   Alert,
+  ScrollView,
 } from 'react-native';
 import styles from '../styles/Categories';
 import {getRecipes} from '../data/MockDataAPI';
@@ -71,43 +72,44 @@ const CategoriesScreen = (props) => {
 
   const renderSubData = (item) => {
     const recipesArray = getRecipes(item, fetchdata.data);
+    console.log('recipe111', recipesArray);
     return (
-      <FlatList
-        horizontal
-        data={recipesArray}
-        renderItem={({item}) => (
-          <TouchableOpacity
-            underlayColor="rgba(73,182,77,0.9)"
-            onPress={() => onPressRecipe(item._id)}>
-            <View style={styles.categoriesItemContainer}>
-              <ImageLoad
-                style={{width: 160, height: 150, borderRadius: 10}}
-                source={{
-                  uri: item?.documents[0]?.image,
-                }}
-                loadingStyle={{size: 'large', color: 'blue'}}
-                isShowActivity={true}
-              />
-              <Text style={styles.title}>{item.title}</Text>
-              <View style={{flexDirection: 'row', bottom: 10}}>
-                <Rating
-                  rated={item?.avaragerating}
-                  totalCount={5}
-                  cleam
-                  ratingColor="#f1c644"
-                  ratingBackgroundColor="#d4d4d4"
-                  size={18}
-                  readonly // by default is false
-                  icon="ios-star"
-                  direction="row" // anyOf["row" (default), "row-reverse", "column", "column-reverse"]
-                />
-              </View>
-            </View>
-            {setLoading(false)}
-          </TouchableOpacity>
-        )}
-        keyExtractor={(item) => `${item._id}`}
-      />
+      <ScrollView horizontal={true}>
+        <View style={{flexDirection: 'row'}}>
+          {recipesArray &&
+            recipesArray.map((item, index) => (
+              <TouchableOpacity
+                underlayColor="rgba(73,182,77,0.9)"
+                onPress={() => onPressRecipe(item._id)}>
+                <View style={styles.categoriesItemContainer}>
+                  <ImageLoad
+                    style={{width: 160, height: 150, borderRadius: 10}}
+                    source={{
+                      uri: item?.documents[0]?.image,
+                    }}
+                    loadingStyle={{size: 'large', color: 'blue'}}
+                    isShowActivity={true}
+                  />
+                  <Text style={styles.title}>{item.title}</Text>
+                  <View style={{flexDirection: 'row', bottom: 10}}>
+                    <Rating
+                      rated={item?.avaragerating}
+                      totalCount={5}
+                      cleam
+                      ratingColor="#f1c644"
+                      ratingBackgroundColor="#d4d4d4"
+                      size={18}
+                      readonly // by default is false
+                      icon="ios-star"
+                      direction="row" // anyOf["row" (default), "row-reverse", "column", "column-reverse"]
+                    />
+                  </View>
+                </View>
+                {setLoading(false)}
+              </TouchableOpacity>
+            ))}
+        </View>
+      </ScrollView>
     );
   };
   const renderCategory = ({item}) => {
