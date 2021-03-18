@@ -113,7 +113,6 @@ const SearchScreen = (props) => {
           onChangeText={(value) => searchFilterFunction(value)}
         />
         <FlatList
-          removeClippedSubviews={false}
           showsVerticalScrollIndicator={false}
           numColumns={1}
           data={data}

@@ -566,7 +566,7 @@ const HomeScreen = (props) => {
     });
   };
 
-  console.log('cookdata', cookdata);
+ 
   return (
     <>
       <StatusBar backgroundColor="orange" />
@@ -664,6 +664,7 @@ const HomeScreen = (props) => {
           data={fetchdata}
           onEndReached={getData}
           onEndReachedThreshold={0.8}
+          keyExtractor={(item, index) => index.toString()}
           refreshControl={
             <RefreshControl
               refreshing={refreshing}
@@ -715,6 +716,7 @@ const HomeScreen = (props) => {
                   style={{flexDirection: 'row'}}
                   horizontal={true}
                   renderItem={renderImage}
+                  keyExtractor={(item, index) => index.toString()}
                 />
 
                 <Text numberOfLines={4} style={styles.directionsStyle}>
@@ -906,6 +908,7 @@ const HomeScreen = (props) => {
                             horizontal
                             pagingEnabled={true}
                             data={cookdata}
+                            keyExtractor={(item, index) => index.toString()}
                             renderItem={({item}) => {
                               return (
                                 <>
@@ -981,7 +984,7 @@ const HomeScreen = (props) => {
               </Card>
             );
           }}
-          keyExtractor={(item) => item._id}
+          keyExtractor={(item, index) => index.toString()}
           showsVerticalScrollIndicator={false}
         />
       </Container>

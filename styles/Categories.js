@@ -10,6 +10,7 @@ const styles = StyleSheet.create({
     height: 215,
     borderColor: '#cccccc',
     width: windowWidth * 0.4,
+    //  flexDirection: 'row',
   },
 
   textcontainer22: {
