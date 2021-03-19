@@ -49,7 +49,7 @@ const CategoriesScreen = (props) => {
       // Unsubscribe to network state updates
       unsubscribe();
     };
-  }, [fetchdata]);
+  }, []);
 
   const getNetInfo = () => {
     // To get the network state once

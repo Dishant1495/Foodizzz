@@ -49,7 +49,6 @@ import Spinner from 'react-native-loading-spinner-overlay';
 
 const HomeScreen = (props) => {
   const [fetchdata, setfetchdata] = useState([]);
-  const [activeSlide, setActiveIndex] = useState(0);
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(1);
   const [taste, setaste] = useState(0.0);

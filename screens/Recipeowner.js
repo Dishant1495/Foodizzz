@@ -206,7 +206,7 @@ const Recipeowner = (props) => {
                   marginBottom: -3.5,
                   flexDirection: 'column',
                   margin: 0,
-                  padding: 4
+                  padding: 4,
                 }}>
                 <ImageLoad
                   source={{uri: item.documents[0].image}}

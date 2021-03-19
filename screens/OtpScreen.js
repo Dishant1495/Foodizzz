@@ -7,7 +7,6 @@ import Storage from 'react-native-expire-storage';
 import Loader from '../components/Loader';
 import Toast from 'react-native-simple-toast';
 import NetInfo from '@react-native-community/netinfo';
-
 const OtpScreen = (props) => {
   const [otp, setotp] = useState();
   const [userdetails, setuserdetails] = useState();
