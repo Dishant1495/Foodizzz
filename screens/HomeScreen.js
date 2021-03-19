@@ -56,7 +56,7 @@ PushNotification.onRegister((token) => {
 PushNotification.onNotification((notification) => {
   if (notification.foreground) {
     console.log('onNotification foreground', notification);
-    alert(notification.body);
+    alert(notification.data.body);
   } else {
     console.log('onNotification background or closed', notification);
   }
@@ -208,16 +208,16 @@ const HomeScreen = (props) => {
           setLoading(false);
         });
     } else if (value === 'Recent' && filter === 'Following') {
+      setLoading(true);
       await axios
         .get(`${baseUrl}/follow/follower/${userId}?page=` + page)
         //Sending the currect page  with get request
         .then((responseJson) => {
+          setLoading(false);
           //Successful response
           setPage(page + 1);
           //Increasing the page for the next API call
           setfetchdata([...fetchdata, ...responseJson.data.data]);
-          console.log('recent', fetchdata);
-          setLoading(false);
         })
         .catch((error) => {
           setLoading(false);
@@ -227,6 +227,7 @@ const HomeScreen = (props) => {
         setLoading(false);
         return;
       } else {
+        setLoading(true);
         await axios
           .get(`${baseUrl}/follow/followerrating/${userId}`)
           //Sending the currect page  with get request
@@ -236,7 +237,6 @@ const HomeScreen = (props) => {
             //  return
             setPage(page + 1);
             setfetchdata(responseJson.data.data);
-            console.log('rating', fetchdata);
             setLoading(false);
           })
           .catch((error) => {
@@ -671,7 +671,7 @@ const HomeScreen = (props) => {
         />
       </View>
       <Container>
-        {loading == false && fetchdata.length === 0 ? (
+        {loading == false && fetchdata && fetchdata.length === 0 ? (
           <View>
             <View>
               <Text>No Data Available </Text>
