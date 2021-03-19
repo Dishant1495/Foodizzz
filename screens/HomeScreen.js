@@ -45,8 +45,26 @@ import Icon from 'react-native-vector-icons/Feather';
 import DropDownPicker from 'react-native-dropdown-picker';
 import Dialog, {DialogContent} from 'react-native-popup-dialog';
 import ImagePicker from 'react-native-image-crop-picker';
+import Amplify from 'aws-amplify';
 import Spinner from 'react-native-loading-spinner-overlay';
-
+import PushNotification from '@aws-amplify/pushnotification';
+import awsconfig from '../src/aws-exports';
+Amplify.configure(awsconfig);
+PushNotification.onRegister((token) => {
+  console.log('onRegister', token);
+});
+PushNotification.onNotification((notification) => {
+  if (notification.foreground) {
+    console.log('onNotification foreground', notification);
+    alert(notification.body);
+  } else {
+    console.log('onNotification background or closed', notification);
+  }
+  // extract the data passed in the push notification
+});
+PushNotification.onNotificationOpened((notification) => {
+  console.log('onNotificationOpened', notification);
+});
 const HomeScreen = (props) => {
   const [fetchdata, setfetchdata] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -189,7 +207,7 @@ const HomeScreen = (props) => {
         .catch((error) => {
           setLoading(false);
         });
-    } else if (filter === 'Following') {
+    } else if (value === 'Recent' && filter === 'Following') {
       await axios
         .get(`${baseUrl}/follow/follower/${userId}?page=` + page)
         //Sending the currect page  with get request
@@ -198,29 +216,33 @@ const HomeScreen = (props) => {
           setPage(page + 1);
           //Increasing the page for the next API call
           setfetchdata([...fetchdata, ...responseJson.data.data]);
-
+          console.log('recent', fetchdata);
           setLoading(false);
         })
         .catch((error) => {
           setLoading(false);
         });
-    } else {
-      setLoading(true);
-      setfilter('All');
-      setValue('Recent');
-      await axios
-        .get(`${baseUrl}/recipes/Feed/${userId}?page=` + page)
-        //Sending the currect page  with get request
-        .then((responseJson) => {
-          //Successful response
-          setPage(page + 1);
-          //Increasing the page for the next API call
-          setfetchdata([...fetchdata, ...responseJson.data.data]);
-          setLoading(false);
-        })
-        .catch((error) => {
-          setLoading(false);
-        });
+    } else if (value === 'Rating' && filter === 'Following') {
+      if (page === 2) {
+        setLoading(false);
+        return;
+      } else {
+        await axios
+          .get(`${baseUrl}/follow/followerrating/${userId}`)
+          //Sending the currect page  with get request
+          .then((responseJson) => {
+            //Successful response
+            //Increasing the page for the next API call
+            //  return
+            setPage(page + 1);
+            setfetchdata(responseJson.data.data);
+            console.log('rating', fetchdata);
+            setLoading(false);
+          })
+          .catch((error) => {
+            setLoading(false);
+          });
+      }
     }
   };
 
@@ -563,7 +585,6 @@ const HomeScreen = (props) => {
     });
   };
 
- 
   return (
     <>
       <StatusBar backgroundColor="orange" />

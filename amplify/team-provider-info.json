@@ -1,0 +1,27 @@
+{
+    "dev": {
+        "awscloudformation": {
+            "AuthRoleName": "amplify-foodizzz-dev-120730-authRole",
+            "UnauthRoleArn": "arn:aws:iam::166643974598:role/amplify-foodizzz-dev-120730-unauthRole",
+            "AuthRoleArn": "arn:aws:iam::166643974598:role/amplify-foodizzz-dev-120730-authRole",
+            "Region": "us-east-1",
+            "DeploymentBucketName": "amplify-foodizzz-dev-120730-deployment",
+            "UnauthRoleName": "amplify-foodizzz-dev-120730-unauthRole",
+            "StackName": "amplify-foodizzz-dev-120730",
+            "StackId": "arn:aws:cloudformation:us-east-1:166643974598:stack/amplify-foodizzz-dev-120730/96e32450-887d-11eb-b325-0a9eb36083cf",
+            "AmplifyAppId": "d1vpv26f993yri"
+        },
+        "categories": {
+            "auth": {
+                "cognito7d4a4a68": {}
+            },
+            "notifications": {
+                "Pinpoint": {
+                    "Name": "FoodizzznJsdC-dev",
+                    "Id": "83e3eb9ea37041f9b6fdfd81ab1f8d7d",
+                    "Region": "us-east-1"
+                }
+            }
+        }
+    }
+}
