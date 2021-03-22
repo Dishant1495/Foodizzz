@@ -45,27 +45,34 @@ import Icon from 'react-native-vector-icons/Feather';
 import DropDownPicker from 'react-native-dropdown-picker';
 import Dialog, {DialogContent} from 'react-native-popup-dialog';
 import ImagePicker from 'react-native-image-crop-picker';
-import Amplify from 'aws-amplify';
 import Spinner from 'react-native-loading-spinner-overlay';
-import PushNotification from '@aws-amplify/pushnotification';
-import awsconfig from '../src/aws-exports';
-Amplify.configure(awsconfig);
-PushNotification.onRegister((token) => {
-  console.log('onRegister', token);
+import PushNotification from 'react-native-push-notification';
+
+PushNotification.configure({
+  // (required) Called when a remote or local notification is opened or received
+  onNotification: function(notification) {
+    console.log('LOCAL NOTIFICATION ==>', notification);
+  },
+  popInitialNotification: true,
+  requestPermissions: true,
+  senderID: '760858054998',
 });
-PushNotification.onNotification((notification) => {
-  if (notification.foreground) {
-    console.log('onNotification foreground', notification);
-    alert(notification.data.body);
-  } else {
-    console.log('onNotification background or closed', notification);
-  }
-  // extract the data passed in the push notification
-});
-PushNotification.onNotificationOpened((notification) => {
-  console.log('onNotificationOpened', notification);
-});
-const HomeScreen = (props) => {
+
+export const LocalNotification = () => {
+  PushNotification.localNotification({
+    autoCancel: true,
+    bigText:
+      'This is local notification demo in React Native app. Only shown, when expanded.',
+    subText: 'Local Notification Demo',
+    title: 'Local Notification Title',
+    message: 'Expand me to see more',
+    vibrate: true,
+    vibration: 300,
+    playSound: true,
+    soundName: 'default',
+  });
+};
+const HomeScreen = props => {
   const [fetchdata, setfetchdata] = useState([]);
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(1);
@@ -96,6 +103,7 @@ const HomeScreen = (props) => {
   let controller;
   useEffect(() => {
     getData();
+    LocalNotification();
     const backAction = () => {
       if (props.navigation.isFocused()) {
         Alert.alert('Exit App', 'Do you want to EXIT?', [
@@ -118,7 +126,7 @@ const HomeScreen = (props) => {
     return () => {
       backHandler.remove();
     };
-  }, [value, filter]);
+  }, [value, filter, image]);
   const getData = async () => {
     setLoading(true);
     const userId = await AsyncStorage.getItem('UserId');
@@ -127,84 +135,84 @@ const HomeScreen = (props) => {
       await axios
         .get(`${baseUrl}/recipes/Feed/${userId}?page=` + page)
         //Sending the currect page  with get request
-        .then((responseJson) => {
+        .then(responseJson => {
           //Successful response
           setPage(page + 1);
           //Increasing the page for the next API call
           setfetchdata([...fetchdata, ...responseJson.data.data]);
           setLoading(false);
         })
-        .catch((error) => {
+        .catch(error => {
           setLoading(false);
         });
     } else if (value === 'Rating' && filter === 'All') {
       await axios
         .get(`${baseUrl}/recipes/recentpost/${userId}?page=` + page)
         //Sending the currect page  with get request
-        .then((responseJson) => {
+        .then(responseJson => {
           //Successful response
           setPage(page + 1);
           //Increasing the page for the next API call
           setfetchdata([...fetchdata, ...responseJson.data.data]);
           setLoading(false);
         })
-        .catch((error) => {
+        .catch(error => {
           setLoading(false);
         });
     } else if (value === 'Recent' && filter === 'Meat') {
       await axios
         .get(`${baseUrl}/recipes/meetwithrecent/${userId}?page=` + page)
         //Sending the currect page  with get request
-        .then((responseJson) => {
+        .then(responseJson => {
           //Successful response
           setPage(page + 1);
           //Increasing the page for the next API call
           setfetchdata([...fetchdata, ...responseJson.data.data]);
           setLoading(false);
         })
-        .catch((error) => {
+        .catch(error => {
           setLoading(false);
         });
     } else if (value === 'Recent' && filter === 'Non Meat') {
       await axios
         .get(`${baseUrl}/recipes/nonmeetwithrecent/${userId}?page=` + page)
         //Sending the currect page  with get request
-        .then((responseJson) => {
+        .then(responseJson => {
           //Successful response
           setPage(page + 1);
           //Increasing the page for the next API call
           setfetchdata([...fetchdata, ...responseJson.data.data]);
           setLoading(false);
         })
-        .catch((error) => {
+        .catch(error => {
           setLoading(false);
         });
     } else if (value === 'Rating' && filter === 'Meat') {
       await axios
         .get(`${baseUrl}/recipes/meetwithrating/${userId}?page=` + page)
         //Sending the currect page  with get request
-        .then((responseJson) => {
+        .then(responseJson => {
           //Successful response
           setPage(page + 1);
           //Increasing the page for the next API call
           setfetchdata([...fetchdata, ...responseJson.data.data]);
           setLoading(false);
         })
-        .catch((error) => {
+        .catch(error => {
           setLoading(false);
         });
     } else if (value === 'Rating' && filter === 'Non Meat') {
       await axios
         .get(`${baseUrl}/recipes/notmeetwithrating/${userId}?page=` + page)
         //Sending the currect page  with get request
-        .then((responseJson) => {
+        .then(responseJson => {
           //Successful response
           setPage(page + 1);
           //Increasing the page for the next API call
           setfetchdata([...fetchdata, ...responseJson.data.data]);
           setLoading(false);
         })
-        .catch((error) => {
+        .catch(error => {
           setLoading(false);
         });
     } else if (value === 'Recent' && filter === 'Following') {
@@ -212,14 +220,14 @@ const HomeScreen = (props) => {
       await axios
         .get(`${baseUrl}/follow/follower/${userId}?page=` + page)
         //Sending the currect page  with get request
-        .then((responseJson) => {
+        .then(responseJson => {
           setLoading(false);
           //Successful response
           setPage(page + 1);
           //Increasing the page for the next API call
           setfetchdata([...fetchdata, ...responseJson.data.data]);
         })
-        .catch((error) => {
+        .catch(error => {
           setLoading(false);
         });
     } else if (value === 'Rating' && filter === 'Following') {
@@ -231,7 +239,7 @@ const HomeScreen = (props) => {
         await axios
           .get(`${baseUrl}/follow/followerrating/${userId}`)
           //Sending the currect page  with get request
-          .then((responseJson) => {
+          .then(responseJson => {
             //Successful response
             //Increasing the page for the next API call
             //  return
@@ -239,7 +247,7 @@ const HomeScreen = (props) => {
             setfetchdata(responseJson.data.data);
             setLoading(false);
           })
-          .catch((error) => {
+          .catch(error => {
             setLoading(false);
           });
       }
@@ -253,7 +261,7 @@ const HomeScreen = (props) => {
     await axios
       .get(`${baseUrl}/recipes/Feed/${userId}?page=` + 1)
       //Sending the currect page  with get request
-      .then(async (responseJson) => {
+      .then(async responseJson => {
         //Successful response
         setPage(page);
         setCount(0);
@@ -261,7 +269,7 @@ const HomeScreen = (props) => {
         setfetchdata(responseJson.data.data);
         setLoading(false);
       })
-      .catch((error) => {
+      .catch(error => {
         setLoading(false);
       });
   };
@@ -272,14 +280,14 @@ const HomeScreen = (props) => {
     await axios
       .get(`${baseUrl}/recipes/Feed/${userId}?page=` + 1)
       //Sending the currect page  with get request
-      .then((responseJson) => {
+      .then(responseJson => {
         //Successful response
         setPage(2);
         //Increasing the page for the next API call
         setfetchdata(responseJson.data.data);
         setRefreshing(false);
       })
-      .catch((error) => {
+      .catch(error => {
         setRefreshing(false);
       });
   };
@@ -291,24 +299,24 @@ const HomeScreen = (props) => {
       contentUrl: `${item.documents[0].image}`,
       imageUrl: `${item.documents[0].image}`,
     };
-    ShareDialog.canShow(shareContent).then((canShow) => {
+    ShareDialog.canShow(shareContent).then(canShow => {
       canShow && ShareDialog.show(shareContent);
     });
   };
 
-  const deleteLike = async (recipeId) => {
+  const deleteLike = async recipeId => {
     const UserId = await AsyncStorage.getItem('UserId');
     await axios
       .delete(`${baseUrl}/like/deletelike/${UserId}/${recipeId.recipeId}`)
-      .then(async (res) => {
+      .then(async res => {
         await getLoadMore();
       })
-      .catch((e) => {
+      .catch(e => {
         console.log('error', e);
       });
   };
-  const addLike = async (recipeId) => {
-    setCount((prevCount) => prevCount + 1);
+  const addLike = async recipeId => {
+    setCount(prevCount => prevCount + 1);
     if (count === 0) {
       const UserId = await AsyncStorage.getItem('UserId');
       if (UserId) {
@@ -318,10 +326,10 @@ const HomeScreen = (props) => {
         };
         await axios
           .post(`${baseUrl}/like/addlike`, data)
-          .then(async (res) => {
+          .then(async res => {
             await getLoadMore();
           })
-          .catch((e) => {
+          .catch(e => {
             console.log('error', e);
           });
       } else {
@@ -343,7 +351,6 @@ const HomeScreen = (props) => {
       console.log('ee');
     }
   };
-
   //render Image
   const renderImage = ({item}) => {
     if (item.type === 'image') {
@@ -400,7 +407,7 @@ const HomeScreen = (props) => {
     }
   };
 
-  const handleTaste = async (val) => {
+  const handleTaste = async val => {
     const UserId = await AsyncStorage.getItem('UserId');
     if (UserId) {
       setaste(val);
@@ -421,7 +428,7 @@ const HomeScreen = (props) => {
     }
   };
 
-  const handlePresentation = async (val) => {
+  const handlePresentation = async val => {
     const UserId = await AsyncStorage.getItem('UserId');
     if (UserId) {
       setpresentation(val);
@@ -442,7 +449,7 @@ const HomeScreen = (props) => {
     }
   };
 
-  const handleLook = async (val) => {
+  const handleLook = async val => {
     const UserId = await AsyncStorage.getItem('UserId');
     if (UserId) {
       setlook(val);
@@ -463,7 +470,7 @@ const HomeScreen = (props) => {
     }
   };
 
-  const handleColor = async (val) => {
+  const handleColor = async val => {
     setcolor(val.colour);
     const UserId = await AsyncStorage.getItem('UserId');
     if (UserId) {
@@ -477,10 +484,10 @@ const HomeScreen = (props) => {
       };
       await axios
         .post(`${baseUrl}/rating/addrating `, data)
-        .then((res) => {
+        .then(res => {
           Toast.show('Rating add Successfully', Toast.LONG);
         })
-        .catch((e) => {
+        .catch(e => {
           console.log('e', e);
         });
     } else {
@@ -500,9 +507,9 @@ const HomeScreen = (props) => {
     }
   };
 
-  const handleOpen = async (val) => {
+  const handleOpen = async val => {
     const recipeId = val.recipeId;
-    await axios.get(`${baseUrl}/rating/getratings/${recipeId}`).then((res) => {
+    await axios.get(`${baseUrl}/rating/getratings/${recipeId}`).then(res => {
       setcolor(res.data.data[0].color);
       setpresentation(res.data.data[0].presention);
       setaste(res.data.data[0].taste);
@@ -511,38 +518,39 @@ const HomeScreen = (props) => {
     });
   };
 
-  const onPressUser = (item) => {
+  const onPressUser = item => {
     props.navigation.navigate('RecipeOwner', {item});
   };
 
-  const onNavigate = async (item) => {
+  const onNavigate = async item => {
     console.log('item', item);
+    //alert(item.recipeId);
     const userId = await AsyncStorage.getItem('UserId');
-    const recipeId = item.recipeId;
+
     if (userId === item.userId) {
       Toast.show("you can't cook own recipe", Toast.LONG);
     } else {
       setvisible(!visible);
+      await AsyncStorage.setItem('recipeId', item.recipeId);
       await axios
-        .get(`${baseUrl}/cook/getByRecipeId/${recipeId}`)
-        .then((res) => {
+        .get(`${baseUrl}/cook/getByRecipeId/${item.recipeId}`)
+        .then(res => {
           console.log('res', res);
           setcookData(res.data.data);
         })
-        .catch((e) => {
+        .catch(e => {
           console.log('e', e);
         });
     }
   };
 
-  const choosePhotoFromLibrary = (newValue) => {
-    const recipeId = newValue;
+  const choosePhotoFromLibrary = () => {
     ImagePicker.openPicker({
       width: 1200,
       height: 780,
       includeBase64: true,
       multiple: true,
-    }).then((image) => {
+    }).then(image => {
       const multipleImage = [];
       image.map(async (item, index) => {
         if (
@@ -552,8 +560,14 @@ const HomeScreen = (props) => {
         ) {
           multipleImage.push(item);
           setImage(multipleImage);
+          console.log('add images', image);
           const userId = await AsyncStorage.getItem('UserId');
+          const recipeId = await AsyncStorage.getItem('recipeId');
+
           const formdata = new FormData();
+          console.log('recipeId', recipeId);
+          formdata.append('UserId', userId);
+          formdata.append('recipeId', recipeId);
           image.map((item, index) => {
             formdata.append('recipeImage', {
               uri: item.path,
@@ -561,21 +575,18 @@ const HomeScreen = (props) => {
               name: item.path.substr(item.path.lastIndexOf('/') + 1),
             });
           });
-          console.log('recipeId', recipeId);
-          formdata.append('UserId', userId);
-          formdata.append('recipeId', recipeId);
           const config = {headers: {'Content-Type': 'multipart/form-data'}};
           console.log('formdata', formdata);
           axios
             .post(`${baseUrl}/cook/addCook`, formdata, {
               config,
             })
-            .then((res) => {
+            .then(res => {
               console.log('ress', res);
               Toast.show('Cook Added Successfully', Toast.LONG);
               setvisible(visible);
             })
-            .catch((e) => {
+            .catch(e => {
               console.log('error', e);
             });
         } else {
@@ -601,7 +612,7 @@ const HomeScreen = (props) => {
         <DropDownPicker
           items={items}
           defaultValue={value}
-          controller={(instance) => (controller = instance)}
+          controller={instance => (controller = instance)}
           onChangeList={(items, callback) => {
             new Promise((resolve, reject) => resolve(setItems(items)))
               .then(() => {
@@ -609,7 +620,7 @@ const HomeScreen = (props) => {
               })
               .catch(() => {});
           }}
-          onChangeItem={async (item) => {
+          onChangeItem={async item => {
             if (value === item.value) {
               return;
             } else {
@@ -650,7 +661,7 @@ const HomeScreen = (props) => {
             },
           ]}
           defaultValue={filter}
-          onChangeItem={async (item) => {
+          onChangeItem={async item => {
             if (filter === item.value) {
               return;
             } else {
@@ -819,7 +830,7 @@ const HomeScreen = (props) => {
                                   ratingColor="#f1c644"
                                   ratingBackgroundColor="#d4d4d4"
                                   size={15}
-                                  onIconTap={(val) => handleTaste(val)}
+                                  onIconTap={val => handleTaste(val)}
                                   icon="ios-star"
                                   direction="row" // anyOf["row" (default), "row-reverse", "column", "column-reverse"]
                                 />
@@ -839,7 +850,7 @@ const HomeScreen = (props) => {
                                   ratingColor="#f1c644"
                                   ratingBackgroundColor="#d4d4d4"
                                   size={15}
-                                  onIconTap={(val) => handlePresentation(val)}
+                                  onIconTap={val => handlePresentation(val)}
                                   icon="ios-star"
                                   direction="row" // anyOf["row" (default), "row-reverse", "column", "column-reverse"]
                                 />
@@ -859,7 +870,7 @@ const HomeScreen = (props) => {
                                   ratingColor="#f1c644"
                                   ratingBackgroundColor="#d4d4d4"
                                   size={15}
-                                  onIconTap={(val) => handleLook(val)}
+                                  onIconTap={val => handleLook(val)}
                                   icon="ios-star"
                                   direction="row" // anyOf["row" (default), "row-reverse", "column", "column-reverse"]
                                 />
@@ -877,7 +888,7 @@ const HomeScreen = (props) => {
                                   ratingColor="#f1c644"
                                   ratingBackgroundColor="#d4d4d4"
                                   size={15}
-                                  onIconTap={(val) =>
+                                  onIconTap={val =>
                                     handleColor({
                                       colour: val,
                                       recipeId: item._id,
@@ -962,7 +973,7 @@ const HomeScreen = (props) => {
                             width: '60%',
                             marginTop: 25,
                           }}
-                          onPress={() => choosePhotoFromLibrary(item._id)}>
+                          onPress={() => choosePhotoFromLibrary()}>
                           <Text
                             style={{
                               borderWidth: 1,

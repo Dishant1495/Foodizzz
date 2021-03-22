@@ -7,6 +7,12 @@ const styles = StyleSheet.create({
     flex: 1,
   },
 
+  container11:{
+    flex: 1,
+    justifyContent: 'center',
+    width: viewportWidth,
+    height: 250,
+  },
   maincontainer: {
     alignSelf: 'flex-start',
     marginTop: windowHeight / 22,

@@ -23,10 +23,25 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="076d14b3-07fb-44d4-87e8-123a4258c85f" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/caches/build_file_checksums.ser" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/caches/build_file_checksums.ser" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/release/output-metadata.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/final" beforeDir="false" />
+      <change afterPath="$PROJECT_DIR$/.project" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.settings/org.eclipse.buildship.core.prefs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/src/main/res/values/colors.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../amplify/.config/project-config.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../amplify/README.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../amplify/backend/auth/cognito7d4a4a68/cognito7d4a4a68-cloudformation-template.yml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../amplify/backend/auth/cognito7d4a4a68/parameters.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../amplify/backend/backend-config.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../amplify/backend/tags.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../amplify/cli.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../amplify/team-provider-info.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/foodzzz/MainApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/foodzzz/MainApplication.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../package.json" beforeDir="false" afterPath="$PROJECT_DIR$/../package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../screens/HomeScreen.js" beforeDir="false" afterPath="$PROJECT_DIR$/../screens/HomeScreen.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../screens/OnboardingScreen.js" beforeDir="false" afterPath="$PROJECT_DIR$/../screens/OnboardingScreen.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../screens/ProfileScreen.js" beforeDir="false" afterPath="$PROJECT_DIR$/../screens/ProfileScreen.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../styles/Profile.js" beforeDir="false" afterPath="$PROJECT_DIR$/../styles/Profile.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../yarn.lock" beforeDir="false" afterPath="$PROJECT_DIR$/../yarn.lock" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

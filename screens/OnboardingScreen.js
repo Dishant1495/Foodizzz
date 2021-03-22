@@ -42,7 +42,7 @@ const OnboardingScreen = ({navigation}) => {
   useEffect(() => {
     getNetInfo();
     // Subscribe to network state updates
-    const unsubscribe = NetInfo.addEventListener((state) => {
+    const unsubscribe = NetInfo.addEventListener(state => {
       setNetInfo(
         `Connection type: ${state.type}
         Is connected?: ${state.isConnected}
@@ -58,7 +58,7 @@ const OnboardingScreen = ({navigation}) => {
 
   const getNetInfo = () => {
     // To get the network state once
-    NetInfo.fetch().then((state) => {
+    NetInfo.fetch().then(state => {
       state.isConnected === true
         ? null
         : Alert.alert('Foodizz', 'No Internet Conection');
