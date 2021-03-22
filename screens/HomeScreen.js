@@ -20,6 +20,7 @@ import {
 } from '../styles/FeedStyles';
 import {Rating} from 'react-native-rating-element';
 import Tooltip from 'rn-tooltip';
+import Tooltips from 'react-native-walkthrough-tooltip';
 import {
   FlatList,
   View,
@@ -31,6 +32,7 @@ import {
   Alert,
   BackHandler,
   TouchableOpacity,
+  Image,
 } from 'react-native';
 const {width: viewportWidth} = Dimensions.get('window');
 const deviceWidth = Dimensions.get('window').width;
@@ -524,28 +526,30 @@ const HomeScreen = (props) => {
 
   const onNavigate = async (item) => {
     console.log('item', item);
-    //alert(item.recipeId);
+    const recipeid = item.recipeId;
     const userId = await AsyncStorage.getItem('UserId');
-
-    if (userId === item.userId) {
-      Toast.show("you can't cook own recipe", Toast.LONG);
-    } else {
-      setvisible(!visible);
-      await AsyncStorage.setItem('recipeId', item.recipeId);
-      await axios
-        .get(`${baseUrl}/cook/getByRecipeId/${item.recipeId}`)
-        .then((res) => {
-          console.log('res', res);
-          setcookData(res.data.data);
-        })
-        .catch((e) => {
-          console.log('e', e);
-        });
-    }
+    const countbody = {
+      UserId: userId,
+      recipeId: recipeid,
+    };
+    await axios
+      .post(`${baseUrl}/cookcount/insertcookcount`, countbody)
+      .then((res) => {
+        console.log('cook added');
+      });
+    await AsyncStorage.setItem('recipeId', item.recipeId);
+    await axios
+      .get(`${baseUrl}/cook/getByRecipeId/${item.recipeId}`)
+      .then((res) => {
+        console.log('res', res);
+        setcookData(res.data.data);
+      })
+      .catch((e) => {
+        console.log('e', e);
+      });
   };
 
   const choosePhotoFromLibrary = (val) => {
-    console.log('val', val);
     ImagePicker.openPicker({
       width: 1200,
       height: 780,
@@ -585,7 +589,6 @@ const HomeScreen = (props) => {
             .then((res) => {
               console.log('ress', res);
               Toast.show('Cook Added Successfully', Toast.LONG);
-              setvisible(visible);
             })
             .catch((e) => {
               console.log('error', e);
@@ -595,11 +598,6 @@ const HomeScreen = (props) => {
         }
       });
     });
-    if (val) {
-      LocalNotification();
-    } else {
-      console.log('aaa');
-    }
   };
 
   return (
@@ -926,86 +924,93 @@ const HomeScreen = (props) => {
                       }
                     />
                   </Interaction>
-                  <Dialog
-                    visible={visible}
-                    width={0.9}
-                    rounded
-                    actionsBordered
-                    overlayBackgroundColor={'#333'}
-                    onTouchOutside={() => {
-                      setvisible(false);
-                      setImage([]);
-                    }}>
-                    <DialogContent style={{backgroundColor: '#fff'}}>
-                      <>
-                        <View style={{flexDirection: 'row'}}>
-                          <FlatList
-                            horizontal
-                            pagingEnabled={true}
-                            data={cookdata}
-                            keyExtractor={(item, index) => index.toString()}
-                            renderItem={({item}) => {
-                              return (
-                                <>
-                                  <View style={{flexDirection: 'row'}}>
-                                    {item.documents.map((val, index) => {
-                                      return (
-                                        <ImageLoad
-                                          source={{uri: val.image}}
-                                          loadingStyle={{
-                                            size: 'large',
-                                            color: 'blue',
-                                          }}
-                                          isShowActivity={true}
-                                          style={{
-                                            width: deviceWidth * 0.8,
-                                            height: windowHeight * 0.4,
-                                            borderRadius: 9,
-                                            marginTop: 50,
-                                          }}
-                                        />
-                                      );
-                                    })}
-                                  </View>
-                                </>
-                              );
-                            }}
-                          />
-                        </View>
-                        <TouchableOpacity
-                          style={{
-                            paddingHorizontal: 10,
-                            padding: 10,
-                            width: '60%',
-                            marginTop: 25,
-                          }}
-                          onPress={() => choosePhotoFromLibrary(item.UserId)}>
-                          <Text
-                            style={{
-                              borderWidth: 1,
-                              borderRadius: 10,
-                              borderColor: '#ccc',
-                              color: 'gray',
-                              padding: 8,
-                            }}>
-                            Attach From Gallery
-                          </Text>
-                        </TouchableOpacity>
-                      </>
-                    </DialogContent>
-                  </Dialog>
 
                   <Interaction>
-                    <TouchableOpacity
-                      underlayColor="rgba(73,182,77,0.9)"
-                      onPress={() =>
+                    <Tooltip
+                      width={290}
+                      height={290}
+                      containerStyle={{marginLeft: 20}}
+                      onOpen={() => {
                         onNavigate({
                           userId: item.UserId,
                           recipeId: item._id,
-                        })
-                      }>
+                        });
+                      }}
+                      popover={
+                        <>
+                          <View style={{flexDirection: 'row'}}>
+                            <FlatList
+                              horizontal
+                              pagingEnabled={true}
+                              data={cookdata}
+                              keyExtractor={(item, index) => index.toString()}
+                              renderItem={({item}) => {
+                                return (
+                                  <>
+                                    <View style={{flexDirection: 'row'}}>
+                                      {item.documents.map((val, index) => {
+                                        return (
+                                          <Image
+                                            source={{uri: val.image}}
+                                            loadingStyle={{
+                                              size: 'large',
+                                              color: 'blue',
+                                            }}
+                                            isShowActivity={true}
+                                            style={{
+                                              width: deviceWidth * 0.8,
+                                              height: windowHeight * 0.3,
+                                              borderRadius: 9,
+                                              marginTop: 15,
+                                            }}
+                                          />
+                                        );
+                                      })}
+                                    </View>
+                                  </>
+                                );
+                              }}
+                            />
+                          </View>
+                          <TouchableOpacity
+                            style={{
+                              paddingHorizontal: 10,
+                              padding: 10,
+                              width: '60%',
+                              marginTop: 10,
+                            }}
+                            onPress={async () => {
+                              const userId = await AsyncStorage.getItem(
+                                'UserId',
+                              );
+                              console.log(userId);
+                              console.log(item.UserId);
+                              if (userId === item.UserId) {
+                                Toast.show(
+                                  "can't attach own recipe",
+                                  Toast.LONG,
+                                );
+                              } else {
+                                choosePhotoFromLibrary(item.UserId);
+                              }
+                            }}>
+                            <Text
+                              style={{
+                                borderWidth: 1,
+                                borderRadius: 10,
+                                borderColor: '#ccc',
+                                color: 'gray',
+                                padding: 8,
+                              }}>
+                              Attach From Gallery
+                            </Text>
+                          </TouchableOpacity>
+                        </>
+                      }
+                      backgroundColor="white">
                       <Entypo name="bowl" size={25} />
-                    </TouchableOpacity>
+                    </Tooltip>
+
                     <Text
                       style={{
                         fontSize: 14,
