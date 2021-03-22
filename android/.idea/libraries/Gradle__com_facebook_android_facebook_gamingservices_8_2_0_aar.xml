@@ -3,8 +3,10 @@
     <CLASSES>
       <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/36bb9e9b006cb224ef0f5bb02057b120/jetified-facebook-gamingservices-8.2.0/res" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/0aea89fc91ab6a693e2ac57e9409aa05/jetified-facebook-gamingservices-8.2.0/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/0aea89fc91ab6a693e2ac57e9409aa05/jetified-facebook-gamingservices-8.2.0/AndroidManifest.xml" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/0aea89fc91ab6a693e2ac57e9409aa05/jetified-facebook-gamingservices-8.2.0/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/45d4a5f98958da57fb19147535b86c9c/jetified-facebook-gamingservices-8.2.0/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/6566b2ed123d0f0065826d24a1794db0/jetified-facebook-gamingservices-8.2.0/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/6566b2ed123d0f0065826d24a1794db0/jetified-facebook-gamingservices-8.2.0/AndroidManifest.xml" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/6566b2ed123d0f0065826d24a1794db0/jetified-facebook-gamingservices-8.2.0/jars/classes.jar!/" />
     </CLASSES>
     <JAVADOC>
       <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.facebook.android/facebook-gamingservices/8.2.0/9d0284f71b316961ab9944876335e3a440dc6576/facebook-gamingservices-8.2.0-javadoc.jar!/" />
