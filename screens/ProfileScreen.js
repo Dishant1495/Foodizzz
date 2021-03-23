@@ -34,8 +34,6 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import Entypo from 'react-native-vector-icons/Entypo';
 import {Rating} from 'react-native-rating-element';
 import Tooltip from 'rn-tooltip';
-import Carousel, {Pagination} from 'react-native-snap-carousel';
-const {width: viewportWidth} = Dimensions.get('window');
 const deviceWidth = Dimensions.get('window').width;
 import TimeAgo from 'react-native-timeago';
 import VideoPlayer from 'react-native-video-player';
@@ -45,7 +43,7 @@ import Toast from 'react-native-simple-toast';
 import ImageLoad from 'react-native-image-placeholder';
 import Spinner from 'react-native-loading-spinner-overlay';
 
-const ProfileScreen = props => {
+const ProfileScreen = (props) => {
   const [netInfo, setNetInfo] = useState('');
   const [email, setEmail] = useState();
   const [firstName, setFirstName] = useState();
@@ -57,7 +55,6 @@ const ProfileScreen = props => {
   const [look, setlook] = useState(0.0);
   const [colour, setcolor] = useState(0.0);
   const [total, setTotal] = useState();
-  const [activeSlide, setActiveIndex] = useState(0);
   const [count, setCount] = useState(0);
   const [loading, setLoading] = useState(false);
 
@@ -68,13 +65,13 @@ const ProfileScreen = props => {
       console.log(image);
       await axios
         .get(`${baseUrl}/user/userGetById/${UserId}`)
-        .then(userDetails => {
+        .then((userDetails) => {
           setFileImage(userDetails?.data?.data?.userimage);
           setFirstName(userDetails?.data?.data?.Firstname);
           setEmail(userDetails?.data?.data?.Email);
           setcity(userDetails?.data?.data?.City);
         })
-        .catch(e => {
+        .catch((e) => {
           console.log('e', e);
         });
     };
@@ -82,7 +79,7 @@ const ProfileScreen = props => {
     fetchUserTimeLine();
     getNetInfo();
     // Subscribe to network state updates
-    const unsubscribe = NetInfo.addEventListener(state => {
+    const unsubscribe = NetInfo.addEventListener((state) => {
       setNetInfo(
         `Connection type: ${state.type}
         Is connected?: ${state.isConnected}
@@ -98,7 +95,7 @@ const ProfileScreen = props => {
 
   const getNetInfo = () => {
     // To get the network state once
-    NetInfo.fetch().then(state => {
+    NetInfo.fetch().then((state) => {
       state.isConnected === true
         ? null
         : Alert.alert('Foodizz', 'No Internet Conection');
@@ -114,12 +111,12 @@ const ProfileScreen = props => {
     setLoading(true);
     await axios
       .get(`${baseUrl}/recipes/GetByUserId/${UserId}`)
-      .then(userFeed => {
+      .then((userFeed) => {
         setUserFeed(userFeed?.data?.data);
         setLoading(false);
         setCount(0);
       })
-      .catch(e => {
+      .catch((e) => {
         console.log('e', e);
       });
   };
@@ -131,12 +128,12 @@ const ProfileScreen = props => {
       contentUrl: `${item.documents[0].image}`,
       imageUrl: `${item.documents[0].image}`,
     };
-    ShareDialog.canShow(shareContent).then(canShow => {
+    ShareDialog.canShow(shareContent).then((canShow) => {
       canShow && ShareDialog.show(shareContent);
     });
   };
 
-  const handleDeleteRecipe = async recipeId => {
+  const handleDeleteRecipe = async (recipeId) => {
     Alert.alert('Foodizz', 'Do you want to delete this timeline', [
       {
         text: 'No',
@@ -151,11 +148,11 @@ const ProfileScreen = props => {
             .delete(
               `${baseUrl}/recipes/DeleteRecipe/${recipeId.recipeId}/${UserId}`,
             )
-            .then(async res => {
+            .then(async (res) => {
               Toast.show('Recipe Delete Successfully', Toast.LONG);
               await fetchUserTimeLine();
             })
-            .catch(e => {
+            .catch((e) => {
               console.log('error', e);
             });
         },
@@ -163,19 +160,19 @@ const ProfileScreen = props => {
     ]);
   };
 
-  const deleteLike = async recipeId => {
+  const deleteLike = async (recipeId) => {
     const UserId = await AsyncStorage.getItem('UserId');
     await axios
       .delete(`${baseUrl}/like/deletelike/${UserId}/${recipeId.recipeId}`)
-      .then(async res => {
+      .then(async (res) => {
         await fetchUserTimeLine();
       })
-      .catch(e => {
+      .catch((e) => {
         console.log('error', e);
       });
   };
-  const addLike = async recipeId => {
-    setCount(prevCount => prevCount + 1);
+  const addLike = async (recipeId) => {
+    setCount((prevCount) => prevCount + 1);
     if (count === 0) {
       const UserId = await AsyncStorage.getItem('UserId');
       if (UserId) {
@@ -185,10 +182,10 @@ const ProfileScreen = props => {
         };
         await axios
           .post(`${baseUrl}/like/addlike`, data)
-          .then(async res => {
+          .then(async (res) => {
             await fetchUserTimeLine();
           })
-          .catch(e => {
+          .catch((e) => {
             console.log('error', e);
           });
       } else {
@@ -226,35 +223,35 @@ const ProfileScreen = props => {
           />
         </View>
       );
-    } else {
+    } else if (item.video) {
       return (
         <View style={styles.container11}>
-          {item.video === null ? null : (
-            <>
-              <VideoPlayer
-                video={{uri: item.video}}
-                videoWidth={deviceWidth * 0.75}
-                videoHeight={windowHeight * 0.3}
-                autoplay={false}
-                resizeMode="cover"
-                customStyles={{
-                  wrapper: {
-                    marginRight: 20,
-                  },
-                }}
-                thumbnail={{
-                  uri:
-                    'https://cdn.theculturetrip.com/wp-content/uploads/2019/05/ia_0488_indian-cookbooks_jw_header-1024x576.jpg',
-                }}
-              />
-            </>
-          )}
+          <>
+            <VideoPlayer
+              video={{uri: item.video}}
+              videoWidth={deviceWidth * 0.75}
+              videoHeight={windowHeight * 0.3}
+              autoplay={false}
+              resizeMode="cover"
+              customStyles={{
+                wrapper: {
+                  marginRight: 20,
+                },
+              }}
+              thumbnail={{
+                uri:
+                  'https://cdn.theculturetrip.com/wp-content/uploads/2019/05/ia_0488_indian-cookbooks_jw_header-1024x576.jpg',
+              }}
+            />
+          </>
         </View>
       );
+    } else {
+      console.log('e');
     }
   };
 
-  const handleTaste = async val => {
+  const handleTaste = async (val) => {
     const UserId = await AsyncStorage.getItem('UserId');
     if (UserId) {
       setaste(val);
@@ -275,7 +272,7 @@ const ProfileScreen = props => {
     }
   };
 
-  const handlePresentation = async val => {
+  const handlePresentation = async (val) => {
     const UserId = await AsyncStorage.getItem('UserId');
     if (UserId) {
       setpresentation(val);
@@ -296,7 +293,7 @@ const ProfileScreen = props => {
     }
   };
 
-  const handleLook = async val => {
+  const handleLook = async (val) => {
     const UserId = await AsyncStorage.getItem('UserId');
     if (UserId) {
       setlook(val);
@@ -317,7 +314,7 @@ const ProfileScreen = props => {
     }
   };
 
-  const handleColor = async val => {
+  const handleColor = async (val) => {
     setcolor(val.colour);
     const UserId = await AsyncStorage.getItem('UserId');
     if (UserId) {
@@ -331,10 +328,10 @@ const ProfileScreen = props => {
       };
       await axios
         .post(`${baseUrl}/rating/addrating `, data)
-        .then(res => {
+        .then((res) => {
           Toast.show('Rating add Successfully', Toast.LONG);
         })
-        .catch(e => {
+        .catch((e) => {
           console.log('e', e);
         });
     } else {
@@ -354,9 +351,9 @@ const ProfileScreen = props => {
     }
   };
 
-  const handleOpen = async val => {
+  const handleOpen = async (val) => {
     const recipeId = val.recipeId;
-    await axios.get(`${baseUrl}/rating/getratings/${recipeId}`).then(res => {
+    await axios.get(`${baseUrl}/rating/getratings/${recipeId}`).then((res) => {
       setcolor(res.data.data[0].color);
       setpresentation(res.data.data[0].presention);
       setaste(res.data.data[0].taste);
@@ -462,46 +459,13 @@ const ProfileScreen = props => {
                       </Usertime>
                     </UserInfo>
 
-                    <Carousel
+                    <FlatList
                       data={item.documents}
+                      style={{flexDirection: 'row'}}
+                      horizontal={true}
                       renderItem={renderImage}
-                      sliderWidth={viewportWidth}
-                      itemWidth={viewportWidth}
-                      inactiveSlideScale={1}
-                      inactiveSlideOpacity={1}
-                      firstItem={0}
-                      loop={false}
-                      autoplay={false}
-                      autoplayDelay={500}
-                      autoplayInterval={3000}
-                      onSnapToItem={index =>
-                        setActiveIndex({
-                          activeSlide: index,
-                        })
-                      }
+                      keyExtractor={(item, index) => index.toString()}
                     />
-                    <Pagination
-                      dotsLength={item.documents.length}
-                      activeDotIndex={activeSlide}
-                      containerStyle={{
-                        flex: 1,
-                        position: 'absolute',
-                        alignSelf: 'center',
-                        paddingVertical: 8,
-                        marginTop: 300,
-                      }}
-                      dotColor="rgba(255, 255, 255, 0.92)"
-                      dotStyle={{
-                        width: 8,
-                        height: 8,
-                        borderRadius: 4,
-                        marginHorizontal: 0,
-                      }}
-                      inactiveDotColor="white"
-                      inactiveDotOpacity={0.4}
-                      inactiveDotScale={0.6}
-                    />
-
                     <Text numberOfLines={4} style={styles.directionsStyle}>
                       {item.directions}
                     </Text>
@@ -586,7 +550,7 @@ const ProfileScreen = props => {
                                       ratingColor="#f1c644"
                                       ratingBackgroundColor="#d4d4d4"
                                       size={15}
-                                      onIconTap={val => handleTaste(val)}
+                                      onIconTap={(val) => handleTaste(val)}
                                       icon="ios-star"
                                       direction="row" // anyOf["row" (default), "row-reverse", "column", "column-reverse"]
                                     />
@@ -606,7 +570,9 @@ const ProfileScreen = props => {
                                       ratingColor="#f1c644"
                                       ratingBackgroundColor="#d4d4d4"
                                       size={15}
-                                      onIconTap={val => handlePresentation(val)}
+                                      onIconTap={(val) =>
+                                        handlePresentation(val)
+                                      }
                                       icon="ios-star"
                                       direction="row" // anyOf["row" (default), "row-reverse", "column", "column-reverse"]
                                     />
@@ -628,7 +594,7 @@ const ProfileScreen = props => {
                                       ratingColor="#f1c644"
                                       ratingBackgroundColor="#d4d4d4"
                                       size={15}
-                                      onIconTap={val => handleLook(val)}
+                                      onIconTap={(val) => handleLook(val)}
                                       icon="ios-star"
                                       direction="row" // anyOf["row" (default), "row-reverse", "column", "column-reverse"]
                                     />
@@ -648,7 +614,7 @@ const ProfileScreen = props => {
                                       ratingColor="#f1c644"
                                       ratingBackgroundColor="#d4d4d4"
                                       size={15}
-                                      onIconTap={val =>
+                                      onIconTap={(val) =>
                                         handleColor({
                                           colour: val,
                                           recipeId: item._id,
@@ -691,7 +657,7 @@ const ProfileScreen = props => {
                   </Card>
                 );
               }}
-              keyExtractor={item => item._id}
+              keyExtractor={(item) => item._id}
               showsVerticalScrollIndicator={false}
             />
           </Container>
