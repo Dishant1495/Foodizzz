@@ -20,7 +20,6 @@ import {
 } from '../styles/FeedStyles';
 import {Rating} from 'react-native-rating-element';
 import Tooltip from 'rn-tooltip';
-import Tooltips from 'react-native-walkthrough-tooltip';
 import {
   FlatList,
   View,
@@ -45,7 +44,6 @@ import {baseUrl} from '../baseUrl';
 import {ShareDialog} from 'react-native-fbsdk';
 import Icon from 'react-native-vector-icons/Feather';
 import DropDownPicker from 'react-native-dropdown-picker';
-import Dialog, {DialogContent} from 'react-native-popup-dialog';
 import ImagePicker from 'react-native-image-crop-picker';
 import Spinner from 'react-native-loading-spinner-overlay';
 import PushNotification from 'react-native-push-notification';
@@ -587,7 +585,7 @@ const HomeScreen = (props) => {
               config,
             })
             .then((res) => {
-              console.log('ress', res);
+              console.log('ress', res.data.data);
               Toast.show('Cook Added Successfully', Toast.LONG);
             })
             .catch((e) => {
