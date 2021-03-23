@@ -524,44 +524,31 @@ const HomeScreen = (props) => {
       height: 780,
       includeBase64: true,
       multiple: true,
-    }).then((image) => {
-      const multipleImage = [];
-      image.map(async (item, index) => {
-        if (
-          item.mime === 'image/jpeg' ||
-          item.mime === 'image/jpg' ||
-          item.mime === 'image/png'
-        ) {
-          multipleImage.push(item);
-          setImage(multipleImage);
-          const userId = await AsyncStorage.getItem('UserId');
-          const recipeId = await AsyncStorage.getItem('recipeId');
-          const formdata = new FormData();
-          formdata.append('UserId', userId);
-          formdata.append('recipeId', recipeId);
-          image.map((item, index) => {
-            formdata.append('recipeImage', {
-              uri: item.path,
-              type: item.mime,
-              name: item.path.substr(item.path.lastIndexOf('/') + 1),
-            });
-          });
-          const config = {headers: {'Content-Type': 'multipart/form-data'}};
-          axios
-            .post(`${baseUrl}/cook/addCook`, formdata, {
-              config,
-            })
-            .then((res) => {
-              Toast.show('Cook Added Successfully', Toast.LONG);
-              scheduleNotification(res.data.data.recipeId);
-            })
-            .catch((e) => {
-              console.log('error', e);
-            });
-        } else {
-          setImage([]);
-        }
+    }).then(async (item) => {
+      console.log('image', item);
+      const userId = await AsyncStorage.getItem('UserId');
+      const recipeId = await AsyncStorage.getItem('recipeId');
+      const formdata = new FormData();
+      formdata.append('recipeImage', {
+        uri: item.path,
+        type: item.mime,
+        name: item.path.substr(item.path.lastIndexOf('/') + 1),
       });
+      formdata.append('UserId', userId);
+      formdata.append('recipeId', recipeId);
+      const config = {headers: {'Content-Type': 'multipart/form-data'}};
+      console.log('formdata', formdata);
+      axios
+        .post(`${baseUrl}/cook/addCook`, formdata, {
+          config,
+        })
+        .then((res) => {
+          Toast.show('Cook Added Successfully', Toast.LONG);
+          scheduleNotification(res.data.data.recipeId);
+        })
+        .catch((e) => {
+          console.log('error', e);
+        });
     });
   };
 
