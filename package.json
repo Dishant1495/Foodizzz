@@ -16,6 +16,8 @@
     "@react-native-community/netinfo": "^6.0.0",
     "@react-native-community/push-notification-ios": "^1.8.0",
     "@react-native-community/toolbar-android": "0.1.0-rc.2",
+    "@react-native-firebase/app": "^11.1.2",
+    "@react-native-firebase/messaging": "^11.1.2",
     "@react-navigation/bottom-tabs": "^5.9.2",
     "@react-navigation/native": "^5.7.3",
     "@react-navigation/stack": "^5.9.0",

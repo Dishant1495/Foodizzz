@@ -2,9 +2,10 @@
   <library name="Gradle: me.leolin:ShortcutBadger:1.1.22@aar">
     <CLASSES>
       <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/6a6e3c615be50ff419d46a994a5ef726/jetified-ShortcutBadger-1.1.22/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/3c147facadb99d4cb94ca4356e0b167d/jetified-ShortcutBadger-1.1.22/AndroidManifest.xml" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/3c147facadb99d4cb94ca4356e0b167d/jetified-ShortcutBadger-1.1.22/res" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/3c147facadb99d4cb94ca4356e0b167d/jetified-ShortcutBadger-1.1.22/jars/classes.jar!/" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/114a50b7b31efa98f38837597cdde967/jetified-ShortcutBadger-1.1.22/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/114a50b7b31efa98f38837597cdde967/jetified-ShortcutBadger-1.1.22/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/114a50b7b31efa98f38837597cdde967/jetified-ShortcutBadger-1.1.22/AndroidManifest.xml" />
     </CLASSES>
     <JAVADOC>
       <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/me.leolin/ShortcutBadger/1.1.22/8d181708c3d0b7cd93e7fbcb4467dae47603ee0b/ShortcutBadger-1.1.22-javadoc.jar!/" />

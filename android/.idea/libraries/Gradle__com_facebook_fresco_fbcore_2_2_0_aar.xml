@@ -1,7 +1,7 @@
 <component name="libraryTable">
   <library name="Gradle: com.facebook.fresco:fbcore:2.2.0@aar">
     <ANNOTATIONS>
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/59babce2cd775bbc61a23736eb39bc04/jetified-fbcore-2.2.0/annotations.zip!/" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/24190e59f75021764622bc87919586c4/jetified-fbcore-2.2.0/annotations.zip!/" />
     </ANNOTATIONS>
     <CLASSES>
       <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/c281c58aecc7199fcfc173a2fade49f7/jetified-fbcore-2.2.0/res" />
@@ -11,9 +11,10 @@
       <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/62437526df6c7e851419e80b17cda7a3/jetified-fbcore-2.2.0/res" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/8ddf7254d2181caf5bc684f8ebbbfa06/jetified-fbcore-2.2.0/res" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/32fb9cdebae9dbb494207e866790f8d1/jetified-fbcore-2.2.0/res" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/59babce2cd775bbc61a23736eb39bc04/jetified-fbcore-2.2.0/jars/classes.jar!/" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/59babce2cd775bbc61a23736eb39bc04/jetified-fbcore-2.2.0/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/59babce2cd775bbc61a23736eb39bc04/jetified-fbcore-2.2.0/AndroidManifest.xml" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/24190e59f75021764622bc87919586c4/jetified-fbcore-2.2.0/AndroidManifest.xml" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/24190e59f75021764622bc87919586c4/jetified-fbcore-2.2.0/res" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/24190e59f75021764622bc87919586c4/jetified-fbcore-2.2.0/jars/classes.jar!/" />
     </CLASSES>
     <JAVADOC>
       <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.facebook.fresco/fbcore/2.2.0/1c17e6d024ad637934592c9192e9679c1feda939/fbcore-2.2.0-javadoc.jar!/" />
