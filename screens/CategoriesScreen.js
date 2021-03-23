@@ -72,7 +72,6 @@ const CategoriesScreen = (props) => {
 
   const renderSubData = (item) => {
     const recipesArray = getRecipes(item, fetchdata.data);
-    console.log('recipe111', recipesArray);
     return (
       <ScrollView horizontal={true}>
         <View style={{flexDirection: 'row'}}>

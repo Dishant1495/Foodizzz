@@ -46,32 +46,7 @@ import Icon from 'react-native-vector-icons/Feather';
 import DropDownPicker from 'react-native-dropdown-picker';
 import ImagePicker from 'react-native-image-crop-picker';
 import Spinner from 'react-native-loading-spinner-overlay';
-import PushNotification from 'react-native-push-notification';
-
-PushNotification.configure({
-  // (required) Called when a remote or local notification is opened or received
-  onNotification: function (notification) {
-    console.log('LOCAL NOTIFICATION ==>', notification);
-  },
-  popInitialNotification: true,
-  requestPermissions: true,
-  senderID: '760858054998',
-});
-
-export const LocalNotification = () => {
-  PushNotification.localNotification({
-    autoCancel: true,
-    bigText:
-      'This is local notification demo in React Native app. Only shown, when expanded.',
-    subText: 'Local Notification Demo',
-    title: 'Local Notification Title',
-    message: 'Expand me to see more',
-    vibrate: true,
-    vibration: 300,
-    playSound: true,
-    soundName: 'default',
-  });
-};
+import {localNotificationService} from '../utils/LocalNotificationService';
 const HomeScreen = (props) => {
   const [fetchdata, setfetchdata] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -88,6 +63,7 @@ const HomeScreen = (props) => {
   const [visible, setvisible] = useState(false);
   const [image, setImage] = useState([]);
   const [cookdata, setcookData] = useState([]);
+  const [allcook, setallcook] = useState({});
   const [items, setItems] = useState([
     {
       label: 'Recent',
@@ -103,7 +79,6 @@ const HomeScreen = (props) => {
   let controller;
   useEffect(() => {
     getData();
-    // LocalNotification();
     const backAction = () => {
       if (props.navigation.isFocused()) {
         Alert.alert('Exit App', 'Do you want to EXIT?', [
@@ -523,7 +498,6 @@ const HomeScreen = (props) => {
   };
 
   const onNavigate = async (item) => {
-    console.log('item', item);
     const recipeid = item.recipeId;
     const userId = await AsyncStorage.getItem('UserId');
     const countbody = {
@@ -532,14 +506,11 @@ const HomeScreen = (props) => {
     };
     await axios
       .post(`${baseUrl}/cookcount/insertcookcount`, countbody)
-      .then((res) => {
-        console.log('cook added');
-      });
+      .then((res) => {});
     await AsyncStorage.setItem('recipeId', item.recipeId);
     await axios
       .get(`${baseUrl}/cook/getByRecipeId/${item.recipeId}`)
       .then((res) => {
-        console.log('res', res);
         setcookData(res.data.data);
       })
       .catch((e) => {
@@ -547,7 +518,54 @@ const HomeScreen = (props) => {
       });
   };
 
-  const choosePhotoFromLibrary = (val) => {
+  const takePhotoFromCamera = () => {
+    ImagePicker.openCamera({
+      width: 1200,
+      height: 780,
+      includeBase64: true,
+      multiple: true,
+    }).then((image) => {
+      const multipleImage = [];
+      image.map(async (item, index) => {
+        if (
+          item.mime === 'image/jpeg' ||
+          item.mime === 'image/jpg' ||
+          item.mime === 'image/png'
+        ) {
+          multipleImage.push(item);
+          setImage(multipleImage);
+          const userId = await AsyncStorage.getItem('UserId');
+          const recipeId = await AsyncStorage.getItem('recipeId');
+          const formdata = new FormData();
+          formdata.append('UserId', userId);
+          formdata.append('recipeId', recipeId);
+          image.map((item, index) => {
+            formdata.append('recipeImage', {
+              uri: item.path,
+              type: item.mime,
+              name: item.path.substr(item.path.lastIndexOf('/') + 1),
+            });
+          });
+          const config = {headers: {'Content-Type': 'multipart/form-data'}};
+          axios
+            .post(`${baseUrl}/cook/addCook`, formdata, {
+              config,
+            })
+            .then((res) => {
+              Toast.show('Cook Added Successfully', Toast.LONG);
+              scheduleNotification(res.data.data.recipeId);
+            })
+            .catch((e) => {
+              console.log('error', e);
+            });
+        } else {
+          setImage([]);
+        }
+      });
+    });
+  };
+
+  const choosePhotoFromLibrary = () => {
     ImagePicker.openPicker({
       width: 1200,
       height: 780,
@@ -563,12 +581,10 @@ const HomeScreen = (props) => {
         ) {
           multipleImage.push(item);
           setImage(multipleImage);
-          console.log('add images', image);
           const userId = await AsyncStorage.getItem('UserId');
           const recipeId = await AsyncStorage.getItem('recipeId');
 
           const formdata = new FormData();
-          console.log('recipeId', recipeId);
           formdata.append('UserId', userId);
           formdata.append('recipeId', recipeId);
           image.map((item, index) => {
@@ -579,14 +595,14 @@ const HomeScreen = (props) => {
             });
           });
           const config = {headers: {'Content-Type': 'multipart/form-data'}};
-          console.log('formdata', formdata);
           axios
             .post(`${baseUrl}/cook/addCook`, formdata, {
               config,
             })
             .then((res) => {
-              console.log('ress', res.data.data);
               Toast.show('Cook Added Successfully', Toast.LONG);
+              setallcook(res.data.data);
+              scheduleNotification(res.data.data.recipeId);
             })
             .catch((e) => {
               console.log('error', e);
@@ -598,6 +614,28 @@ const HomeScreen = (props) => {
     });
   };
 
+  scheduleNotification = async (item) => {
+    const userId = await AsyncStorage.getItem('UserId');
+    axios
+      .get(`${baseUrl}/recipes/FindById/${item}/${userId}`)
+      .then(async (responseJson) => {
+        const recipeTitle = responseJson.data.data.title;
+        await axios
+          .get(`${baseUrl}/user/userGetById/${userId}`)
+          .then((userDetails) => {
+            let id = 1;
+            let title = `${recipeTitle}`;
+            let message = `Cooked by ${userDetails?.data?.data?.Firstname}`;
+            localNotificationService.scheduleNotification(id, title, message);
+          })
+          .catch((e) => {
+            console.log('error', e);
+          });
+      })
+      .catch((e) => {
+        console.log('e', e);
+      });
+  };
   return (
     <>
       <StatusBar backgroundColor="orange" />
@@ -926,7 +964,7 @@ const HomeScreen = (props) => {
                   <Interaction>
                     <Tooltip
                       width={290}
-                      height={290}
+                      height={260}
                       containerStyle={{marginLeft: 20}}
                       onOpen={() => {
                         onNavigate({
@@ -936,7 +974,7 @@ const HomeScreen = (props) => {
                       }}
                       popover={
                         <>
-                          <View style={{flexDirection: 'row'}}>
+                          <View style={{flexDirection: 'row', marginTop: 15}}>
                             <FlatList
                               horizontal
                               pagingEnabled={true}
@@ -945,21 +983,18 @@ const HomeScreen = (props) => {
                               renderItem={({item}) => {
                                 return (
                                   <>
-                                    <View style={{flexDirection: 'row'}}>
+                                    <View
+                                      style={{
+                                        flexDirection: 'row',
+                                      }}>
                                       {item.documents.map((val, index) => {
                                         return (
                                           <Image
                                             source={{uri: val.image}}
-                                            loadingStyle={{
-                                              size: 'large',
-                                              color: 'blue',
-                                            }}
-                                            isShowActivity={true}
                                             style={{
                                               width: deviceWidth * 0.8,
                                               height: windowHeight * 0.3,
                                               borderRadius: 9,
-                                              marginTop: 15,
                                             }}
                                           />
                                         );
@@ -970,39 +1005,71 @@ const HomeScreen = (props) => {
                               }}
                             />
                           </View>
-                          <TouchableOpacity
+                          <View
                             style={{
-                              paddingHorizontal: 10,
-                              padding: 10,
-                              width: '60%',
-                              marginTop: 10,
-                            }}
-                            onPress={async () => {
-                              const userId = await AsyncStorage.getItem(
-                                'UserId',
-                              );
-                              console.log(userId);
-                              console.log(item.UserId);
-                              if (userId === item.UserId) {
-                                Toast.show(
-                                  "can't attach own recipe",
-                                  Toast.LONG,
-                                );
-                              } else {
-                                choosePhotoFromLibrary(item.UserId);
-                              }
+                              flexDirection: 'row',
                             }}>
-                            <Text
+                            <TouchableOpacity
                               style={{
-                                borderWidth: 1,
-                                borderRadius: 10,
-                                borderColor: '#ccc',
-                                color: 'gray',
-                                padding: 8,
+                                paddingHorizontal: 10,
+                                padding: 10,
+                              }}
+                              onPress={async () => {
+                                const userId = await AsyncStorage.getItem(
+                                  'UserId',
+                                );
+                                if (userId === item.UserId) {
+                                  Toast.show(
+                                    "can't attach own recipe",
+                                    Toast.LONG,
+                                  );
+                                } else {
+                                  choosePhotoFromLibrary(item.UserId);
+                                }
                               }}>
-                              Attach From Gallery
-                            </Text>
-                          </TouchableOpacity>
+                              <Text
+                                style={{
+                                  borderWidth: 1,
+                                  borderRadius: 10,
+                                  borderColor: '#ccc',
+                                  color: 'gray',
+                                  padding: 8,
+                                  textAlign: 'center',
+                                }}>
+                                Choose Gallery
+                              </Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                              style={{
+                                paddingHorizontal: 10,
+                                padding: 10,
+                              }}
+                              onPress={async () => {
+                                const userId = await AsyncStorage.getItem(
+                                  'UserId',
+                                );
+                                if (userId === item.UserId) {
+                                  Toast.show(
+                                    "can't attach own recipe",
+                                    Toast.LONG,
+                                  );
+                                } else {
+                                  takePhotoFromCamera(item.UserId);
+                                }
+                              }}>
+                              <Text
+                                style={{
+                                  borderWidth: 1,
+                                  borderRadius: 10,
+                                  borderColor: '#ccc',
+                                  color: 'gray',
+                                  padding: 8,
+                                  textAlign: 'center',
+                                }}>
+                                Choose Camera
+                              </Text>
+                            </TouchableOpacity>
+                          </View>
                         </>
                       }
                       backgroundColor="white">

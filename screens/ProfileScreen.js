@@ -62,7 +62,6 @@ const ProfileScreen = (props) => {
     const fetchData = async () => {
       const UserId = await AsyncStorage.getItem('UserId');
       const image = await AsyncStorage.getItem('image');
-      console.log(image);
       await axios
         .get(`${baseUrl}/user/userGetById/${UserId}`)
         .then((userDetails) => {

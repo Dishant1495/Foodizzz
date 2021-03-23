@@ -80,7 +80,6 @@ const SignupScreen = ({navigation}) => {
             config,
           })
           .then(async (response) => {
-            console.log('response', response);
             setLoading(false);
             if (response.data.status == 'success') {
               Toast.show('Signup Succesfully', Toast.LONG);
