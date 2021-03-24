@@ -68,7 +68,7 @@ class FCMService {
     messaging()
       .deleteToken()
       .catch((error) => {
-        console.log('Delected token error ', error);
+        console.log('Deleted token error ', error);
       });
   };
 
@@ -112,13 +112,10 @@ class FCMService {
       console.log(fcmToken, 'fcmToken, 5');
       onRegister(fcmToken);
     });
-
-    
   };
 
   unRegister = () => {
     this.messageListener();
-    
   };
 }
 

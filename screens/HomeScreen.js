@@ -368,6 +368,7 @@ const HomeScreen = (props) => {
               customStyles={{
                 wrapper: {
                   marginLeft: 20,
+                  marginBottom: 35,
                 },
               }}
               thumbnail={{

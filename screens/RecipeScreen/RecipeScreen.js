@@ -3,22 +3,18 @@ import {
   ScrollView,
   Text,
   View,
-  Image,
   Dimensions,
   FlatList,
   StatusBar,
-  Share,
   StyleSheet,
   Alert,
   TouchableOpacity,
 } from 'react-native';
 import styles from './styles';
-import Carousel, {Pagination} from 'react-native-snap-carousel';
 const {width: viewportWidth} = Dimensions.get('window');
 import SegmentedControlTab from 'react-native-segmented-control-tab';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import Entypo from 'react-native-vector-icons/Entypo';
 import {InteractionWrapper, Interaction} from '../../styles/FeedStyles';
 import Tooltip from 'rn-tooltip';
 import styleshome from '../../styles/Home';
@@ -37,7 +33,6 @@ const deviceWidth = Dimensions.get('window').width;
 const RecipeScreen = (props) => {
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [fetchdata, setfetchdata] = useState([]);
-  const [activeSlide, setActiveIndex] = useState(0);
   const [userDetails, setUserData] = useState();
   const [taste, setaste] = useState(0.0);
   const [presentation, setpresentation] = useState(0.0);
@@ -106,10 +101,6 @@ const RecipeScreen = (props) => {
     ShareDialog.canShow(shareContent).then((canShow) => {
       canShow && ShareDialog.show(shareContent);
     });
-  };
-
-  const onCook = () => {
-    alert('Yummy');
   };
 
   const title = fetchdata?.data?.title;
@@ -527,9 +518,6 @@ const RecipeScreen = (props) => {
                 })
               }
             />
-          </Interaction>
-          <Interaction>
-            <Entypo name="bowl" size={25} onPress={onCook} />
           </Interaction>
         </InteractionWrapper>
       </>
