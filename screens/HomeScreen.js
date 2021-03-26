@@ -945,10 +945,9 @@ const HomeScreen = (props) => {
                       popover={
                         <>
                           <View style={{flexDirection: 'row', marginTop: 15}}>
-                            {/* <FlatList
+                            <FlatList
                               horizontal
-                              pagingEnabled={true}
-                              data={cookdata}
+                              data={cookdata[0]?.documents}
                               keyExtractor={(item, index) => index.toString()}
                               renderItem={({item}) => {
                                 return (
@@ -957,23 +956,19 @@ const HomeScreen = (props) => {
                                       style={{
                                         flexDirection: 'row',
                                       }}>
-                                      {item.documents.map((val, index) => {
-                                        return (
-                                          <Image
-                                            source={{uri: val.image}}
-                                            style={{
-                                              width: deviceWidth * 0.8,
-                                              height: windowHeight * 0.3,
-                                              borderRadius: 9,
-                                            }}
-                                          />
-                                        );
-                                      })}
+                                      <Image
+                                        source={{uri: item.image}}
+                                        style={{
+                                          width: deviceWidth * 0.8,
+                                          height: windowHeight * 0.3,
+                                          borderRadius: 9,
+                                        }}
+                                      />
                                     </View>
                                   </>
                                 );
                               }}
-                            /> */}
+                            />
                           </View>
                           <View
                             style={{
