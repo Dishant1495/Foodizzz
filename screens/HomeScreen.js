@@ -945,7 +945,7 @@ const HomeScreen = (props) => {
                       popover={
                         <>
                           <View style={{flexDirection: 'row', marginTop: 15}}>
-                            <FlatList
+                            {/* <FlatList
                               horizontal
                               pagingEnabled={true}
                               data={cookdata}
@@ -973,7 +973,7 @@ const HomeScreen = (props) => {
                                   </>
                                 );
                               }}
-                            />
+                            /> */}
                           </View>
                           <View
                             style={{

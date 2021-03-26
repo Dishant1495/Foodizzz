@@ -8,7 +8,10 @@ import {
   Alert,
   BackHandler,
 } from 'react-native';
-import PushNotification from 'react-native-push-notification';
+import Amplify from 'aws-amplify';
+import PushNotification from '@aws-amplify/pushnotification';
+import awsconfig from '../aws-exports';
+Amplify.configure(awsconfig);
 import FormInput from '../components/FormInput';
 import FormButton from '../components/FormButton';
 import styles from '../styles/Login';
@@ -84,18 +87,17 @@ const LoginScreen = ({navigation}) => {
           Toast.show(response.data.error, Toast.LONG);
         } else {
           await AsyncStorage.setItem('user', JSON.stringify(response.data));
-          PushNotification.configure({
-            onRegister: function (token) {
-              const body = {
-                OwnerRecipeUserId: response.data.UserId,
-                Devicetoken: token.token,
-              };
-              axios
-                .post(`${baseUrl}/notifiction/inserttoken`, body)
-                .then(async (response) => {
-                  console.log('sd');
-                });
-            },
+          PushNotification.onRegister((token) => {
+            console.log('onRegister', token);
+            const body = {
+              OwnerRecipeUserId: response.data.UserId,
+              Devicetoken: token.token,
+            };
+            axios
+              .post(`${baseUrl}/notifiction/inserttoken`, body)
+              .then(async (response) => {
+                console.log('sd');
+              });
           });
           const UserId = response.data.UserId;
           await AsyncStorage.setItem('UserId', UserId);

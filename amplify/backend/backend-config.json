@@ -1,0 +1,17 @@
+{
+    "auth": {
+        "cognito7d4a4a68": {
+            "service": "Cognito",
+            "serviceType": "managed",
+            "providerPlugin": "awscloudformation"
+        }
+    },
+    "notifications": {
+        "FoodizzznJsdC": {
+            "service": "Pinpoint",
+            "channels": [
+                "FCM"
+            ]
+        }
+    }
+}
