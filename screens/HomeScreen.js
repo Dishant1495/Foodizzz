@@ -46,9 +46,6 @@ import Icon from 'react-native-vector-icons/Feather';
 import DropDownPicker from 'react-native-dropdown-picker';
 import ImagePicker from 'react-native-image-crop-picker';
 import Spinner from 'react-native-loading-spinner-overlay';
-import {localNotificationService} from '../utils/LocalNotificationService';
-import styles from '../styles/Main';
-
 const HomeScreen = (props) => {
   const [fetchdata, setfetchdata] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -62,8 +59,8 @@ const HomeScreen = (props) => {
   const [count, setCount] = useState(0);
   const [value, setValue] = useState('Recent');
   const [filter, setfilter] = useState('All');
+  const [visible, setvisible] = useState(false);
   const [image, setImage] = useState([]);
-  const [showPopover, setShowPopover] = useState(false);
   const [cookdata, setcookData] = useState([]);
   const [allcook, setallcook] = useState({});
   const [items, setItems] = useState([
@@ -81,7 +78,6 @@ const HomeScreen = (props) => {
   let controller;
   useEffect(() => {
     getData();
-    setTimeout(() => setShowPopover(false), 2000);
     const backAction = () => {
       if (props.navigation.isFocused()) {
         Alert.alert('Exit App', 'Do you want to EXIT?', [
@@ -371,7 +367,6 @@ const HomeScreen = (props) => {
               customStyles={{
                 wrapper: {
                   marginLeft: 20,
-                  marginBottom: 35,
                 },
               }}
               thumbnail={{
@@ -503,6 +498,7 @@ const HomeScreen = (props) => {
 
   const onNavigate = async (item) => {
     const recipeid = item.recipeId;
+    const OwnerRecipeUserId = item.userId;
     const userId = await AsyncStorage.getItem('UserId');
     const countbody = {
       UserId: userId,
@@ -516,20 +512,28 @@ const HomeScreen = (props) => {
       .get(`${baseUrl}/cook/getByRecipeId/${item.recipeId}`)
       .then((res) => {
         setcookData(res.data.data);
+        const sendnotificationbody = {
+          OwnerRecipeUserId: OwnerRecipeUserId,
+          recipeid: recipeid,
+          sendByUserId: userId,
+        };
+        axios.post(
+          `${baseUrl}/notifiction/Sendnotification`,
+          sendnotificationbody,
+        );
       })
       .catch((e) => {
         console.log('e', e);
       });
   };
 
-  const takePhotoFromCamera = () => {
+  const takePhotoFromCamera = (OwnerRecipeUserId) => {
     ImagePicker.openCamera({
       width: 1200,
       height: 780,
       includeBase64: true,
       multiple: true,
     }).then(async (item) => {
-      console.log('image', item);
       const userId = await AsyncStorage.getItem('UserId');
       const recipeId = await AsyncStorage.getItem('recipeId');
       const formdata = new FormData();
@@ -541,14 +545,12 @@ const HomeScreen = (props) => {
       formdata.append('UserId', userId);
       formdata.append('recipeId', recipeId);
       const config = {headers: {'Content-Type': 'multipart/form-data'}};
-      console.log('formdata', formdata);
       axios
         .post(`${baseUrl}/cook/addCook`, formdata, {
           config,
         })
         .then((res) => {
           Toast.show('Cook Added Successfully', Toast.LONG);
-          scheduleNotification(res.data.data.recipeId);
         })
         .catch((e) => {
           console.log('error', e);
@@ -556,7 +558,7 @@ const HomeScreen = (props) => {
     });
   };
 
-  const choosePhotoFromLibrary = () => {
+  const choosePhotoFromLibrary = (OwnerRecipeUserId) => {
     ImagePicker.openPicker({
       width: 1200,
       height: 780,
@@ -593,7 +595,6 @@ const HomeScreen = (props) => {
             .then((res) => {
               Toast.show('Cook Added Successfully', Toast.LONG);
               setallcook(res.data.data);
-              scheduleNotification(res.data.data.recipeId);
             })
             .catch((e) => {
               console.log('error', e);
@@ -605,28 +606,6 @@ const HomeScreen = (props) => {
     });
   };
 
-  scheduleNotification = async (item) => {
-    const userId = await AsyncStorage.getItem('UserId');
-    axios
-      .get(`${baseUrl}/recipes/FindById/${item}/${userId}`)
-      .then(async (responseJson) => {
-        const recipeTitle = responseJson.data.data.title;
-        await axios
-          .get(`${baseUrl}/user/userGetById/${userId}`)
-          .then((userDetails) => {
-            let id = 1;
-            let title = `${recipeTitle}`;
-            let message = `Cooked by ${userDetails?.data?.data?.Firstname}`;
-            localNotificationService.scheduleNotification(id, title, message);
-          })
-          .catch((e) => {
-            console.log('error', e);
-          });
-      })
-      .catch((e) => {
-        console.log('e', e);
-      });
-  };
   return (
     <>
       <StatusBar backgroundColor="orange" />
@@ -802,7 +781,14 @@ const HomeScreen = (props) => {
                         color={item.islike === 'true' ? 'red' : 'black'}
                       />
                     </TouchableOpacity>
-                    <Text style={styles.totalcount}>{item.likes}</Text>
+                    <Text
+                      style={{
+                        fontSize: 14,
+                        paddingLeft: 10,
+                        marginTop: 5,
+                      }}>
+                      {item.likes}
+                    </Text>
                   </Interaction>
                   <Interaction>
                     <TouchableOpacity
@@ -946,13 +932,128 @@ const HomeScreen = (props) => {
                   </Interaction>
 
                   <Interaction>
-                   
-                    {/* <Entypo
-                      name="bowl"
-                      size={25}
-                      onPress={() => setModalVisible(true)}
-                    /> */}
-                    <Text style={styles.totalcount}>{item.cookcount}</Text>
+                    <Tooltip
+                      width={290}
+                      height={260}
+                      containerStyle={{marginLeft: 20}}
+                      onOpen={() => {
+                        onNavigate({
+                          userId: item.UserId,
+                          recipeId: item._id,
+                        });
+                      }}
+                      popover={
+                        <>
+                          <View style={{flexDirection: 'row', marginTop: 15}}>
+                            <FlatList
+                              horizontal
+                              pagingEnabled={true}
+                              data={cookdata}
+                              keyExtractor={(item, index) => index.toString()}
+                              renderItem={({item}) => {
+                                return (
+                                  <>
+                                    <View
+                                      style={{
+                                        flexDirection: 'row',
+                                      }}>
+                                      {item.documents.map((val, index) => {
+                                        return (
+                                          <Image
+                                            source={{uri: val.image}}
+                                            style={{
+                                              width: deviceWidth * 0.8,
+                                              height: windowHeight * 0.3,
+                                              borderRadius: 9,
+                                            }}
+                                          />
+                                        );
+                                      })}
+                                    </View>
+                                  </>
+                                );
+                              }}
+                            />
+                          </View>
+                          <View
+                            style={{
+                              flexDirection: 'row',
+                            }}>
+                            <TouchableOpacity
+                              style={{
+                                paddingHorizontal: 10,
+                                padding: 10,
+                              }}
+                              onPress={async () => {
+                                const userId = await AsyncStorage.getItem(
+                                  'UserId',
+                                );
+                                if (userId === item.UserId) {
+                                  Toast.show(
+                                    "can't attach own recipe",
+                                    Toast.LONG,
+                                  );
+                                } else {
+                                  choosePhotoFromLibrary(item.UserId);
+                                }
+                              }}>
+                              <Text
+                                style={{
+                                  borderWidth: 1,
+                                  borderRadius: 10,
+                                  borderColor: '#ccc',
+                                  color: 'gray',
+                                  padding: 8,
+                                  textAlign: 'center',
+                                }}>
+                                Choose Gallery
+                              </Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                              style={{
+                                paddingHorizontal: 10,
+                                padding: 10,
+                              }}
+                              onPress={async () => {
+                                const userId = await AsyncStorage.getItem(
+                                  'UserId',
+                                );
+                                if (userId === item.UserId) {
+                                  Toast.show(
+                                    "can't attach own recipe",
+                                    Toast.LONG,
+                                  );
+                                } else {
+                                  takePhotoFromCamera(item.UserId);
+                                }
+                              }}>
+                              <Text
+                                style={{
+                                  borderWidth: 1,
+                                  borderRadius: 10,
+                                  borderColor: '#ccc',
+                                  color: 'gray',
+                                  padding: 8,
+                                  textAlign: 'center',
+                                }}>
+                                Choose Camera
+                              </Text>
+                            </TouchableOpacity>
+                          </View>
+                        </>
+                      }
+                      backgroundColor="white">
+                      <Entypo name="bowl" size={25} />
+                    </Tooltip>
+
+                    <Text
+                      style={{
+                        fontSize: 14,
+                        paddingLeft: 10,
+                        marginTop: 5,
+                      }}>
+                      {item.cookcount}
+                    </Text>
                   </Interaction>
                 </InteractionWrapper>
               </Card>
@@ -967,3 +1068,115 @@ const HomeScreen = (props) => {
 };
 
 export default HomeScreen;
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+
+  textcontainer22: {
+    color: '#999',
+  },
+
+  directionsStyle: {
+    fontSize: 14,
+    fontFamily: 'Lato-Regular',
+    paddingLeft: 15,
+    paddingRight: 15,
+    color: '#666',
+    marginTop: 15,
+    fontWeight: 'bold',
+  },
+
+  footer: {
+    padding: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+    flexDirection: 'row',
+  },
+  loadMoreBtn: {
+    padding: 10,
+    backgroundColor: '#800000',
+    borderRadius: 4,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  btnText: {
+    color: 'white',
+    fontSize: 15,
+    textAlign: 'center',
+  },
+  toolbar: {},
+  mediaPlayer: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    bottom: 0,
+    right: 0,
+    backgroundColor: 'black',
+    justifyContent: 'center',
+  },
+
+  totalrating: {
+    fontWeight: 'bold',
+    marginLeft: 5,
+    bottom: 5,
+  },
+
+  totalrating44: {
+    fontWeight: 'bold',
+    marginLeft: 7,
+    fontSize: 14,
+    marginTop: 1,
+  },
+
+  image: {
+    ...StyleSheet.absoluteFillObject,
+    width: '100%',
+    height: 250,
+    //flexDirection:'row'
+  },
+  imageContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    width: viewportWidth,
+    height: 250,
+  },
+
+  imageContainer44: {
+    flex: 1,
+    justifyContent: 'center',
+    width: '100%',
+    height: 250,
+  },
+
+  spacecontainer: {
+    justifyContent: 'space-around',
+    alignItems: 'center',
+  },
+
+  rowcontainer: {
+    flexDirection: 'row',
+    alignSelf: 'flex-start',
+  },
+
+  middlecontainer: {
+    color: 'gray',
+    flex: 0.4,
+  },
+
+  paginationContainer: {
+    flex: 1,
+    position: 'absolute',
+    alignSelf: 'center',
+    paddingVertical: 8,
+    marginTop: 300,
+  },
+  paginationDot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    marginHorizontal: 0,
+  },
+});

@@ -8,6 +8,7 @@ import {
   Alert,
   BackHandler,
 } from 'react-native';
+import PushNotification from 'react-native-push-notification';
 import FormInput from '../components/FormInput';
 import FormButton from '../components/FormButton';
 import styles from '../styles/Login';
@@ -22,6 +23,7 @@ const LoginScreen = ({navigation}) => {
   const [password, setPassword] = useState();
   const [loading, setLoading] = useState(false);
   const [netInfo, setNetInfo] = useState('');
+
   useEffect(() => {
     getNetInfo();
     // Subscribe to network state updates
@@ -82,6 +84,19 @@ const LoginScreen = ({navigation}) => {
           Toast.show(response.data.error, Toast.LONG);
         } else {
           await AsyncStorage.setItem('user', JSON.stringify(response.data));
+          PushNotification.configure({
+            onRegister: function (token) {
+              const body = {
+                OwnerRecipeUserId: response.data.UserId,
+                Devicetoken: token.token,
+              };
+              axios
+                .post(`${baseUrl}/notifiction/inserttoken`, body)
+                .then(async (response) => {
+                  console.log('sd');
+                });
+            },
+          });
           const UserId = response.data.UserId;
           await AsyncStorage.setItem('UserId', UserId);
           Toast.show('Login Succesfully', Toast.LONG);
