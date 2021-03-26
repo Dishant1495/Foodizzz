@@ -48,6 +48,7 @@ import ImagePicker from 'react-native-image-crop-picker';
 import Spinner from 'react-native-loading-spinner-overlay';
 import {localNotificationService} from '../utils/LocalNotificationService';
 import styles from '../styles/Main';
+
 const HomeScreen = (props) => {
   const [fetchdata, setfetchdata] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -62,6 +63,7 @@ const HomeScreen = (props) => {
   const [value, setValue] = useState('Recent');
   const [filter, setfilter] = useState('All');
   const [image, setImage] = useState([]);
+  const [showPopover, setShowPopover] = useState(false);
   const [cookdata, setcookData] = useState([]);
   const [allcook, setallcook] = useState({});
   const [items, setItems] = useState([
@@ -79,6 +81,7 @@ const HomeScreen = (props) => {
   let controller;
   useEffect(() => {
     getData();
+    setTimeout(() => setShowPopover(false), 2000);
     const backAction = () => {
       if (props.navigation.isFocused()) {
         Alert.alert('Exit App', 'Do you want to EXIT?', [
@@ -943,98 +946,12 @@ const HomeScreen = (props) => {
                   </Interaction>
 
                   <Interaction>
-                    <Tooltip
-                      width={290}
-                      height={260}
-                      containerStyle={{marginLeft: 20}}
-                      onOpen={() => {
-                        onNavigate({
-                          userId: item.UserId,
-                          recipeId: item._id,
-                        });
-                      }}
-                      popover={
-                        <>
-                          <View style={{flexDirection: 'row', marginTop: 15}}>
-                            <FlatList
-                              horizontal
-                              pagingEnabled={true}
-                              data={cookdata}
-                              keyExtractor={(item, index) => index.toString()}
-                              renderItem={({item}) => {
-                                return (
-                                  <>
-                                    <View
-                                      style={{
-                                        flexDirection: 'row',
-                                      }}>
-                                      {item.documents.map((val, index) => {
-                                        return (
-                                          <Image
-                                            source={{uri: val.image}}
-                                            style={{
-                                              width: deviceWidth * 0.8,
-                                              height: windowHeight * 0.3,
-                                              borderRadius: 9,
-                                            }}
-                                          />
-                                        );
-                                      })}
-                                    </View>
-                                  </>
-                                );
-                              }}
-                            />
-                          </View>
-                          <View
-                            style={{
-                              flexDirection: 'row',
-                            }}>
-                            <TouchableOpacity
-                              style={styles.view22}
-                              onPress={async () => {
-                                const userId = await AsyncStorage.getItem(
-                                  'UserId',
-                                );
-                                if (userId === item.UserId) {
-                                  Toast.show(
-                                    "can't attach own recipe",
-                                    Toast.LONG,
-                                  );
-                                } else {
-                                  choosePhotoFromLibrary(item.UserId);
-                                }
-                              }}>
-                              <Text style={styles.textcontainer11}>
-                                Choose Gallery
-                              </Text>
-                            </TouchableOpacity>
-                            <TouchableOpacity
-                              style={styles.view22}
-                              onPress={async () => {
-                                const userId = await AsyncStorage.getItem(
-                                  'UserId',
-                                );
-                                if (userId === item.UserId) {
-                                  Toast.show(
-                                    "can't attach own recipe",
-                                    Toast.LONG,
-                                  );
-                                } else {
-                                  takePhotoFromCamera(item.UserId);
-                                }
-                              }}>
-                              <Text style={styles.textcontainer11}>
-                                Choose Camera
-                              </Text>
-                            </TouchableOpacity>
-                          </View>
-                        </>
-                      }
-                      backgroundColor="white">
-                      <Entypo name="bowl" size={25} />
-                    </Tooltip>
-
+                   
+                    {/* <Entypo
+                      name="bowl"
+                      size={25}
+                      onPress={() => setModalVisible(true)}
+                    /> */}
                     <Text style={styles.totalcount}>{item.cookcount}</Text>
                   </Interaction>
                 </InteractionWrapper>
