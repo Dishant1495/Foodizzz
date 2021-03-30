@@ -8,10 +8,7 @@ import {
   Alert,
   BackHandler,
 } from 'react-native';
-import Amplify from 'aws-amplify';
-import PushNotification from '@aws-amplify/pushnotification';
-import awsconfig from '../aws-exports';
-Amplify.configure(awsconfig);
+import PushNotification from 'react-native-push-notification';
 import FormInput from '../components/FormInput';
 import FormButton from '../components/FormButton';
 import styles from '../styles/Login';
@@ -30,7 +27,7 @@ const LoginScreen = ({navigation}) => {
   useEffect(() => {
     getNetInfo();
     // Subscribe to network state updates
-    const unsubscribe = NetInfo.addEventListener((state) => {
+    const unsubscribe = NetInfo.addEventListener(state => {
       setNetInfo(
         `Connection type: ${state.type}
         Is connected?: ${state.isConnected}
@@ -65,7 +62,7 @@ const LoginScreen = ({navigation}) => {
 
   const getNetInfo = () => {
     // To get the network state once
-    NetInfo.fetch().then((state) => {
+    NetInfo.fetch().then(state => {
       state.isConnected === true
         ? null
         : Alert.alert('Foodizz', 'No Internet Conection');
@@ -79,7 +76,7 @@ const LoginScreen = ({navigation}) => {
     };
     setLoading(true);
     try {
-      axios.post(`${baseUrl}/user/login`, userData).then(async (response) => {
+      axios.post(`${baseUrl}/user/login`, userData).then(async response => {
         setLoading(false);
         if (response.data.status == 'Fail') {
           Toast.show(response.data.message, Toast.LONG);
@@ -87,7 +84,7 @@ const LoginScreen = ({navigation}) => {
           Toast.show(response.data.error, Toast.LONG);
         } else {
           await AsyncStorage.setItem('user', JSON.stringify(response.data));
-          PushNotification.onRegister((token) => {
+          PushNotification.onRegister(token => {
             console.log('onRegister', token);
             const body = {
               OwnerRecipeUserId: response.data.UserId,
@@ -95,9 +92,7 @@ const LoginScreen = ({navigation}) => {
             };
             axios
               .post(`${baseUrl}/notifiction/inserttoken`, body)
-              .then(async (response) => {
-                console.log('sd');
-              });
+              .then(response => {});
           });
           const UserId = response.data.UserId;
           await AsyncStorage.setItem('UserId', UserId);
@@ -122,7 +117,7 @@ const LoginScreen = ({navigation}) => {
         />
         <FormInput
           labelValue={email}
-          onChangeText={(email) => setEmail(email)}
+          onChangeText={email => setEmail(email)}
           placeholderText="Email"
           iconType="user"
           keyboardType="email-address"
@@ -132,7 +127,7 @@ const LoginScreen = ({navigation}) => {
 
         <FormInput
           labelValue={password}
-          onChangeText={(password) => setPassword(password)}
+          onChangeText={password => setPassword(password)}
           placeholderText="Password"
           iconType="lock"
           secureTextEntry={true}
