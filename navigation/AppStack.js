@@ -16,6 +16,7 @@ import EditProfile from '../screens/EditProfile';
 import AsyncStorage from '@react-native-community/async-storage';
 import ProfileScreen from '../screens/ProfileScreen';
 import RecipeOwner from '../screens/Recipeowner';
+import CrateNewPostScreen from "../screens/CrateNewPostScreen"
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
@@ -205,6 +206,28 @@ const FeedStack = ({navigation}) => (
           </View>
         ),
       }}
+    />
+    <Stack.Screen
+    name="CreateNewPost"
+    component={CrateNewPostScreen}
+    options={{
+      title: 'Create Post',
+      headerTitleStyle: {
+        color: 'white',
+        fontFamily: 'Kufam',
+        fontSize: 18,
+        right: 25,
+      },
+      headerStyle: {
+        backgroundColor: 'orange',
+      },
+      headerBackTitleVisible: false,
+      headerBackImage: () => (
+        <View style={{}}>
+          <Ionicons name="arrow-back" size={25} color="white" />
+        </View>
+      ),
+    }}
     />
     <Stack.Screen
       name="CommentScreen"

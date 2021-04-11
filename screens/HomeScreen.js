@@ -32,6 +32,7 @@ import {
   BackHandler,
   TouchableOpacity,
   Image,
+  Share,
 } from 'react-native';
 const {width: viewportWidth} = Dimensions.get('window');
 const deviceWidth = Dimensions.get('window').width;
@@ -231,24 +232,6 @@ const HomeScreen = props => {
       }
     }
   };
-
-  const getLoadMore = async () => {
-    const userId = await AsyncStorage.getItem('UserId');
-    //Service to get the data from the server to render
-    axios
-      .get(`${baseUrl}/recipes/Feed/${userId}?page=` + 1)
-      //Sending the currect page  with get request
-      .then(responseJson => {
-        //Successful response
-        setPage(page);
-        setCount(0);
-        //Increasing the page for the next API call
-        setfetchdata(responseJson.data.data);
-      })
-      .catch(error => {
-        console.log('error', error);
-      });
-  };
   const onRefresh = async () => {
     setRefreshing(true);
     const userId = await AsyncStorage.getItem('UserId');
@@ -257,7 +240,7 @@ const HomeScreen = props => {
       .get(`${baseUrl}/recipes/Feed/${userId}?page=` + 1)
       //Sending the currect page  with get request
       .then(responseJson => {
-        //Successful response
+        //Successful response                               
         setPage(2);
         //Increasing the page for the next API call
         setfetchdata(responseJson.data.data);
@@ -613,6 +596,10 @@ const HomeScreen = props => {
     });
   };
 
+  // const onCreatePost = () => {
+  //   console.log("Post Created")
+  //   props.navigation.navigate("CreateNewPost")
+  // }
   return (
     <>
       <StatusBar backgroundColor="orange" />
@@ -948,6 +935,7 @@ const HomeScreen = props => {
                     <Tooltip
                       width={290}
                       height={260}
+                      
                       containerStyle={{marginLeft: 20}}
                       onOpen={() => {
                         onNavigate({
@@ -955,9 +943,10 @@ const HomeScreen = props => {
                           recipeId: item._id,
                         });
                       }}
+                    
                       popover={
                         <>
-                          <View style={{flexDirection: 'row', marginTop: 15}}>
+                          <View style={{flexDirection: 'row', marginTop: 25}}>
                             <FlatList
                               horizontal
                               data={cookdata[0]?.documents}
@@ -973,7 +962,7 @@ const HomeScreen = props => {
                                         source={{uri: item.image}}
                                         style={{
                                           width: deviceWidth * 0.8,
-                                          height: windowHeight * 0.3,
+                                          height: windowHeight * 0.25,
                                           borderRadius: 9,
                                         }}
                                       />
@@ -1048,6 +1037,31 @@ const HomeScreen = props => {
                               </Text>
                             </TouchableOpacity>
                           </View>
+                          {/* <View
+                            style={{
+                              flexDirection: 'row',
+                              bottom : 15,
+                              alignSelf:"flex-start"
+                            }}>
+                            <TouchableOpacity
+                              style={{
+                                paddingHorizontal: 15,
+                                padding: 10,
+                              }}
+                              onPress={() => onCreatePost()}>
+                              <Text
+                                style={{
+                                  borderWidth: 1,
+                                  borderRadius: 10,
+                                  borderColor: '#ccc',
+                                  color: 'gray',
+                                  padding: 8,
+                                  textAlign: 'center',
+                                }}>
+                                Create Post
+                              </Text>
+                              </TouchableOpacity>
+                         </View> */}
                         </>
                       }
                       backgroundColor="white">

@@ -84,15 +84,18 @@ const LoginScreen = ({navigation}) => {
           Toast.show(response.data.error, Toast.LONG);
         } else {
           await AsyncStorage.setItem('user', JSON.stringify(response.data));
-          PushNotification.onRegister(token => {
-            console.log('onRegister', token);
-            const body = {
-              OwnerRecipeUserId: response.data.UserId,
-              Devicetoken: token.token,
-            };
-            axios
-              .post(`${baseUrl}/notifiction/inserttoken`, body)
-              .then(response => {});
+          PushNotification.configure({
+            onRegister: function (token) {
+              const body = {
+                OwnerRecipeUserId: response.data.UserId,
+                Devicetoken: token.token,
+              };
+              axios
+                .post(`${baseUrl}/notifiction/inserttoken`, body)
+                .then(async (response) => {
+                  console.log('sd');
+                });
+            },
           });
           const UserId = response.data.UserId;
           await AsyncStorage.setItem('UserId', UserId);
